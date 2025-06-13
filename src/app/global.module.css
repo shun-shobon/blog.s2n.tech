@@ -1,8 +1,0 @@
-.generalLayout {
-  display: grid;
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 80ch;
-  padding: 2rem 1.5rem;
-  margin: 0 auto;
-}

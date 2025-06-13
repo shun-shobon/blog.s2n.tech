@@ -1,0 +1,9 @@
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - unrs-resolver
+
+publicHoistPattern:
+  - "*eslint*"
+
+savePrefix: ""
