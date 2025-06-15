@@ -18,6 +18,7 @@
 		"type-check": "astro check"
 	},
 	"dependencies": {
+		"@astrojs/mdx": "4.3.0",
 		"@tailwindcss/vite": "4.1.10",
 		"astro": "5.9.2",
 		"tailwindcss": "4.1.10"
