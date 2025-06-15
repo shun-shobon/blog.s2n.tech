@@ -1,0 +1,31 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+
+import DefaultLayout from "../../layouts/DefaultLayout.astro";
+
+interface Params {
+	slug: string;
+}
+
+export async function getStaticPaths(): Promise<{ params: Params }[]> {
+	const posts = await getCollection("posts");
+
+	return posts.map((post) => ({ params: { slug: post.id } }));
+}
+
+const { slug } = Astro.params;
+if (!slug) {
+	return Astro.redirect("/404");
+}
+
+const posts = await getEntry("posts", slug);
+if (!posts) {
+	return Astro.redirect("/404");
+}
+
+const { Content } = await render(posts);
+---
+
+<DefaultLayout>
+	<Content />
+</DefaultLayout>
