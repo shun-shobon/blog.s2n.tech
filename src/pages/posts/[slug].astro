@@ -1,13 +1,9 @@
 ---
 import { getCollection, getEntry, render } from "astro:content";
 
-import DefaultLayout from "../../layouts/DefaultLayout.astro";
+import GlobalLayout from "@/layouts/GlobalLayout.astro";
 
-interface Params {
-	slug: string;
-}
-
-export async function getStaticPaths(): Promise<{ params: Params }[]> {
+export async function getStaticPaths() {
 	const posts = await getCollection("posts");
 
 	return posts.map((post) => ({ params: { slug: post.id } }));
@@ -26,6 +22,6 @@ if (!posts) {
 const { Content } = await render(posts);
 ---
 
-<DefaultLayout>
+<GlobalLayout>
 	<Content />
-</DefaultLayout>
+</GlobalLayout>
