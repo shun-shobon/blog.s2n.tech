@@ -1,1 +1,38 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+	--color-text-primary: var(--color-neutral-800);
+	--color-text-secondary: var(--color-neutral-600);
+	--color-background-primary: var(--color-white);
+	--color-background-secondary: var(--color-neutral-100);
+	--color-background-tertiary: var(--color-neutral-200);
+	--color-border-primary: var(--color-neutral-100);
+
+	--font-cursive: var(--font-family-caveat), cursive, sans-serif;
+
+	--leading-*: initial;
+	--leading-tight: 1.25;
+	--leading-normal: 1.5;
+	--leading-relaxed: 2;
+
+	--bg-grid:
+		linear-gradient(
+			0deg,
+			var(--color-border) 1px,
+			transparent 1px
+		),
+		linear-gradient(
+			90deg,
+			var(--color-border) 1px,
+			transparent 1px
+		);
+}
+
+@layer base {
+	/* ボタンのデフォルトのカーソルをポインターに変更 */
+	button:not(:disabled),
+	[role="button"]:not(:disabled) {
+		cursor: pointer;
+	}
+}
