@@ -1,13 +1,44 @@
 ---
 import "@/styles/global.css";
+
+import { Font } from "astro:assets";
+
+interface Props {
+	title?: string;
+	description?: string;
+	class?: string;
+}
+
+const { title, description, class: className } = Astro.props;
+
+const titleText = title ? `${title} - blog.s2n.tech` : "blog.s2n.tech";
+const descriptionText =
+	description ??
+	"@shun_shobonのブログです。フロントエンドを中心に、様々な話題について好き勝手に書いています。";
 ---
 
 <html lang="ja">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>{titleText}</title>
+		<meta name="description" content={descriptionText} />
+
+		<meta property="og:title" content={titleText} />
+		<meta property="og:description" content={descriptionText} />
+		<meta property="og:type" content="website" />
+
+		<Font cssVariable="--font-family-caveat" preload />
+
+		<slot name="head" />
 	</head>
-	<body>
+	<body
+		class:list={[
+			"text-text-primary min-h-dvh leading-normal antialiased",
+			className,
+		]}
+	>
 		<slot />
 	</body>
 </html>
