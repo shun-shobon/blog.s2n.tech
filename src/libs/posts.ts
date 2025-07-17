@@ -48,8 +48,8 @@ export async function getPosts({
 	return { posts, total: posts.length };
 }
 
-export async function getPost(id: string): Promise<Post | null> {
-	const post = await getEntry("posts", slugToId(id));
+export async function getPost(slug: string): Promise<Post | null> {
+	const post = await getEntry("posts", slugToId(slug));
 
 	if (!post) {
 		return null;

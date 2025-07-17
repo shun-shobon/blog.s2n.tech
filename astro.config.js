@@ -1,12 +1,20 @@
 import mdx from "@astrojs/mdx";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
+import icon from "astro-icon";
 
 export default defineConfig({
 	vite: {
 		plugins: [tailwindcss()],
 	},
-	integrations: [mdx()],
+	integrations: [
+		mdx(),
+		icon({
+			include: {
+				"simple-icons": ["github", "x"],
+			},
+		}),
+	],
 	experimental: {
 		fonts: [
 			{

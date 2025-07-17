@@ -23,7 +23,7 @@ const intl = new Intl.DateTimeFormat("ja-JP");
 	{
 		post.data.publishedAt ? (
 			<time
-				datetime={post.data.publishedAt}
+				datetime={new Date(post.data.publishedAt).toISOString()}
 				class="text-text-secondary text-xs"
 			>
 				{intl.format(new Date(post.data.publishedAt))}
