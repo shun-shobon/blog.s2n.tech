@@ -29,7 +29,7 @@ const title = `「${id}」の記事一覧`;
 		<div class="mx-auto grid w-full max-w-4xl gap-4 sm:gap-8">
 			<h1 class="text-center text-2xl font-bold sm:text-4xl">{title}</h1>
 			<div
-				class="border-border-primary bg-background-primary rounded-2xl border p-4 shadow-lg sm:px-8 sm:py-6"
+				class="rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg sm:px-8 sm:py-6"
 			>
 				{posts.map((post) => <PostItem post={post} />)}
 			</div>

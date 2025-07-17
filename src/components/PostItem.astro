@@ -15,7 +15,7 @@ const intl = new Intl.DateTimeFormat("ja-JP");
 ---
 
 <article
-	class="border-border-primary grid gap-1 border-b py-4 first:pt-0 last:border-b-0 last:pb-0"
+	class="grid gap-1 border-b border-border-primary py-4 first:pt-0 last:border-b-0 last:pb-0"
 >
 	<h2 class="text-lg leading-tight font-bold">
 		<a href={url}>{post.data.title}</a>
@@ -24,12 +24,12 @@ const intl = new Intl.DateTimeFormat("ja-JP");
 		post.data.publishedAt ? (
 			<time
 				datetime={new Date(post.data.publishedAt).toISOString()}
-				class="text-text-secondary text-xs"
+				class="text-xs text-text-secondary"
 			>
 				{intl.format(new Date(post.data.publishedAt))}
 			</time>
 		) : (
-			<span class="text-text-secondary text-xs">未公開</span>
+			<span class="text-xs text-text-secondary">未公開</span>
 		)
 	}
 	<div class="flex flex-wrap items-center gap-2">

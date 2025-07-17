@@ -44,7 +44,7 @@ const latestPosts = posts
 			<h1 class="text-center text-2xl font-bold sm:text-4xl">
 				{post.data.title}
 			</h1>
-			<div class="text-text-secondary text-center text-sm">
+			<div class="text-center text-sm text-text-secondary">
 				{
 					post.data.publishedAt ? (
 						<>
@@ -76,7 +76,7 @@ const latestPosts = posts
 		<div class="mx-auto flex items-start justify-center gap-4 pt-4 sm:pt-8">
 			<div class="grid w-full max-w-4xl gap-4 sm:gap-8">
 				<div
-					class="prose border-border-primary bg-background-primary prose-neutral max-w-none min-w-0 rounded-2xl border p-4 shadow-lg sm:px-8 sm:py-6"
+					class="prose max-w-none min-w-0 rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg prose-neutral sm:px-8 sm:py-6"
 				>
 					<Content />
 					<hr />
@@ -88,7 +88,7 @@ const latestPosts = posts
 								alt=""
 								widths={[64, 128]}
 								sizes="64px"
-								class="border-border-primary size-16 rounded-full border"
+								class="size-16 rounded-full border border-border-primary"
 							/>
 						</a>
 						<div class="flex flex-col gap-2">
@@ -106,7 +106,7 @@ const latestPosts = posts
 								<a
 									href="https://github.com/shun-shobon"
 									target="_blank"
-									class="text-text-secondary hover:text-text-primary transition-colors"
+									class="text-text-secondary transition-colors hover:text-text-primary"
 								>
 									<Icon
 										name="simple-icons:github"
@@ -117,7 +117,7 @@ const latestPosts = posts
 								<a
 									href="https://x.com/shun_shobon"
 									target="_blank"
-									class="text-text-secondary hover:text-text-primary transition-colors"
+									class="text-text-secondary transition-colors hover:text-text-primary"
 								>
 									<Icon name="simple-icons:x" class="size-5" title="X" />
 								</a>
@@ -126,7 +126,7 @@ const latestPosts = posts
 					</div>
 				</div>
 				<div
-					class="border-border-primary bg-background-primary grid gap-4 rounded-2xl border p-4 shadow-lg sm:px-8 sm:py-6"
+					class="grid gap-4 rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg sm:px-8 sm:py-6"
 				>
 					<div class="text-lg font-bold">最新記事</div>
 					<div>
@@ -135,7 +135,7 @@ const latestPosts = posts
 				</div>
 			</div>
 			<div
-				class="border-border-primary bg-background-primary sticky top-8 hidden max-h-[calc(100dvh-var(--spacing)*16)] w-full max-w-xs gap-2 overflow-y-auto rounded-2xl border p-4 shadow-lg xl:grid"
+				class="sticky top-8 hidden max-h-[calc(100dvh-var(--spacing)*16)] w-full max-w-xs gap-2 overflow-y-auto rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg xl:grid"
 			>
 				<div class="text-lg font-bold">目次</div>
 				<ul class="list-disc pl-4">
@@ -146,7 +146,7 @@ const latestPosts = posts
 								<li>
 									<a
 										href={`#${heading.slug}`}
-										class="text-text-secondary hover:text-text-primary block py-0.5 transition-colors"
+										class="block py-0.5 text-text-secondary transition-colors hover:text-text-primary"
 									>
 										{heading.text}
 									</a>

@@ -17,16 +17,8 @@
 	--leading-relaxed: 2;
 
 	--bg-grid:
-		linear-gradient(
-			0deg,
-			var(--color-border-primary) 1px,
-			transparent 1px
-		),
-		linear-gradient(
-			90deg,
-			var(--color-border-primary) 1px,
-			transparent 1px
-		);
+		linear-gradient(0deg, var(--color-border-primary) 1px, transparent 1px),
+		linear-gradient(90deg, var(--color-border-primary) 1px, transparent 1px);
 }
 
 @layer base {
