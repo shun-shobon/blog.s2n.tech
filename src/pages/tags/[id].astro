@@ -1,0 +1,38 @@
+---
+import PostItem from "@/components/PostItem.astro";
+import BasicLayout from "@/layouts/BasicLayout.astro";
+import { getPosts, getTags } from "@/libs/posts";
+
+export async function getStaticPaths() {
+	const tags = await getTags();
+
+	return tags.map((tag) => ({
+		params: { id: tag },
+	}));
+}
+
+const { id } = Astro.params;
+if (!id) {
+	return Astro.rewrite("/404");
+}
+
+const { posts } = await getPosts({
+	tag: id,
+	draft: true,
+});
+
+const title = `「${id}」の記事一覧`;
+---
+
+<BasicLayout title={title}>
+	<div class="px-4 pb-4 sm:px-8 sm:pb-8">
+		<div class="mx-auto grid w-full max-w-4xl gap-4 sm:gap-8">
+			<h1 class="text-center text-2xl font-bold sm:text-4xl">{title}</h1>
+			<div
+				class="border-border-primary bg-background-primary rounded-2xl border p-4 shadow-lg sm:px-8 sm:py-6"
+			>
+				{posts.map((post) => <PostItem post={post} />)}
+			</div>
+		</div>
+	</div>
+</BasicLayout>
