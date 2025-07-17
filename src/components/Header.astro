@@ -1,0 +1,33 @@
+---
+import { Image } from "astro:assets";
+
+import MyIcon from "@/assets/my-icon.png";
+---
+
+<header
+	class="border-border-primary bg-background-primary font-cursive flex w-full max-w-sm items-center justify-between rounded-full border p-2 pr-6 shadow-lg"
+>
+	<a href="/" class="flex items-center gap-1">
+		<Image
+			src={MyIcon}
+			alt=""
+			class="border-border-primary size-8 rounded-full border"
+			widths={[32, 64]}
+			sizes="32px"
+		/>
+		<span class="text-2xl font-bold">s2n.tech</span>
+	</a>
+	<nav>
+		<ul class="flex items-center gap-4 text-lg font-bold">
+			<li>
+				<a href="/">About</a>
+			</li>
+			<li>
+				<a href="/posts">Posts</a>
+			</li>
+			<li>
+				<a href="/tags">Tags</a>
+			</li>
+		</ul>
+	</nav>
+</header>
