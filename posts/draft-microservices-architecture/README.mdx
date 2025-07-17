@@ -1,0 +1,578 @@
+---
+title: マイクロサービス設計の実践ガイド - 大規模Webアプリケーションを分割統治する
+tags:
+  - マイクロサービス
+  - アーキテクチャ
+  - スケーラビリティ
+  - Backend
+  - DevOps
+updatedAt: "2024-07-15"
+---
+
+## はじめに
+
+現代の大規模Webアプリケーション開発において、マイクロサービスアーキテクチャは重要な選択肢となっています。
+モノリシックなアプリケーションから個別のサービスに分割することで、
+開発チームの独立性、技術スタックの柔軟性、スケーラビリティの向上を実現できます。
+今回は、実際の事例とともにマイクロサービス設計の実践的なアプローチを詳しく解説します。
+
+> **注意**: この記事は現在執筆中の下書きです。内容は予告なく変更される可能性があります。
+
+## マイクロサービスの基本概念
+
+### モノリスとマイクロサービスの比較
+
+```
+モノリシック アーキテクチャ:
+┌─────────────────────────────────┐
+│         Single Application      │
+│  ┌─────┐ ┌─────┐ ┌─────────┐  │
+│  │ UI  │ │Auth │ │Business │  │
+│  │     │ │     │ │ Logic   │  │
+│  └─────┘ └─────┘ └─────────┘  │
+│           Database              │
+└─────────────────────────────────┘
+
+マイクロサービス アーキテクチャ:
+┌─────────┐ ┌─────────┐ ┌─────────┐
+│ User    │ │ Auth    │ │ Order   │
+│ Service │ │ Service │ │ Service │
+│   +DB   │ │   +DB   │ │   +DB   │
+└─────────┘ └─────────┘ └─────────┘
+     │           │           │
+     └───────────┼───────────┘
+                 │
+        ┌─────────────────┐
+        │  API Gateway    │
+        └─────────────────┘
+```
+
+### マイクロサービスの利点
+
+1. **技術の自由度**: サービスごとに最適な技術スタックを選択
+2. **独立したデプロイ**: 他のサービスに影響を与えずにリリース
+3. **スケーラビリティ**: 必要なサービスのみスケールアウト
+4. **障害の局所化**: 一つのサービスの障害が全体に波及しない
+5. **チームの独立性**: 小さなチームで迅速な開発
+
+### 検討すべき課題
+
+1. **複雑性の増加**: ネットワーク通信、分散トランザクション
+2. **運用コスト**: 複数のサービスの監視、ログ管理
+3. **データの整合性**: 分散システムでの整合性保証
+4. **テストの複雑化**: サービス間の統合テスト
+
+## サービス分割の戦略
+
+### ドメイン駆動設計（DDD）による分割
+
+```typescript
+// User Domain（ユーザー管理）
+interface UserService {
+	createUser(userData: CreateUserRequest): Promise<User>;
+	getUser(userId: string): Promise<User>;
+	updateUser(userId: string, updates: UpdateUserRequest): Promise<User>;
+	deleteUser(userId: string): Promise<void>;
+}
+
+// Order Domain（注文管理）
+interface OrderService {
+	createOrder(orderData: CreateOrderRequest): Promise<Order>;
+	getOrder(orderId: string): Promise<Order>;
+	updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order>;
+	getOrdersByUser(userId: string): Promise<Order[]>;
+}
+
+// Product Domain（商品管理）
+interface ProductService {
+	createProduct(productData: CreateProductRequest): Promise<Product>;
+	getProduct(productId: string): Promise<Product>;
+	updateProduct(
+		productId: string,
+		updates: UpdateProductRequest,
+	): Promise<Product>;
+	searchProducts(criteria: SearchCriteria): Promise<Product[]>;
+}
+```
+
+### 境界付きコンテキストの定義
+
+```typescript
+// User Context
+export class User {
+	constructor(
+		public readonly id: UserId,
+		public readonly email: Email,
+		public readonly profile: UserProfile,
+		public readonly createdAt: Date,
+	) {}
+}
+
+// Order Context（異なるUserの表現）
+export class OrderCustomer {
+	constructor(
+		public readonly customerId: CustomerId,
+		public readonly name: string,
+		public readonly shippingAddress: Address,
+	) {}
+}
+```
+
+## API設計とサービス間通信
+
+### RESTful API設計
+
+```typescript
+// User Service API
+export class UserController {
+	@Get("/users/:id")
+	async getUser(@Param("id") id: string): Promise<UserResponse> {
+		const user = await this.userService.getUser(id);
+		return this.toUserResponse(user);
+	}
+
+	@Post("/users")
+	async createUser(@Body() request: CreateUserRequest): Promise<UserResponse> {
+		const user = await this.userService.createUser(request);
+		return this.toUserResponse(user);
+	}
+
+	@Put("/users/:id")
+	async updateUser(
+		@Param("id") id: string,
+		@Body() request: UpdateUserRequest,
+	): Promise<UserResponse> {
+		const user = await this.userService.updateUser(id, request);
+		return this.toUserResponse(user);
+	}
+}
+```
+
+### イベント駆動アーキテクチャ
+
+```typescript
+// ドメインイベントの定義
+export interface DomainEvent {
+	eventId: string;
+	eventType: string;
+	aggregateId: string;
+	timestamp: Date;
+	version: number;
+}
+
+export class UserCreatedEvent implements DomainEvent {
+	constructor(
+		public readonly eventId: string,
+		public readonly aggregateId: string,
+		public readonly userEmail: string,
+		public readonly timestamp: Date,
+		public readonly version: number,
+	) {}
+
+	eventType = "UserCreated";
+}
+
+// イベントパブリッシャー
+export class EventBus {
+	async publish(event: DomainEvent): Promise<void> {
+		await this.messageQueue.send({
+			topic: event.eventType,
+			message: JSON.stringify(event),
+			partition: event.aggregateId,
+		});
+	}
+}
+
+// イベントハンドラー
+export class OrderEventHandler {
+	@EventHandler("UserCreated")
+	async handleUserCreated(event: UserCreatedEvent): Promise<void> {
+		// 注文サービス側でユーザー情報のコピーを作成
+		await this.orderService.createCustomerProfile({
+			customerId: event.aggregateId,
+			email: event.userEmail,
+		});
+	}
+}
+```
+
+### サーキットブレーカーパターン
+
+```typescript
+export class CircuitBreaker {
+	private state: "CLOSED" | "OPEN" | "HALF_OPEN" = "CLOSED";
+	private failureCount = 0;
+	private lastFailureTime?: Date;
+
+	constructor(
+		private readonly failureThreshold: number = 5,
+		private readonly timeoutDuration: number = 60000,
+	) {}
+
+	async execute<T>(operation: () => Promise<T>): Promise<T> {
+		if (this.state === "OPEN") {
+			if (this.shouldAttemptReset()) {
+				this.state = "HALF_OPEN";
+			} else {
+				throw new Error("Circuit breaker is OPEN");
+			}
+		}
+
+		try {
+			const result = await operation();
+			this.onSuccess();
+			return result;
+		} catch (error) {
+			this.onFailure();
+			throw error;
+		}
+	}
+
+	private onSuccess(): void {
+		this.failureCount = 0;
+		this.state = "CLOSED";
+	}
+
+	private onFailure(): void {
+		this.failureCount++;
+		this.lastFailureTime = new Date();
+
+		if (this.failureCount >= this.failureThreshold) {
+			this.state = "OPEN";
+		}
+	}
+
+	private shouldAttemptReset(): boolean {
+		return (
+			this.lastFailureTime &&
+			Date.now() - this.lastFailureTime.getTime() > this.timeoutDuration
+		);
+	}
+}
+```
+
+## データ管理戦略
+
+### Database per Service
+
+```typescript
+// User Service Database
+export class UserRepository {
+	constructor(private readonly userDb: Database) {}
+
+	async save(user: User): Promise<void> {
+		await this.userDb.users.insert({
+			id: user.id.value,
+			email: user.email.value,
+			profile: user.profile.toJSON(),
+			created_at: user.createdAt,
+		});
+	}
+
+	async findById(id: UserId): Promise<User | null> {
+		const userData = await this.userDb.users.findOne({ id: id.value });
+		return userData ? User.fromJSON(userData) : null;
+	}
+}
+
+// Order Service Database（独立したデータベース）
+export class OrderRepository {
+	constructor(private readonly orderDb: Database) {}
+
+	async save(order: Order): Promise<void> {
+		await this.orderDb.orders.insert({
+			id: order.id.value,
+			customer_id: order.customerId.value,
+			items: order.items.map((item) => item.toJSON()),
+			status: order.status,
+			created_at: order.createdAt,
+		});
+	}
+}
+```
+
+### Sagaパターンによる分散トランザクション
+
+```typescript
+export class OrderSaga {
+	async processOrder(command: CreateOrderCommand): Promise<void> {
+		const sagaId = generateId();
+
+		try {
+			// Step 1: 在庫確保
+			const reservationResult = await this.inventoryService.reserveItems(
+				command.items,
+				sagaId,
+			);
+
+			// Step 2: 決済処理
+			const paymentResult = await this.paymentService.processPayment(
+				command.paymentInfo,
+				sagaId,
+			);
+
+			// Step 3: 注文作成
+			const order = await this.orderService.createOrder(command, sagaId);
+
+			// 全てのステップが成功
+			await this.commitSaga(sagaId);
+		} catch (error) {
+			// エラー時は補償トランザクションを実行
+			await this.rollbackSaga(sagaId, error);
+			throw error;
+		}
+	}
+
+	private async rollbackSaga(sagaId: string, error: Error): Promise<void> {
+		// 逆順で補償処理を実行
+		await this.orderService.cancelOrder(sagaId);
+		await this.paymentService.refundPayment(sagaId);
+		await this.inventoryService.releaseReservation(sagaId);
+	}
+}
+```
+
+## 分散システムの監視と運用
+
+### 分散トレーシング
+
+```typescript
+import { trace, context } from "@opentelemetry/api";
+
+export class UserService {
+	private tracer = trace.getTracer("user-service");
+
+	async getUser(userId: string): Promise<User> {
+		return this.tracer.startActiveSpan("get-user", async (span) => {
+			span.setAttributes({
+				"user.id": userId,
+				"service.name": "user-service",
+			});
+
+			try {
+				const user = await this.userRepository.findById(new UserId(userId));
+
+				if (!user) {
+					span.setStatus({
+						code: SpanStatusCode.ERROR,
+						message: "User not found",
+					});
+					throw new UserNotFoundError(userId);
+				}
+
+				span.setAttributes({
+					"user.email": user.email.value,
+					"user.created_at": user.createdAt.toISOString(),
+				});
+
+				return user;
+			} catch (error) {
+				span.recordException(error);
+				span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+				throw error;
+			} finally {
+				span.end();
+			}
+		});
+	}
+}
+```
+
+### メトリクス収集
+
+```typescript
+import { metrics } from "@opentelemetry/api-metrics";
+
+export class MetricsCollector {
+	private meter = metrics.getMeter("order-service");
+	private orderCounter = this.meter.createCounter("orders_total");
+	private orderDuration = this.meter.createHistogram("order_duration_seconds");
+
+	recordOrderCreated(status: string): void {
+		this.orderCounter.add(1, { status });
+	}
+
+	recordOrderDuration(duration: number, status: string): void {
+		this.orderDuration.record(duration, { status });
+	}
+}
+
+export class OrderService {
+	constructor(
+		private readonly orderRepository: OrderRepository,
+		private readonly metrics: MetricsCollector,
+	) {}
+
+	async createOrder(command: CreateOrderCommand): Promise<Order> {
+		const startTime = Date.now();
+
+		try {
+			const order = new Order(command);
+			await this.orderRepository.save(order);
+
+			this.metrics.recordOrderCreated("success");
+			this.metrics.recordOrderDuration(
+				(Date.now() - startTime) / 1000,
+				"success",
+			);
+
+			return order;
+		} catch (error) {
+			this.metrics.recordOrderCreated("error");
+			this.metrics.recordOrderDuration(
+				(Date.now() - startTime) / 1000,
+				"error",
+			);
+			throw error;
+		}
+	}
+}
+```
+
+## コンテナ化とオーケストレーション
+
+### Docker設定
+
+```dockerfile
+# User Service Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY dist/ ./dist/
+COPY config/ ./config/
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+CMD ["node", "dist/main.js"]
+```
+
+### Kubernetes配備
+
+```yaml
+# user-service-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: user-service:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: user-service-secrets
+                  key: database-url
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: user-service-config
+                  key: redis-url
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-service
+spec:
+  selector:
+    app: user-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
+```
+
+## テスト戦略
+
+### Contract Testing
+
+```typescript
+// Consumer Test (Order Service)
+describe("User Service Contract", () => {
+	test("should get user by id", async () => {
+		const mockUserService = new MockUserService();
+		mockUserService.addInteraction({
+			state: "user exists",
+			uponReceiving: "a request for user",
+			withRequest: {
+				method: "GET",
+				path: "/users/123",
+				headers: {
+					Accept: "application/json",
+				},
+			},
+			willRespondWith: {
+				status: 200,
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: {
+					id: "123",
+					email: "user@example.com",
+					name: "John Doe",
+				},
+			},
+		});
+
+		const orderService = new OrderService(mockUserService);
+		const user = await orderService.getCustomerInfo("123");
+
+		expect(user.id).toBe("123");
+		expect(user.email).toBe("user@example.com");
+	});
+});
+```
+
+## 今後の執筆予定
+
+この記事では、以下のトピックを追加で執筆予定です：
+
+- [ ] API Gateway の詳細設計
+- [ ] Service Mesh（Istio）の活用
+- [ ] セキュリティ（認証・認可の分散管理）
+- [ ] パフォーマンス最適化
+- [ ] 実際の移行事例とレッスンズラーンド
+
+## 参考資料
+
+- Martin Fowler's Microservices Articles
+- Building Microservices by Sam Newman
+- Kubernetes Official Documentation
+- OpenTelemetry Documentation
+
+> この記事の完成版公開をお楽しみに！フィードバックや質問があれば、ぜひコメントでお聞かせください。

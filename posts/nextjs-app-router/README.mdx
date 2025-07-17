@@ -1,0 +1,642 @@
+---
+title: Next.js App Routerで作る現代的なWebアプリケーション
+tags:
+  - Next.js
+  - React
+  - App Router
+  - Frontend
+publishedAt: "2023-09-28"
+updatedAt: "2024-04-12"
+---
+
+## はじめに
+
+Next.js 13で正式に導入されたApp Routerは、従来のPages Routerに代わる新しいルーティングシステムです。
+React Server Components、ストリーミング、並行レンダリングなどの最新技術を活用し、
+より高性能でモダンなWebアプリケーションを構築できます。
+今回は、App Routerの基本から実践的な使い方まで詳しく解説していきます。
+
+## App Routerの基本構造
+
+### ディレクトリ構造
+
+```
+app/
+├── layout.tsx          # ルートレイアウト
+├── page.tsx           # ホームページ
+├── loading.tsx        # ローディングUI
+├── error.tsx          # エラーUI
+├── not-found.tsx      # 404ページ
+├── global-error.tsx   # グローバルエラー
+├── about/
+│   └── page.tsx       # /about
+├── blog/
+│   ├── page.tsx       # /blog
+│   ├── layout.tsx     # ブログ用レイアウト
+│   ├── loading.tsx    # ブログ用ローディング
+│   └── [slug]/
+│       └── page.tsx   # /blog/[slug]
+└── dashboard/
+    ├── layout.tsx
+    ├── page.tsx       # /dashboard
+    ├── settings/
+    │   └── page.tsx   # /dashboard/settings
+    └── profile/
+        └── page.tsx   # /dashboard/profile
+```
+
+### 特別なファイル
+
+```typescript
+// app/layout.tsx - ルートレイアウト
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="ja">
+      <body>
+        <header>
+          <nav>
+            <Link href="/">ホーム</Link>
+            <Link href="/about">について</Link>
+            <Link href="/blog">ブログ</Link>
+          </nav>
+        </header>
+        <main>{children}</main>
+        <footer>
+          <p>&copy; 2024 My Website</p>
+        </footer>
+      </body>
+    </html>
+  )
+}
+
+// app/page.tsx - ホームページ
+export default function HomePage() {
+  return (
+    <div>
+      <h1>ホームページへようこそ</h1>
+      <p>Next.js App Routerを使用したサイトです。</p>
+    </div>
+  )
+}
+
+// app/loading.tsx - ローディングUI
+export default function Loading() {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+    </div>
+  )
+}
+
+// app/error.tsx - エラーUI
+'use client'
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <h2>何かがうまくいきませんでした！</h2>
+      <p>{error.message}</p>
+      <button onClick={() => reset()}>
+        再試行
+      </button>
+    </div>
+  )
+}
+```
+
+## Server ComponentsとClient Components
+
+### Server Components（デフォルト）
+
+```typescript
+// app/blog/page.tsx - Server Component
+import { getPosts } from '@/lib/posts'
+
+export default async function BlogPage() {
+  // サーバー側でデータを取得
+  const posts = await getPosts()
+
+  return (
+    <div>
+      <h1>ブログ記事一覧</h1>
+      {posts.map(post => (
+        <article key={post.id}>
+          <h2>{post.title}</h2>
+          <p>{post.excerpt}</p>
+          <Link href={`/blog/${post.slug}`}>続きを読む</Link>
+        </article>
+      ))}
+    </div>
+  )
+}
+
+// データ取得関数
+async function getPosts() {
+  const res = await fetch('https://api.example.com/posts', {
+    cache: 'no-store' // リクエストごとに新しいデータを取得
+  })
+
+  if (!res.ok) {
+    throw new Error('投稿の取得に失敗しました')
+  }
+
+  return res.json()
+}
+```
+
+### Client Components
+
+```typescript
+// components/SearchBox.tsx - Client Component
+'use client'
+
+import { useState } from 'react'
+
+export function SearchBox({ onSearch }: { onSearch: (query: string) => void }) {
+  const [query, setQuery] = useState('')
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSearch(query)
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="検索..."
+        className="border p-2 rounded"
+      />
+      <button type="submit" className="ml-2 px-4 py-2 bg-blue-500 text-white rounded">
+        検索
+      </button>
+    </form>
+  )
+}
+```
+
+## データ取得とキャッシュ戦略
+
+### fetch API の拡張
+
+```typescript
+// 静的データ（ビルド時に取得、ISG）
+async function getStaticPosts() {
+	const res = await fetch("https://api.example.com/posts", {
+		cache: "force-cache", // デフォルト：無期限キャッシュ
+	});
+	return res.json();
+}
+
+// 動的データ（リクエストごとに取得、SSR）
+async function getDynamicPosts() {
+	const res = await fetch("https://api.example.com/posts", {
+		cache: "no-store", // キャッシュなし
+	});
+	return res.json();
+}
+
+// 再検証付きキャッシュ（ISR）
+async function getRevalidatedPosts() {
+	const res = await fetch("https://api.example.com/posts", {
+		next: { revalidate: 60 }, // 60秒ごとに再検証
+	});
+	return res.json();
+}
+
+// タグベースの再検証
+async function getPostsWithTags() {
+	const res = await fetch("https://api.example.com/posts", {
+		next: { tags: ["posts"] },
+	});
+	return res.json();
+}
+```
+
+### 並列データ取得
+
+```typescript
+// app/dashboard/page.tsx
+async function getUser() {
+  const res = await fetch('https://api.example.com/user')
+  return res.json()
+}
+
+async function getProjects() {
+  const res = await fetch('https://api.example.com/projects')
+  return res.json()
+}
+
+async function getAnalytics() {
+  const res = await fetch('https://api.example.com/analytics')
+  return res.json()
+}
+
+export default async function DashboardPage() {
+  // 並列でデータを取得
+  const [user, projects, analytics] = await Promise.all([
+    getUser(),
+    getProjects(),
+    getAnalytics()
+  ])
+
+  return (
+    <div>
+      <h1>ダッシュボード</h1>
+      <UserProfile user={user} />
+      <ProjectList projects={projects} />
+      <AnalyticsChart data={analytics} />
+    </div>
+  )
+}
+```
+
+## ストリーミングとSuspense
+
+### ページ全体のストリーミング
+
+```typescript
+// app/blog/[slug]/page.tsx
+import { Suspense } from 'react'
+import { PostContent } from '@/components/PostContent'
+import { Comments } from '@/components/Comments'
+import { RelatedPosts } from '@/components/RelatedPosts'
+
+export default function BlogPostPage({ params }: { params: { slug: string } }) {
+  return (
+    <div>
+      <Suspense fallback={<PostSkeleton />}>
+        <PostContent slug={params.slug} />
+      </Suspense>
+
+      <Suspense fallback={<CommentsSkeleton />}>
+        <Comments slug={params.slug} />
+      </Suspense>
+
+      <Suspense fallback={<RelatedPostsSkeleton />}>
+        <RelatedPosts slug={params.slug} />
+      </Suspense>
+    </div>
+  )
+}
+
+// コンポーネントごとのSkeletonUI
+function PostSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="h-8 bg-gray-300 rounded w-3/4 mb-4"></div>
+      <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+      <div className="h-4 bg-gray-300 rounded w-5/6 mb-2"></div>
+      <div className="h-4 bg-gray-300 rounded w-4/5"></div>
+    </div>
+  )
+}
+```
+
+### 部分的なストリーミング
+
+```typescript
+// components/PostContent.tsx
+async function getPost(slug: string) {
+  const res = await fetch(`https://api.example.com/posts/${slug}`)
+  return res.json()
+}
+
+export async function PostContent({ slug }: { slug: string }) {
+  const post = await getPost(slug)
+
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+    </article>
+  )
+}
+
+// components/Comments.tsx
+async function getComments(slug: string) {
+  // 意図的に遅いAPI呼び出し
+  await new Promise(resolve => setTimeout(resolve, 2000))
+  const res = await fetch(`https://api.example.com/posts/${slug}/comments`)
+  return res.json()
+}
+
+export async function Comments({ slug }: { slug: string }) {
+  const comments = await getComments(slug)
+
+  return (
+    <section>
+      <h2>コメント</h2>
+      {comments.map((comment: any) => (
+        <div key={comment.id}>
+          <p>{comment.content}</p>
+          <small>{comment.author}</small>
+        </div>
+      ))}
+    </section>
+  )
+}
+```
+
+## フォームとアクション
+
+### Server Actions
+
+```typescript
+// app/contact/page.tsx
+import { redirect } from 'next/navigation'
+
+async function submitMessage(formData: FormData) {
+  'use server'
+
+  const name = formData.get('name') as string
+  const email = formData.get('email') as string
+  const message = formData.get('message') as string
+
+  // バリデーション
+  if (!name || !email || !message) {
+    throw new Error('すべてのフィールドを入力してください')
+  }
+
+  // データベースに保存
+  await saveMessage({ name, email, message })
+
+  // 成功ページにリダイレクト
+  redirect('/contact/success')
+}
+
+export default function ContactPage() {
+  return (
+    <form action={submitMessage}>
+      <div>
+        <label htmlFor="name">名前</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+
+      <div>
+        <label htmlFor="email">メールアドレス</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div>
+        <label htmlFor="message">メッセージ</label>
+        <textarea id="message" name="message" required />
+      </div>
+
+      <button type="submit">送信</button>
+    </form>
+  )
+}
+```
+
+### フォームの状態管理
+
+```typescript
+// components/ContactForm.tsx
+'use client'
+
+import { useFormState, useFormStatus } from 'react-dom'
+
+async function submitMessage(prevState: any, formData: FormData) {
+  'use server'
+
+  try {
+    const name = formData.get('name') as string
+    const email = formData.get('email') as string
+    const message = formData.get('message') as string
+
+    await saveMessage({ name, email, message })
+
+    return { success: true, message: 'メッセージを送信しました' }
+  } catch (error) {
+    return { success: false, message: 'エラーが発生しました' }
+  }
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button type="submit" disabled={pending}>
+      {pending ? '送信中...' : '送信'}
+    </button>
+  )
+}
+
+export function ContactForm() {
+  const [state, formAction] = useFormState(submitMessage, null)
+
+  return (
+    <form action={formAction}>
+      {state?.message && (
+        <div className={state.success ? 'text-green-600' : 'text-red-600'}>
+          {state.message}
+        </div>
+      )}
+
+      <div>
+        <label htmlFor="name">名前</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+
+      <div>
+        <label htmlFor="email">メールアドレス</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div>
+        <label htmlFor="message">メッセージ</label>
+        <textarea id="message" name="message" required />
+      </div>
+
+      <SubmitButton />
+    </form>
+  )
+}
+```
+
+## 認証とミドルウェア
+
+### ミドルウェアの設定
+
+```typescript
+// middleware.ts
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+	// 認証チェック
+	const token = request.cookies.get("auth-token");
+
+	if (request.nextUrl.pathname.startsWith("/dashboard")) {
+		if (!token) {
+			return NextResponse.redirect(new URL("/login", request.url));
+		}
+	}
+
+	// レート制限
+	const ip = request.ip ?? "127.0.0.1";
+	if (isRateLimited(ip)) {
+		return new NextResponse("Too Many Requests", { status: 429 });
+	}
+
+	return NextResponse.next();
+}
+
+export const config = {
+	matcher: ["/dashboard/:path*", "/api/:path*"],
+};
+```
+
+### 認証状態の管理
+
+```typescript
+// app/providers.tsx
+'use client'
+
+import { createContext, useContext, useEffect, useState } from 'react'
+
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
+interface AuthContextType {
+  user: User | null
+  loading: boolean
+  login: (email: string, password: string) => Promise<void>
+  logout: () => void
+}
+
+const AuthContext = createContext<AuthContextType | null>(null)
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    checkAuthStatus()
+  }, [])
+
+  const checkAuthStatus = async () => {
+    try {
+      const res = await fetch('/api/auth/me')
+      if (res.ok) {
+        const userData = await res.json()
+        setUser(userData)
+      }
+    } catch (error) {
+      console.error('認証状態の確認に失敗しました:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const login = async (email: string, password: string) => {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
+
+    if (res.ok) {
+      const userData = await res.json()
+      setUser(userData)
+    } else {
+      throw new Error('ログインに失敗しました')
+    }
+  }
+
+  const logout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    setUser(null)
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider')
+  }
+  return context
+}
+```
+
+## パフォーマンス最適化
+
+### 画像最適化
+
+```typescript
+// components/OptimizedImage.tsx
+import Image from 'next/image'
+
+export function ProductImage({ src, alt }: { src: string; alt: string }) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      width={400}
+      height={300}
+      priority // Above the fold の画像
+      placeholder="blur"
+      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyVPms4vmmKypnDehnrS95pXvLGsxwz5LHFy5gLjmHBc95jmdl4SkTq96hd9sOJ8wXokhfamkYL/9k="
+    />
+  )
+}
+```
+
+### 動的インポート
+
+```typescript
+// components/Chart.tsx
+import dynamic from 'next/dynamic'
+
+const DynamicChart = dynamic(
+  () => import('./Chart').then(mod => mod.Chart),
+  {
+    loading: () => <p>チャートを読み込み中...</p>,
+    ssr: false // クライアントサイドでのみレンダリング
+  }
+)
+
+export function ChartPage() {
+  return (
+    <div>
+      <h1>分析ダッシュボード</h1>
+      <DynamicChart />
+    </div>
+  )
+}
+```
+
+## 終わりに
+
+App Routerを使うことで：
+
+1. **Server Components**: サーバーサイドでのレンダリングによるパフォーマンス向上
+2. **ストリーミング**: 段階的な画面表示でユーザー体験向上
+3. **並行レンダリング**: 複数データの並列取得で高速化
+4. **統合されたルーティング**: ファイルベースのルーティングシステム
+
+App Routerは最初は概念が複雑に感じるかもしれませんが、
+慣れてくると従来のPages Routerよりも直感的で強力なアプリケーションを構築できます。
+新しいプロジェクトではぜひApp Routerを試してみてください！

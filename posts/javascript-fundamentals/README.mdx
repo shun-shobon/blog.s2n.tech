@@ -1,0 +1,837 @@
+---
+title: JavaScript基礎完全マスター - モダン開発への第一歩
+tags:
+  - JavaScript
+  - ES6+
+  - 基礎
+  - プログラミング
+publishedAt: "2023-01-10"
+---
+
+## はじめに
+
+JavaScriptは現代のWeb開発において欠かせない言語です。
+ブラウザだけでなく、Node.jsによってサーバーサイド開発でも広く使われています。
+この記事では、JavaScriptの基礎から現代的な記法まで、しっかりとした土台を築けるよう丁寧に解説していきます。
+
+## 変数とデータ型
+
+### 変数の宣言
+
+```javascript
+// var（古い記法、避ける）
+var oldWay = "古い方法";
+
+// let（再代入可能）
+let mutableVariable = "変更可能";
+mutableVariable = "新しい値";
+
+// const（再代入不可）
+const immutableVariable = "変更不可";
+// immutableVariable = "エラー"; // TypeError
+
+// オブジェクトや配列の場合は中身は変更可能
+const obj = { name: "Alice" };
+obj.name = "Bob"; // OK
+obj.age = 25; // OK
+```
+
+### プリミティブ型
+
+```javascript
+// 文字列（String）
+const str1 = "ダブルクォート";
+const str2 = "シングルクォート";
+const str3 = `テンプレートリテラル: ${str1}`;
+
+// 数値（Number）
+const integer = 42;
+const float = 3.14;
+const scientific = 1.5e10; // 1.5 × 10^10
+
+// 真偽値（Boolean）
+const isTrue = true;
+const isFalse = false;
+
+// null と undefined
+const nullValue = null;
+let undefinedValue; // undefined
+const explicitUndefined = undefined;
+
+// Symbol（ES6+）
+const symbol1 = Symbol("description");
+const symbol2 = Symbol("description");
+console.log(symbol1 === symbol2); // false
+
+// BigInt（ES2020）
+const bigNumber = 1234567890123456789012345678901234567890n;
+const anotherBig = BigInt("1234567890123456789012345678901234567890");
+```
+
+### 参照型
+
+```javascript
+// オブジェクト
+const person = {
+	name: "Alice",
+	age: 30,
+	city: "Tokyo",
+	// メソッド
+	greet() {
+		return `Hello, I'm ${this.name}`;
+	},
+	// ゲッター
+	get info() {
+		return `${this.name} (${this.age})`;
+	},
+	// セッター
+	set fullName(value) {
+		[this.firstName, this.lastName] = value.split(" ");
+	},
+};
+
+// 配列
+const numbers = [1, 2, 3, 4, 5];
+const mixed = [1, "hello", true, null, { key: "value" }];
+const matrix = [
+	[1, 2],
+	[3, 4],
+	[5, 6],
+];
+
+// 関数
+function regularFunction(param) {
+	return param * 2;
+}
+
+const arrowFunction = (param) => param * 2;
+const oneLineArrow = (param) => param * 2; // 引数が1つの場合は括弧省略可
+```
+
+## 演算子と制御構文
+
+### 算術演算子
+
+```javascript
+const a = 10;
+const b = 3;
+
+console.log(a + b); // 13 (加算)
+console.log(a - b); // 7  (減算)
+console.log(a * b); // 30 (乗算)
+console.log(a / b); // 3.333... (除算)
+console.log(a % b); // 1  (剰余)
+console.log(a ** b); // 1000 (べき乗, ES2016)
+
+// インクリメント・デクリメント
+let counter = 0;
+console.log(counter++); // 0 (後置)
+console.log(++counter); // 2 (前置)
+console.log(counter--); // 2 (後置)
+console.log(--counter); // 0 (前置)
+```
+
+### 比較演算子
+
+```javascript
+// 等価・厳密等価
+console.log(5 == "5"); // true (型変換あり)
+console.log(5 === "5"); // false (厳密比較)
+console.log(5 != "5"); // false
+console.log(5 !== "5"); // true
+
+// 大小比較
+console.log(10 > 5); // true
+console.log(10 >= 10); // true
+console.log(5 < 10); // true
+console.log(5 <= 5); // true
+```
+
+### 論理演算子
+
+```javascript
+const x = true;
+const y = false;
+
+// AND
+console.log(x && y); // false
+console.log(true && "hello"); // "hello"
+console.log(false && "hello"); // false
+
+// OR
+console.log(x || y); // true
+console.log(false || "default"); // "default"
+console.log(true || "default"); // true
+
+// NOT
+console.log(!x); // false
+console.log(!y); // true
+console.log(!!x); // true (Boolean変換)
+
+// Nullish Coalescing (ES2020)
+const value = null;
+console.log(value ?? "default"); // "default"
+console.log(0 ?? "default"); // 0 (0はnullishではない)
+```
+
+### 条件分岐
+
+```javascript
+// if文
+const score = 85;
+
+if (score >= 90) {
+	console.log("優秀");
+} else if (score >= 70) {
+	console.log("良好");
+} else if (score >= 60) {
+	console.log("合格");
+} else {
+	console.log("不合格");
+}
+
+// 三項演算子
+const result = score >= 60 ? "合格" : "不合格";
+const grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : "D";
+
+// switch文
+const day = "月曜日";
+switch (day) {
+	case "月曜日":
+	case "火曜日":
+	case "水曜日":
+	case "木曜日":
+	case "金曜日":
+		console.log("平日");
+		break;
+	case "土曜日":
+	case "日曜日":
+		console.log("週末");
+		break;
+	default:
+		console.log("不明");
+}
+```
+
+### ループ処理
+
+```javascript
+// for文
+for (let i = 0; i < 5; i++) {
+	console.log(i); // 0, 1, 2, 3, 4
+}
+
+// for...in（オブジェクトのキーを反復）
+const obj = { a: 1, b: 2, c: 3 };
+for (const key in obj) {
+	console.log(`${key}: ${obj[key]}`);
+}
+
+// for...of（配列やイテラブルの値を反復）
+const arr = ["apple", "banana", "cherry"];
+for (const item of arr) {
+	console.log(item);
+}
+
+// while文
+let count = 0;
+while (count < 3) {
+	console.log(`カウント: ${count}`);
+	count++;
+}
+
+// do...while文
+let num = 0;
+do {
+	console.log(`数値: ${num}`);
+	num++;
+} while (num < 3);
+```
+
+## 関数
+
+### 関数の基本
+
+```javascript
+// 関数宣言
+function add(a, b) {
+	return a + b;
+}
+
+// 関数式
+const multiply = function (a, b) {
+	return a * b;
+};
+
+// アロー関数
+const divide = (a, b) => {
+	return a / b;
+};
+
+// 短縮記法
+const square = (x) => x * x;
+const greet = (name) => `Hello, ${name}!`;
+```
+
+### 高度な関数機能
+
+```javascript
+// デフォルトパラメータ
+function createUser(name, age = 18, city = "Unknown") {
+	return { name, age, city };
+}
+
+console.log(createUser("Alice")); // { name: "Alice", age: 18, city: "Unknown" }
+console.log(createUser("Bob", 25, "Tokyo")); // { name: "Bob", age: 25, city: "Tokyo" }
+
+// レストパラメータ
+function sum(...numbers) {
+	return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3, 4, 5)); // 15
+
+// 分割代入
+function processUser({ name, age, email = "not provided" }) {
+	console.log(`${name} (${age}) - ${email}`);
+}
+
+processUser({ name: "Alice", age: 30 }); // Alice (30) - not provided
+
+// 高階関数
+function createMultiplier(factor) {
+	return function (number) {
+		return number * factor;
+	};
+}
+
+const double = createMultiplier(2);
+const triple = createMultiplier(3);
+
+console.log(double(5)); // 10
+console.log(triple(5)); // 15
+```
+
+## 配列操作
+
+### 基本的な配列メソッド
+
+```javascript
+const fruits = ["apple", "banana", "cherry"];
+
+// 要素の追加・削除
+fruits.push("date"); // 末尾に追加
+fruits.unshift("apricot"); // 先頭に追加
+const lastFruit = fruits.pop(); // 末尾から削除して返す
+const firstFruit = fruits.shift(); // 先頭から削除して返す
+
+// インデックス操作
+console.log(fruits[0]); // 最初の要素
+console.log(fruits[fruits.length - 1]); // 最後の要素
+console.log(fruits.indexOf("banana")); // インデックスを取得
+console.log(fruits.includes("cherry")); // 存在確認
+
+// スライス
+const sliced = fruits.slice(1, 3); // インデックス1から3未満
+const spliced = fruits.splice(1, 2, "orange", "grape"); // 削除と挿入
+```
+
+### 関数型プログラミングメソッド
+
+```javascript
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// map - 各要素を変換
+const doubled = numbers.map((n) => n * 2);
+console.log(doubled); // [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+
+// filter - 条件に合う要素を抽出
+const evens = numbers.filter((n) => n % 2 === 0);
+console.log(evens); // [2, 4, 6, 8, 10]
+
+// reduce - 配列を単一の値に集約
+const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+console.log(sum); // 55
+
+const max = numbers.reduce((acc, curr) => Math.max(acc, curr));
+console.log(max); // 10
+
+// find - 条件に合う最初の要素
+const firstEven = numbers.find((n) => n % 2 === 0);
+console.log(firstEven); // 2
+
+// some / every - 条件チェック
+const hasEven = numbers.some((n) => n % 2 === 0); // true
+const allPositive = numbers.every((n) => n > 0); // true
+
+// forEach - 各要素で処理実行
+numbers.forEach((num, index) => {
+	console.log(`Index ${index}: ${num}`);
+});
+```
+
+### 配列の結合と分割
+
+```javascript
+// スプレッド演算子
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+const combined = [...arr1, ...arr2]; // [1, 2, 3, 4, 5, 6]
+
+// 配列のコピー
+const original = [1, 2, 3];
+const copy = [...original]; // シャローコピー
+
+// 分割代入
+const [first, second, ...rest] = [1, 2, 3, 4, 5];
+console.log(first); // 1
+console.log(second); // 2
+console.log(rest); // [3, 4, 5]
+
+// スワップ
+let a = 1,
+	b = 2;
+[a, b] = [b, a];
+console.log(a, b); // 2, 1
+```
+
+## オブジェクト操作
+
+### オブジェクトの基本操作
+
+```javascript
+const person = {
+	name: "Alice",
+	age: 30,
+	city: "Tokyo",
+};
+
+// プロパティアクセス
+console.log(person.name); // ドット記法
+console.log(person["age"]); // ブラケット記法
+
+// 動的なプロパティ名
+const key = "city";
+console.log(person[key]); // Tokyo
+
+// プロパティの追加・変更・削除
+person.email = "alice@example.com"; // 追加
+person.age = 31; // 変更
+delete person.city; // 削除
+
+// プロパティの存在確認
+console.log("name" in person); // true
+console.log(person.hasOwnProperty("name")); // true
+```
+
+### ES6+のオブジェクト機能
+
+```javascript
+const name = "Bob";
+const age = 25;
+
+// プロパティの短縮記法
+const user = { name, age }; // { name: "Bob", age: 25 }
+
+// 計算されたプロパティ名
+const dynamicKey = "userRole";
+const userWithRole = {
+	name,
+	age,
+	[dynamicKey]: "admin", // userRole: "admin"
+	[`${name}_id`]: 12345, // Bob_id: 12345
+};
+
+// メソッドの短縮記法
+const calculator = {
+	// 従来の記法
+	add: function (a, b) {
+		return a + b;
+	},
+	// 短縮記法
+	subtract(a, b) {
+		return a - b;
+	},
+	// アロー関数（thisが異なる）
+	multiply: (a, b) => a * b,
+};
+```
+
+### オブジェクトの分割代入
+
+```javascript
+const user = {
+	id: 1,
+	name: "Alice",
+	email: "alice@example.com",
+	address: {
+		city: "Tokyo",
+		country: "Japan",
+	},
+};
+
+// 基本的な分割代入
+const { name, email } = user;
+
+// エイリアス
+const { name: userName, id: userId } = user;
+
+// デフォルト値
+const { phone = "not provided" } = user;
+
+// ネストした分割代入
+const {
+	address: { city, country },
+} = user;
+
+// 関数のパラメータでの分割代入
+function displayUser({ name, email, age = "unknown" }) {
+	console.log(`${name} (${age}) - ${email}`);
+}
+
+displayUser(user); // Alice (unknown) - alice@example.com
+```
+
+### オブジェクトのコピーとマージ
+
+```javascript
+const original = { a: 1, b: 2 };
+
+// シャローコピー
+const copy1 = { ...original };
+const copy2 = Object.assign({}, original);
+
+// マージ
+const obj1 = { a: 1, b: 2 };
+const obj2 = { b: 3, c: 4 };
+const merged = { ...obj1, ...obj2 }; // { a: 1, b: 3, c: 4 }
+
+// ディープコピー（ネストしたオブジェクト）
+const nested = {
+	user: { name: "Alice" },
+	scores: [90, 85, 92],
+};
+
+// JSON経由（関数やDateオブジェクトは失われる）
+const deepCopy1 = JSON.parse(JSON.stringify(nested));
+
+// 手動でのディープコピー関数
+function deepClone(obj) {
+	if (obj === null || typeof obj !== "object") return obj;
+	if (obj instanceof Date) return new Date(obj);
+	if (obj instanceof Array) return obj.map((item) => deepClone(item));
+	if (typeof obj === "object") {
+		const cloned = {};
+		for (const key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				cloned[key] = deepClone(obj[key]);
+			}
+		}
+		return cloned;
+	}
+}
+```
+
+## 非同期処理
+
+### コールバック
+
+```javascript
+// 従来のコールバックパターン
+function fetchData(callback) {
+	setTimeout(() => {
+		const data = { id: 1, name: "Sample Data" };
+		callback(null, data); // エラー, データ
+	}, 1000);
+}
+
+fetchData((error, data) => {
+	if (error) {
+		console.error("エラー:", error);
+	} else {
+		console.log("データ:", data);
+	}
+});
+```
+
+### Promise
+
+```javascript
+// Promiseの作成
+function fetchUserData(userId) {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			if (userId > 0) {
+				resolve({ id: userId, name: `User ${userId}` });
+			} else {
+				reject(new Error("無効なユーザーID"));
+			}
+		}, 1000);
+	});
+}
+
+// Promiseの使用
+fetchUserData(1)
+	.then((user) => {
+		console.log("ユーザー:", user);
+		return fetchUserData(2); // チェーン
+	})
+	.then((user2) => {
+		console.log("ユーザー2:", user2);
+	})
+	.catch((error) => {
+		console.error("エラー:", error);
+	})
+	.finally(() => {
+		console.log("処理完了");
+	});
+
+// Promise.all（並列実行）
+Promise.all([fetchUserData(1), fetchUserData(2), fetchUserData(3)])
+	.then((users) => {
+		console.log("全ユーザー:", users);
+	})
+	.catch((error) => {
+		console.error("いずれかでエラー:", error);
+	});
+
+// Promise.race（最初に完了したもの）
+Promise.race([fetchUserData(1), fetchUserData(2)]).then((firstUser) => {
+	console.log("最初のユーザー:", firstUser);
+});
+```
+
+### async/await
+
+```javascript
+// async関数の定義
+async function getUserData(userId) {
+	try {
+		const user = await fetchUserData(userId);
+		console.log("取得したユーザー:", user);
+		return user;
+	} catch (error) {
+		console.error("ユーザー取得エラー:", error);
+		throw error;
+	}
+}
+
+// 複数の非同期処理
+async function processMultipleUsers() {
+	try {
+		// 順次実行
+		const user1 = await fetchUserData(1);
+		const user2 = await fetchUserData(2);
+
+		// 並列実行
+		const [user3, user4] = await Promise.all([
+			fetchUserData(3),
+			fetchUserData(4),
+		]);
+
+		return [user1, user2, user3, user4];
+	} catch (error) {
+		console.error("エラー:", error);
+	}
+}
+
+// トップレベルawait（ES2022, モジュール内でのみ）
+// const userData = await getUserData(1);
+```
+
+## モジュールシステム
+
+### ES Modules
+
+```javascript
+// math.js - エクスポート
+export const PI = 3.14159;
+
+export function add(a, b) {
+	return a + b;
+}
+
+export function multiply(a, b) {
+	return a * b;
+}
+
+// デフォルトエクスポート
+export default function subtract(a, b) {
+	return a - b;
+}
+
+// main.js - インポート
+import subtract, { PI, add, multiply } from "./math.js";
+import * as math from "./math.js"; // 名前空間インポート
+
+console.log(PI); // 3.14159
+console.log(add(2, 3)); // 5
+console.log(subtract(5, 2)); // 3
+console.log(math.multiply(3, 4)); // 12
+
+// 動的インポート
+async function loadModule() {
+	const mathModule = await import("./math.js");
+	console.log(mathModule.add(1, 2));
+}
+```
+
+## エラーハンドリング
+
+### try-catch文
+
+```javascript
+function riskyOperation(value) {
+	if (value < 0) {
+		throw new Error("負の値は許可されていません");
+	}
+	if (typeof value !== "number") {
+		throw new TypeError("数値である必要があります");
+	}
+	return Math.sqrt(value);
+}
+
+try {
+	const result1 = riskyOperation(16);
+	console.log("結果:", result1); // 4
+
+	const result2 = riskyOperation(-1); // エラーが発生
+	console.log("この行は実行されない");
+} catch (error) {
+	if (error instanceof TypeError) {
+		console.error("型エラー:", error.message);
+	} else {
+		console.error("一般的なエラー:", error.message);
+	}
+} finally {
+	console.log("cleanup処理"); // 必ず実行される
+}
+```
+
+### カスタムエラー
+
+```javascript
+class CustomError extends Error {
+	constructor(message, code) {
+		super(message);
+		this.name = "CustomError";
+		this.code = code;
+	}
+}
+
+class ValidationError extends Error {
+	constructor(field, value) {
+		super(`Validation failed for field: ${field}`);
+		this.name = "ValidationError";
+		this.field = field;
+		this.value = value;
+	}
+}
+
+// 使用例
+function validateUser(user) {
+	if (!user.email) {
+		throw new ValidationError("email", user.email);
+	}
+	if (user.age < 0) {
+		throw new CustomError("年齢は負の値にできません", "INVALID_AGE");
+	}
+}
+```
+
+## 実践的なパターン
+
+### 即座実行関数式（IIFE）
+
+```javascript
+// プライベートスコープの作成
+(function () {
+	const privateVariable = "外からアクセスできない";
+
+	window.MyModule = {
+		publicMethod: function () {
+			return privateVariable;
+		},
+	};
+})();
+
+// アロー関数版
+(() => {
+	const config = { apiUrl: "https://api.example.com" };
+	// 初期化処理
+})();
+```
+
+### クロージャ
+
+```javascript
+function createCounter(initialValue = 0) {
+	let count = initialValue;
+
+	return {
+		increment: () => ++count,
+		decrement: () => --count,
+		getValue: () => count,
+		reset: () => {
+			count = initialValue;
+		},
+	};
+}
+
+const counter = createCounter(10);
+console.log(counter.getValue()); // 10
+console.log(counter.increment()); // 11
+console.log(counter.decrement()); // 10
+counter.reset();
+console.log(counter.getValue()); // 10
+```
+
+### デバウンスとスロットル
+
+```javascript
+// デバウンス（連続した呼び出しを制御）
+function debounce(func, delay) {
+	let timeoutId;
+	return function (...args) {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => func.apply(this, args), delay);
+	};
+}
+
+// スロットル（一定間隔で実行）
+function throttle(func, limit) {
+	let inThrottle;
+	return function (...args) {
+		if (!inThrottle) {
+			func.apply(this, args);
+			inThrottle = true;
+			setTimeout(() => (inThrottle = false), limit);
+		}
+	};
+}
+
+// 使用例
+const debouncedSearch = debounce((query) => {
+	console.log("検索:", query);
+}, 300);
+
+const throttledScroll = throttle(() => {
+	console.log("スクロール処理");
+}, 100);
+```
+
+## まとめ
+
+この記事では、JavaScriptの基礎から実践的なパターンまでを幅広く解説しました。
+
+**重要なポイント**：
+
+1. **モダンな記法を使う**: let/const, アロー関数, テンプレートリテラル
+2. **非同期処理を理解する**: Promise, async/await
+3. **関数型プログラミングを活用**: map, filter, reduce
+4. **エラーハンドリングを適切に行う**: try-catch, カスタムエラー
+5. **モジュールシステムを活用**: ES Modules
+
+これらの基礎をしっかりと身につけることで、React、Vue.js、Node.jsなどのフレームワークやライブラリをより深く理解できるようになります。
+
+継続的な学習と実践を通じて、JavaScriptのスキルを向上させていきましょう！

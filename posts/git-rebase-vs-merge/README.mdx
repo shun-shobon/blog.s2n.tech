@@ -1,0 +1,447 @@
+---
+title: Git rebase vs merge - どちらを使うべきか完全ガイド
+tags:
+  - Git
+  - バージョン管理
+  - 開発フロー
+publishedAt: "2023-11-14"
+updatedAt: "2024-03-22"
+---
+
+## はじめに
+
+Gitでブランチをまとめる際に、`merge`と`rebase`のどちらを使うべきか迷ったことはありませんか？
+両者にはそれぞれ異なる特徴とメリット・デメリットがあり、状況に応じて使い分けることが重要です。
+今回は、rebaseとmergeの違いを理解し、適切な使い分け方法について詳しく解説していきます。
+
+## rebaseとmergeの基本概念
+
+### merge の動作
+
+```bash
+# feature ブランチを main にマージ
+git checkout main
+git merge feature
+
+# または
+git merge feature main
+```
+
+```
+Before merge:
+    A---B---C main
+         \
+          D---E feature
+
+After merge:
+    A---B---C---F main
+         \     /
+          D---E feature
+```
+
+mergeは**マージコミット**（F）を作成し、両方のブランチの歴史を保持します。
+
+### rebase の動作
+
+```bash
+# feature ブランチを main の先端にリベース
+git checkout feature
+git rebase main
+
+# その後、fast-forward merge
+git checkout main
+git merge feature
+```
+
+```
+Before rebase:
+    A---B---C main
+         \
+          D---E feature
+
+After rebase:
+    A---B---C---D'---E' main
+```
+
+rebaseは**コミットの基点を変更**し、直線的な履歴を作成します。
+
+## 各手法の詳細
+
+### Merge の種類
+
+#### Fast-Forward Merge
+
+```bash
+# main ブランチに新しいコミットがない場合
+git checkout main
+git merge feature  # Fast-forward merge が実行される
+```
+
+```
+Before:
+    A---B---C main
+             \
+              D---E feature
+
+After:
+    A---B---C---D---E main, feature
+```
+
+#### No-Fast-Forward Merge
+
+```bash
+# 明示的にマージコミットを作成
+git merge --no-ff feature
+```
+
+```
+Before:
+    A---B---C main
+             \
+              D---E feature
+
+After:
+    A---B---C-------F main
+             \     /
+              D---E feature
+```
+
+#### Three-way Merge
+
+```bash
+# main ブランチに新しいコミットがある場合
+```
+
+```
+Before:
+    A---B---C---F---G main
+         \
+          D---E feature
+
+After:
+    A---B---C---F---G---H main
+         \             /
+          D---E---------feature
+```
+
+### Rebase の種類
+
+#### 通常のRebase
+
+```bash
+git checkout feature
+git rebase main
+```
+
+#### Interactive Rebase
+
+```bash
+# 過去3つのコミットを編集
+git rebase -i HEAD~3
+```
+
+```
+pick 1234567 Add feature A
+pick 2345678 Fix typo
+pick 3456789 Add feature B
+
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discard this commit's log message
+# d, drop = remove commit
+```
+
+#### Rebase onto
+
+```bash
+# 特定のブランチを基点として rebase
+git rebase --onto main feature-base feature
+```
+
+## 実践的な使い分け
+
+### Public vs Private ブランチ
+
+#### Private ブランチ（まだpushしていない）
+
+```bash
+# ローカルでの作業中 - rebase推奨
+git checkout feature
+git rebase main
+
+# コミット履歴をきれいにする
+git rebase -i HEAD~3
+```
+
+#### Public ブランチ（既にpushしている）
+
+```bash
+# プルリクエストでの統合 - merge推奨
+git checkout main
+git merge --no-ff feature
+
+# または
+git merge feature  # GitHub/GitLabが自動でマージコミット作成
+```
+
+### チーム開発でのワークフロー
+
+#### Feature Branch Workflow
+
+```bash
+# 1. 機能ブランチを作成
+git checkout -b feature/user-authentication main
+
+# 2. 開発作業
+git add .
+git commit -m "Add login functionality"
+git add .
+git commit -m "Add logout functionality"
+
+# 3. main ブランチの最新変更を取り込む
+git checkout main
+git pull origin main
+git checkout feature/user-authentication
+git rebase main  # または git merge main
+
+# 4. プルリクエストを作成してマージ
+# GitHub/GitLab上でマージ
+```
+
+#### Git Flow
+
+```bash
+# develop ブランチから feature ブランチを作成
+git checkout -b feature/new-feature develop
+
+# 完了後、develop にマージ
+git checkout develop
+git merge --no-ff feature/new-feature
+git branch -d feature/new-feature
+```
+
+## 具体的なケーススタディ
+
+### ケース1: 個人開発でのクリーンな履歴作成
+
+```bash
+# 作業用ブランチで複数のコミット
+git checkout -b feature/refactoring
+git commit -m "WIP: start refactoring"
+git commit -m "Fix bug in function A"
+git commit -m "Fix typo"
+git commit -m "Complete refactoring"
+
+# interactive rebase でコミットをまとめる
+git rebase -i HEAD~4
+
+# pick を squash に変更してコミットをまとめる
+# pick 1234567 WIP: start refactoring
+# squash 2345678 Fix bug in function A
+# squash 3456789 Fix typo
+# squash 4567890 Complete refactoring
+
+# main ブランチにクリーンにマージ
+git checkout main
+git merge feature/refactoring
+```
+
+### ケース2: チーム開発でのコンフリクト解決
+
+```bash
+# リモートの最新変更を取得
+git fetch origin
+
+# option 1: merge を使用（履歴を保持）
+git checkout feature
+git merge origin/main
+# コンフリクトを解決
+git add .
+git commit -m "Resolve merge conflicts"
+
+# option 2: rebase を使用（履歴をリニア化）
+git checkout feature
+git rebase origin/main
+# コンフリクトを解決
+git add .
+git rebase --continue
+```
+
+### ケース3: ホットフィックス
+
+```bash
+# 緊急修正の場合
+git checkout -b hotfix/critical-bug main
+git commit -m "Fix critical security issue"
+
+# main に直接マージ（fast-forward）
+git checkout main
+git merge hotfix/critical-bug
+
+# develop にも反映
+git checkout develop
+git merge hotfix/critical-bug
+```
+
+## 高度なテクニック
+
+### Rebase の安全な実行
+
+```bash
+# バックアップブランチを作成
+git branch backup-feature-branch
+
+# rebase 実行
+git rebase main
+
+# 問題が発生した場合の復旧
+git reset --hard backup-feature-branch
+```
+
+### 部分的な Rebase
+
+```bash
+# 特定のコミット範囲のみをrebase
+git rebase --onto main feature~3 feature
+```
+
+### Cherry-pick との組み合わせ
+
+```bash
+# 特定のコミットのみを取り込む
+git cherry-pick abc1234
+
+# 複数のコミットを取り込む
+git cherry-pick abc1234..def5678
+```
+
+## トラブルシューティング
+
+### Rebase中のコンフリクト解決
+
+```bash
+# コンフリクトが発生
+git rebase main
+# CONFLICT (content): Merge conflict in file.txt
+
+# ファイルを編集してコンフリクトを解決
+# <<<<<<< HEAD
+# main ブランチの内容
+# =======
+# feature ブランチの内容
+# >>>>>>> commit_message
+
+# 解決後
+git add file.txt
+git rebase --continue
+
+# rebase を中止する場合
+git rebase --abort
+```
+
+### Merge コミットの取り消し
+
+```bash
+# 最後のマージを取り消す
+git reset --hard HEAD~1
+
+# 特定のマージコミットを取り消す
+git revert -m 1 merge_commit_hash
+```
+
+### 履歴の修正
+
+```bash
+# 最後のコミットメッセージを修正
+git commit --amend
+
+# 過去のコミットを修正
+git rebase -i HEAD~3
+# edit を指定してコミットを修正
+```
+
+## ベストプラクティス
+
+### Merge を選ぶべき場合
+
+1. **プルリクエスト/マージリクエスト**: 機能の統合履歴を明確に残したい
+2. **リリースタグ**: バージョン管理との整合性
+3. **公開ブランチ**: 他の開発者が既に作業している
+
+```bash
+# プルリクエスト用のマージ
+git checkout main
+git merge --no-ff feature/new-feature
+git tag v1.2.0
+```
+
+### Rebase を選ぶべき場合
+
+1. **個人のローカル作業**: コミット履歴をクリーンにしたい
+2. **作業の整理**: 論理的な単位でコミットをまとめたい
+3. **直線的な履歴**: プロジェクトの変更を追跡しやすくしたい
+
+```bash
+# ローカル作業の整理
+git rebase -i HEAD~5
+git rebase main
+```
+
+### 組織でのルール設定
+
+```bash
+# .gitconfig での設定
+[merge]
+    ff = false  # 常にマージコミットを作成
+
+[pull]
+    rebase = true  # git pull 時に rebase を使用
+```
+
+## GitHub/GitLab での実践
+
+### GitHub のマージオプション
+
+1. **Create a merge commit**: 常にマージコミットを作成
+2. **Squash and merge**: すべてのコミットを1つにまとめてマージ
+3. **Rebase and merge**: rebase してからfast-forward merge
+
+### プルリクエストのベストプラクティス
+
+```bash
+# プルリクエスト作成前の準備
+git checkout feature
+git rebase main  # 最新の変更を取り込む
+git push --force-with-lease origin feature  # 安全にforce push
+```
+
+## まとめ
+
+### 選択の指針
+
+| 状況               | 推奨手法              | 理由               |
+| ------------------ | --------------------- | ------------------ |
+| 個人のローカル作業 | rebase                | 履歴をクリーンに   |
+| 機能の統合         | merge --no-ff         | 機能の境界を明確に |
+| ホットフィックス   | merge（fast-forward） | 迅速な修正反映     |
+| 公開ブランチの更新 | merge                 | 履歴の改変を避ける |
+
+### 基本的なワークフロー
+
+```bash
+# 日常的な開発フロー
+git checkout -b feature/new-feature main
+# 開発作業...
+git rebase main  # ローカルで履歴を整理
+git push origin feature/new-feature
+# プルリクエスト作成
+# GitHub/GitLab上でマージ
+```
+
+Mergeとrebaseは、それぞれ異なる目的と利点があります。
+履歴の保持が重要か、クリーンな履歴が重要かを判断し、
+チームのワークフローに合わせて適切に使い分けることが大切です。
+実際のプロジェクトで両方を試してみて、最適な使い方を見つけていきましょう！

@@ -1,0 +1,272 @@
+---
+title: React Hooksの基本的な使い方をマスターしよう
+tags:
+  - React
+  - JavaScript
+  - Frontend
+publishedAt: "2023-05-15"
+updatedAt: "2024-02-10"
+---
+
+## はじめに
+
+React 16.8で導入されたHooksは、関数コンポーネントでstateや副作用を扱えるようにしてくれる画期的な機能です。
+クラスコンポーネントで書いていたロジックを、より簡潔で再利用しやすい形で記述できるようになりました。
+今回は、React Hooksの基本的な使い方について解説していきます。
+
+## useState - ステート管理の基本
+
+`useState`は最も基本的なHookで、関数コンポーネント内でstateを管理できます。
+
+```jsx
+import React, { useState } from "react";
+
+function Counter() {
+	const [count, setCount] = useState(0);
+
+	return (
+		<div>
+			<p>現在のカウント: {count}</p>
+			<button onClick={() => setCount(count + 1)}>+1</button>
+			<button onClick={() => setCount(count - 1)}>-1</button>
+		</div>
+	);
+}
+```
+
+`useState`は配列を返し、1番目の要素が現在の値、2番目の要素が値を更新する関数になります。
+
+## useEffect - 副作用の処理
+
+`useEffect`は副作用（APIコール、DOM操作、タイマーなど）を処理するためのHookです。
+
+```jsx
+import React, { useState, useEffect } from "react";
+
+function UserProfile({ userId }) {
+	const [user, setUser] = useState(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchUser = async () => {
+			setLoading(true);
+			try {
+				const response = await fetch(`/api/users/${userId}`);
+				const userData = await response.json();
+				setUser(userData);
+			} catch (error) {
+				console.error("ユーザー情報の取得に失敗しました:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchUser();
+	}, [userId]); // userIdが変更されたときのみ実行
+
+	if (loading) return <div>読み込み中...</div>;
+	if (!user) return <div>ユーザーが見つかりません</div>;
+
+	return (
+		<div>
+			<h2>{user.name}</h2>
+			<p>{user.email}</p>
+		</div>
+	);
+}
+```
+
+第2引数の依存配列に注意してください。空配列`[]`の場合はマウント時のみ実行され、値が含まれている場合はその値が変更されたときに実行されます。
+
+## useMemo - パフォーマンス最適化
+
+`useMemo`は計算コストの高い処理の結果をメモ化するHookです。
+
+```jsx
+import React, { useState, useMemo } from "react";
+
+function ExpensiveComponent({ numbers }) {
+	const [filter, setFilter] = useState("");
+
+	const filteredAndSortedNumbers = useMemo(() => {
+		console.log("計算実行"); // この計算が実行されるタイミングを確認
+		return numbers
+			.filter((num) => num.toString().includes(filter))
+			.sort((a, b) => a - b);
+	}, [numbers, filter]);
+
+	return (
+		<div>
+			<input
+				value={filter}
+				onChange={(e) => setFilter(e.target.value)}
+				placeholder="数字でフィルター"
+			/>
+			<ul>
+				{filteredAndSortedNumbers.map((num) => (
+					<li key={num}>{num}</li>
+				))}
+			</ul>
+		</div>
+	);
+}
+```
+
+## useCallback - 関数のメモ化
+
+`useCallback`は関数をメモ化して、不要な再レンダリングを防ぐHookです。
+
+```jsx
+import React, { useState, useCallback } from "react";
+
+function TodoList() {
+	const [todos, setTodos] = useState([]);
+	const [inputValue, setInputValue] = useState("");
+
+	const addTodo = useCallback(() => {
+		if (inputValue.trim()) {
+			setTodos((prev) => [
+				...prev,
+				{
+					id: Date.now(),
+					text: inputValue,
+					completed: false,
+				},
+			]);
+			setInputValue("");
+		}
+	}, [inputValue]);
+
+	const toggleTodo = useCallback((id) => {
+		setTodos((prev) =>
+			prev.map((todo) =>
+				todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+			),
+		);
+	}, []);
+
+	return (
+		<div>
+			<div>
+				<input
+					value={inputValue}
+					onChange={(e) => setInputValue(e.target.value)}
+					onKeyPress={(e) => e.key === "Enter" && addTodo()}
+				/>
+				<button onClick={addTodo}>追加</button>
+			</div>
+			<ul>
+				{todos.map((todo) => (
+					<TodoItem key={todo.id} todo={todo} onToggle={toggleTodo} />
+				))}
+			</ul>
+		</div>
+	);
+}
+
+const TodoItem = React.memo(({ todo, onToggle }) => {
+	console.log(`TodoItem ${todo.id} がレンダリングされました`);
+
+	return (
+		<li
+			style={{
+				textDecoration: todo.completed ? "line-through" : "none",
+			}}
+			onClick={() => onToggle(todo.id)}
+		>
+			{todo.text}
+		</li>
+	);
+});
+```
+
+## カスタムHook - ロジックの再利用
+
+独自のHookを作成して、ロジックを再利用できます。
+
+```jsx
+import { useState, useEffect } from "react";
+
+// カスタムHook: APIからデータを取得
+function useApi(url) {
+	const [data, setData] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				setLoading(true);
+				setError(null);
+				const response = await fetch(url);
+				if (!response.ok) {
+					throw new Error("データの取得に失敗しました");
+				}
+				const result = await response.json();
+				setData(result);
+			} catch (err) {
+				setError(err.message);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, [url]);
+
+	return { data, loading, error };
+}
+
+// 使用例
+function UserList() {
+	const { data: users, loading, error } = useApi("/api/users");
+
+	if (loading) return <div>読み込み中...</div>;
+	if (error) return <div>エラー: {error}</div>;
+
+	return (
+		<ul>
+			{users?.map((user) => (
+				<li key={user.id}>{user.name}</li>
+			))}
+		</ul>
+	);
+}
+```
+
+## Hooksのルール
+
+Hooksを使用する際は以下のルールを守る必要があります：
+
+1. **トップレベルでのみ呼び出す**: ループ、条件分岐、ネストした関数の中でHooksを呼び出してはいけません
+2. **Reactの関数内でのみ呼び出す**: 通常のJavaScript関数からHooksを呼び出してはいけません
+
+```jsx
+// ❌ 悪い例
+function BadComponent({ shouldShowCounter }) {
+	if (shouldShowCounter) {
+		const [count, setCount] = useState(0); // 条件分岐内でのHook使用
+	}
+
+	return <div>...</div>;
+}
+
+// ✅ 良い例
+function GoodComponent({ shouldShowCounter }) {
+	const [count, setCount] = useState(0); // トップレベルでのHook使用
+
+	if (!shouldShowCounter) {
+		return <div>カウンターは非表示です</div>;
+	}
+
+	return <div>カウント: {count}</div>;
+}
+```
+
+## 終わりに
+
+React Hooksを使うことで、より簡潔で再利用しやすいコンポーネントを作成できるようになります。
+最初は慣れないかもしれませんが、基本的なHooks（`useState`、`useEffect`、`useMemo`、`useCallback`）から始めて、
+徐々にカスタムHookも作成できるようになっていきましょう。
+
+Hooksの力を活用して、より良いReactアプリケーションを開発していきましょう！
