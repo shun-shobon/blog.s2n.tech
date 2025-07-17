@@ -49,8 +49,7 @@ export async function getPosts({
 }
 
 export async function getPost(id: string): Promise<Post | null> {
-	const slug = `${id}/readme`;
-	const post = await getEntry("posts", slug);
+	const post = await getEntry("posts", slugToId(id));
 
 	if (!post) {
 		return null;
@@ -74,4 +73,18 @@ export async function getTags(): Promise<string[]> {
 	const tags = Array.from(tagMap.entries()).sort((a, b) => b[1] - a[1]);
 
 	return tags.map(([tag]) => tag);
+}
+
+export function postToSlug(post: Post): string {
+	const slug = post.id.split("/")[0];
+
+	if (!slug) {
+		throw new Error("slug is not found");
+	}
+
+	return slug;
+}
+
+export function slugToId(slug: string): string {
+	return `${slug}/readme`;
 }
