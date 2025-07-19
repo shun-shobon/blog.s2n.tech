@@ -1,6 +1,7 @@
 import mdx from "@astrojs/mdx";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
+import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import rehypeKatex from "rehype-katex";
 import remarkCjkFriendly from "remark-cjk-friendly";
@@ -13,6 +14,14 @@ export default defineConfig({
 		plugins: [tailwindcss()],
 	},
 	integrations: [
+		expressiveCode({
+			themes: "material-theme-lighter",
+			styleOverrides: {
+				frames: {
+					frameBoxShadowCssValue: "none",
+				},
+			},
+		}),
 		mdx(),
 		icon({
 			include: {
