@@ -24,6 +24,8 @@
 		"@tailwindcss/vite": "4.1.11",
 		"astro": "5.11.2",
 		"astro-icon": "1.1.5",
+		"rehype-katex": "7.0.1",
+		"remark-math": "6.0.0",
 		"tailwindcss": "4.1.11"
 	},
 	"devDependencies": {
@@ -31,6 +33,7 @@
 		"@shun-shobon/style-guide": "1.0.1",
 		"eslint": "9.31.0",
 		"prettier": "3.6.2",
+		"sharp": "0.34.3",
 		"typescript": "5.8.3"
 	}
 }
