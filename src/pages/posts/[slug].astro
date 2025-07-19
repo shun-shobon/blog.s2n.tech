@@ -81,16 +81,19 @@ const latestPosts = posts
 					]}
 				>
 					<Content />
-					<hr />
-					<h2>書いた人</h2>
-					<div class="not-markdown flex items-center gap-4">
+				</div>
+				<div
+					class="border-border-primary bg-background-primary grid gap-4 rounded-2xl border p-4 shadow-lg sm:px-8 sm:py-6"
+				>
+					<p class="sr-only">書いた人</p>
+					<div class="flex items-center gap-4">
 						<a href="https://s2n.tech/" target="_blank">
 							<Image
 								src={MyIcon}
 								alt=""
-								widths={[64, 128]}
-								sizes="64px"
-								class="border-border-primary size-16 rounded-full border"
+								widths={[80, 160]}
+								sizes="80px"
+								class="border-border-primary size-20 rounded-full border"
 							/>
 						</a>
 						<div class="flex flex-col gap-2">
@@ -130,7 +133,7 @@ const latestPosts = posts
 				<div
 					class="border-border-primary bg-background-primary grid gap-4 rounded-2xl border p-4 shadow-lg sm:px-8 sm:py-6"
 				>
-					<div class="text-lg font-bold">最新記事</div>
+					<div class="text-xl font-bold">最新記事</div>
 					<div>
 						{latestPosts.map((post) => <PostItem post={post} />)}
 					</div>
