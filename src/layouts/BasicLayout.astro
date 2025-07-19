@@ -20,11 +20,11 @@ const { title, class: className } = Astro.props;
 		className,
 	]}
 >
-	<div class="sticky top-0 isolate flex justify-center p-4 sm:p-8">
+	<div class="sticky top-0 isolate z-30 flex justify-center p-4 sm:p-8">
 		<Header />
 	</div>
 
-	<main class="min-h-full">
+	<main class="isolate min-h-full">
 		<slot />
 	</main>
 
