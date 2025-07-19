@@ -1,5 +1,6 @@
 ---
 import PostItem from "@/components/PostItem.astro";
+import Title from "@/components/Title.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
 import { getPosts } from "@/libs/posts";
 
@@ -11,7 +12,7 @@ const { posts } = await getPosts({
 <BasicLayout title="記事一覧">
 	<div class="px-4 pb-4 sm:px-8 sm:pb-8">
 		<div class="mx-auto grid w-full max-w-4xl gap-4 sm:gap-8">
-			<h1 class="text-center text-2xl font-bold sm:text-4xl">記事一覧</h1>
+			<Title>記事一覧</Title>
 			<div
 				class="rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg sm:px-8 sm:py-6"
 			>

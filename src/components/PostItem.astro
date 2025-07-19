@@ -17,7 +17,7 @@ const intl = new Intl.DateTimeFormat("ja-JP");
 <article
 	class="grid gap-1 border-b border-border-primary py-4 first:pt-0 last:border-b-0 last:pb-0"
 >
-	<h2 class="text-lg leading-tight font-bold">
+	<h2 class="text-lg leading-tight font-bold kerning-on">
 		<a href={url}>{post.data.title}</a>
 	</h2>
 	{
@@ -32,7 +32,7 @@ const intl = new Intl.DateTimeFormat("ja-JP");
 			<span class="text-xs text-text-secondary">未公開</span>
 		)
 	}
-	<div class="flex flex-wrap items-center gap-2">
+	<div class="flex flex-wrap items-center gap-2 pt-1">
 		{post.data.tags.map((tag) => <Tag tag={tag} />)}
 	</div>
 </article>

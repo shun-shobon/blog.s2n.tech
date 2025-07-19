@@ -32,6 +32,10 @@
 	}
 }
 
+@utility kerning-on {
+  font-feature-settings: "palt" 1;
+}
+
 @utility markdown {
 	@apply wrap-anywhere;
 	line-break: strict;
@@ -122,8 +126,7 @@
 
 	/* 見出し */
 	:where(h1, h2, h3, h4, h5, h6):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
-		@apply text-pretty text-text-heading;
-		font-feature-settings: "palt" 1;
+		@apply text-pretty text-text-heading kerning-on;
 	}
 	:where(h1, h2, h3, h4):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
 		@apply font-bold py-0.5 border-b border-l-8 border-border-secondary pl-2;

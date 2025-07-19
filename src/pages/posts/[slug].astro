@@ -6,6 +6,7 @@ import { Icon } from "astro-icon/components";
 import MyIcon from "@/assets/my-icon.png";
 import PostItem from "@/components/PostItem.astro";
 import Tag from "@/components/Tag.astro";
+import Title from "@/components/Title.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
 import { getPost, getPosts, postToSlug } from "@/libs/posts";
 
@@ -41,10 +42,8 @@ const latestPosts = posts
 <BasicLayout title={post.data.title}>
 	<div class="px-4 pb-4 sm:px-8 sm:pb-8">
 		<div class="mx-auto grid w-full max-w-4xl justify-center gap-2 sm:gap-4">
-			<h1 class="text-text-heading text-center text-2xl font-bold sm:text-4xl">
-				{post.data.title}
-			</h1>
-			<div class="text-text-secondary text-center text-sm">
+			<Title>{post.data.title}</Title>
+			<div class="text-center text-sm text-text-secondary">
 				{
 					post.data.publishedAt ? (
 						<>
@@ -77,13 +76,13 @@ const latestPosts = posts
 			<div class="grid w-full max-w-4xl gap-4 sm:gap-8">
 				<div
 					class:list={[
-						"markdown border-border-primary bg-background-primary prose-neutral max-w-none min-w-0 rounded-2xl border p-4 shadow-lg sm:px-8 sm:py-6",
+						"markdown max-w-none min-w-0 rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg prose-neutral sm:px-8 sm:py-6",
 					]}
 				>
 					<Content />
 				</div>
 				<div
-					class="border-border-primary bg-background-primary grid gap-4 rounded-2xl border p-4 shadow-lg sm:px-8 sm:py-6"
+					class="grid gap-4 rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg sm:px-8 sm:py-6"
 				>
 					<p class="sr-only">書いた人</p>
 					<div class="flex items-center gap-4">
@@ -93,7 +92,7 @@ const latestPosts = posts
 								alt=""
 								widths={[80, 160]}
 								sizes="80px"
-								class="border-border-primary size-20 rounded-full border"
+								class="size-20 rounded-full border border-border-primary"
 							/>
 						</a>
 						<div class="flex flex-col gap-2">
@@ -111,7 +110,7 @@ const latestPosts = posts
 								<a
 									href="https://github.com/shun-shobon"
 									target="_blank"
-									class="text-text-secondary hover:text-text-primary transition-colors"
+									class="text-text-secondary transition-colors hover:text-text-primary"
 								>
 									<Icon
 										name="simple-icons:github"
@@ -122,7 +121,7 @@ const latestPosts = posts
 								<a
 									href="https://x.com/shun_shobon"
 									target="_blank"
-									class="text-text-secondary hover:text-text-primary transition-colors"
+									class="text-text-secondary transition-colors hover:text-text-primary"
 								>
 									<Icon name="simple-icons:x" class="size-5" title="X" />
 								</a>
@@ -131,18 +130,18 @@ const latestPosts = posts
 					</div>
 				</div>
 				<div
-					class="border-border-primary bg-background-primary grid gap-4 rounded-2xl border p-4 shadow-lg sm:px-8 sm:py-6"
+					class="grid gap-4 rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg sm:px-8 sm:py-6"
 				>
-					<div class="text-xl font-bold">最新記事</div>
+					<div class="text-xl font-bold kerning-on">最新記事</div>
 					<div>
 						{latestPosts.map((post) => <PostItem post={post} />)}
 					</div>
 				</div>
 			</div>
 			<div
-				class="border-border-primary bg-background-primary sticky top-8 hidden max-h-[calc(100dvh-var(--spacing)*16)] w-full max-w-xs gap-2 overflow-y-auto rounded-2xl border p-4 shadow-lg xl:grid"
+				class="sticky top-8 hidden max-h-[calc(100dvh-var(--spacing)*16)] w-full max-w-xs gap-2 overflow-y-auto rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg xl:grid"
 			>
-				<div class="text-lg font-bold">目次</div>
+				<div class="text-lg font-bold kerning-on">目次</div>
 				<ul class="list-disc pl-4">
 					{
 						headings
@@ -151,7 +150,7 @@ const latestPosts = posts
 								<li>
 									<a
 										href={`#${heading.slug}`}
-										class="text-text-secondary hover:text-text-primary block py-0.5 transition-colors"
+										class="block py-0.5 text-text-secondary transition-colors hover:text-text-primary"
 									>
 										{heading.text}
 									</a>
