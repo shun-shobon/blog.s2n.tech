@@ -3,6 +3,9 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
 import icon from "astro-icon";
 import rehypeKatex from "rehype-katex";
+import remarkCjkFriendly from "remark-cjk-friendly";
+import remarkGfmStrikethroughCjkFriendly from "remark-cjk-friendly-gfm-strikethrough";
+import remarkJoinCjkLines from "remark-join-cjk-lines";
 import remarkMath from "remark-math";
 
 export default defineConfig({
@@ -23,8 +26,15 @@ export default defineConfig({
 		},
 		remarkRehype: {
 			footnoteLabel: "注釈",
+			footnoteBackLabel: "戻る",
+			footnoteBackContent: "↩\u{FE0E}",
 		},
-		remarkPlugins: [remarkMath],
+		remarkPlugins: [
+			remarkMath,
+			remarkJoinCjkLines,
+			remarkCjkFriendly,
+			remarkGfmStrikethroughCjkFriendly,
+		],
 		rehypePlugins: [[rehypeKatex, { strict: false, output: "mathml" }]],
 	},
 	experimental: {

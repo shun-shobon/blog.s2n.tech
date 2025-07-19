@@ -25,6 +25,9 @@
 		"astro": "5.11.2",
 		"astro-icon": "1.1.5",
 		"rehype-katex": "7.0.1",
+		"remark-cjk-friendly": "1.2.0",
+		"remark-cjk-friendly-gfm-strikethrough": "1.2.0",
+		"remark-join-cjk-lines": "1.0.13",
 		"remark-math": "6.0.0",
 		"tailwindcss": "4.1.11"
 	},
