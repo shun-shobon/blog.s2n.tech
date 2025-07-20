@@ -8,7 +8,7 @@ tags:
 publishedAt: "2024-12-12"
 ---
 
-import { Aside, Details } from "@/components/posts";
+import { Aside, Details, LinkCard } from "@/components/posts";
 
 このページは、Markdown（GitHub Flavored Markdown）の各記法の表示テストを目的として作成されました。
 
@@ -287,6 +287,22 @@ Markdownの特殊文字をエスケープ：
 <Details summary="open属性を使用することで、初期状態で展開された状態にできます。" open>
   <Aside>
     MDXコンポーネントをネストすることもできます。
+  </Aside>
+</Details>
+
+### リンクカード
+
+<LinkCard href="https://qiita.com/Qiita/items/c686397e4a0f4f11683d" />
+
+<LinkCard href="https://zenn.dev/zenn/articles/markdown-guide" />
+
+<LinkCard href="https://example.com" />
+
+<LinkCard href="https://verylongurlverylongurlverylongurlverylongurlverylongurlverylongurlverylongurlverylongurlverylongurlverylongurlverylongurlverylongurlverylongurlverylongurlverylongurl.example.com" />
+
+<Details summary="ネストのテスト" open>
+  <Aside>
+    <LinkCard href="https://qiita.com/Qiita/items/c686397e4a0f4f11683d" />
   </Aside>
 </Details>
 

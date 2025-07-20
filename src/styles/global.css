@@ -136,7 +136,7 @@
 
 	/* details */
 	:where(details):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
-		@apply my-4 border border-border-secondary rounded-lg overflow-hidden;
+		@apply my-4 border border-border-secondary rounded-lg overflow-hidden bg-background-primary;
 
 		summary {
 			@apply cursor-pointer px-4 py-2 transition-colors;

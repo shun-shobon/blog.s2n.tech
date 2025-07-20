@@ -26,6 +26,7 @@
 		"astro": "5.11.2",
 		"astro-expressive-code": "0.41.3",
 		"astro-icon": "1.1.5",
+		"open-graph-scraper": "6.10.0",
 		"rehype-katex": "7.0.1",
 		"remark-cjk-friendly": "1.2.0",
 		"remark-cjk-friendly-gfm-strikethrough": "1.2.0",
