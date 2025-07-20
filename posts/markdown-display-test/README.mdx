@@ -8,7 +8,7 @@ tags:
 publishedAt: "2024-12-12"
 ---
 
-import { Aside } from "@/components/posts";
+import { Aside, Details } from "@/components/posts";
 
 このページは、Markdown（GitHub Flavored Markdown）の各記法の表示テストを目的として作成されました。
 
@@ -164,23 +164,6 @@ ls -la
 
 ___
 
-## HTML要素（HTML Elements）
-
-<details>
-<summary>クリックして展開</summary>
-
-この部分は折りたたまれています。HTMLの`details`要素を使用しています。
-
-```javascript
-console.log('HTMLとMarkdownの組み合わせ');
-```
-
-</details>
-
-<kbd>Ctrl</kbd> + <kbd>C</kbd> でコピー
-
-<mark>ハイライトされたテキスト</mark>
-
 ## エスケープ文字（Escape Characters）
 
 Markdownの特殊文字をエスケープ：
@@ -283,6 +266,29 @@ Markdownの特殊文字をエスケープ：
 <Aside type="info" title="title属性を使用することによって、上に表示されるタイトルも変更できます。">
   これはインフォーメーションです。
 </Aside>
+
+### 折りたたみ
+
+<Details summary="クリックして展開">
+  これは折りたたみです。
+
+  折りたたみ内には、Markdownの記法がそのまま使用できます。
+  もちろん、コードブロックなども使用可能です。
+
+  ```javascript title="test.js"
+  function test() {
+    console.log('test');
+  }
+
+  test();
+  ```
+</Details>
+
+<Details summary="open属性を使用することで、初期状態で展開された状態にできます。" open>
+  <Aside>
+    MDXコンポーネントをネストすることもできます。
+  </Aside>
+</Details>
 
 ## まとめ
 

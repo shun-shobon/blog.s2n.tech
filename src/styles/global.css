@@ -134,6 +134,26 @@
 		@apply pb-0;
 	}
 
+	/* details */
+	:where(details):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply my-4 border border-border-secondary rounded-lg overflow-hidden;
+
+		summary {
+			@apply cursor-pointer px-4 py-2 transition-colors;
+		}
+		&:open summary {
+			@apply bg-background-secondary;
+		}
+
+		&::details-content {
+			@apply duration-300 overflow-clip transition-discrete;
+			transition-property: content-visibility, block-size;
+		}
+		&:not(:open)::details-content {
+			block-size: 0;
+		}
+	}
+
 	/* 見出し */
 	:where(h1, h2, h3, h4, h5, h6):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
 		@apply text-pretty text-text-heading kerning-on;
