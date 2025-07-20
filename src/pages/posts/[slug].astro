@@ -37,10 +37,20 @@ const { posts } = await getPosts({ draft: true });
 const latestPosts = posts
 	.filter((latestPost) => latestPost.id !== post.id)
 	.slice(0, 3);
+
+// 最終更新日から1年以上古い場合は、年数を表示する(更新がない場合は公開日)
+const lastUpdatedAt = post.data.updatedAt ?? post.data.publishedAt;
+const yearsSinceUpdatedAt =
+	lastUpdatedAt != null
+		? Math.floor(
+				(Date.now() - new Date(lastUpdatedAt).getTime()) /
+					(1000 * 60 * 60 * 24 * 365),
+			)
+		: null;
 ---
 
 <BasicLayout title={post.data.title}>
-	<div class="px-4 pb-4 sm:px-8 sm:pb-8">
+	<article class="px-4 pb-4 sm:px-8 sm:pb-8">
 		<div class="mx-auto grid w-full max-w-4xl justify-center gap-2 sm:gap-4">
 			<Title>{post.data.title}</Title>
 			<div class="text-center text-sm text-text-secondary">
@@ -79,6 +89,17 @@ const latestPosts = posts
 						"markdown max-w-none min-w-0 rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg prose-neutral sm:px-8 sm:py-6",
 					]}
 				>
+					{
+						yearsSinceUpdatedAt != null && yearsSinceUpdatedAt > 0 && (
+							<aside class="not-markdown my-4 flex items-center gap-1 rounded-lg border border-warn-border bg-warn-background px-2 py-2 font-bold text-warn-text sm:px-4">
+								<Icon name="lucide:triangle-alert" class="size-4 shrink-0" />
+								<p>
+									この記事は最終更新日から{yearsSinceUpdatedAt}
+									年以上が経過しています。
+								</p>
+							</aside>
+						)
+					}
 					<Content />
 				</div>
 				<div
@@ -160,5 +181,5 @@ const latestPosts = posts
 				</ul>
 			</div>
 		</div>
-	</div>
+	</article>
 </BasicLayout>
