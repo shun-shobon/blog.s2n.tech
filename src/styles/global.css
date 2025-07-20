@@ -141,7 +141,7 @@
 		summary {
 			@apply cursor-pointer px-4 py-2 transition-colors;
 		}
-		&:open summary {
+		&[open] summary {
 			@apply bg-background-secondary;
 		}
 
@@ -149,7 +149,7 @@
 			@apply duration-300 overflow-clip transition-discrete;
 			transition-property: content-visibility, block-size;
 		}
-		&:not(:open)::details-content {
+		&:not([open])::details-content {
 			block-size: 0;
 		}
 	}
