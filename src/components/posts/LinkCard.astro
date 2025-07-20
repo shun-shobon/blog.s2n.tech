@@ -16,14 +16,16 @@ try {
 	const { result } = await ogs({ url: href });
 	ogResult = result;
 } catch {
-	/* noop */
+	// noop
 }
 
 const title = ogResult?.ogTitle ?? url.hostname;
 const description = ogResult?.ogDescription ?? ogResult?.dcDescription;
-const favicon =
-	ogResult?.favicon ??
-	`https://www.google.com/s2/favicons?domain=${url.hostname}`;
+const favicon = ogResult?.favicon
+	? ogResult.favicon.startsWith("http")
+		? ogResult.favicon
+		: new URL(ogResult.favicon, url.origin).href
+	: `https://www.google.com/s2/favicons?domain=${url.hostname}`;
 const image = ogResult?.ogImage?.[0]?.url;
 const imageAspectRatio =
 	ogResult?.twitterCard === "summary_large_image" ? "md:aspect-[40/21]" : "";
@@ -44,20 +46,33 @@ const imageAspectRatio =
 			)
 		}
 		<span class="flex min-w-0 items-center gap-1 text-xs text-text-secondary"
-			><img src={favicon} alt="" class="size-4 shrink-0" decoding="async" loading="lazy" /><span
-				class="overflow-hidden text-nowrap text-ellipsis">{url.hostname}</span
+			><img
+				src={favicon}
+				alt=""
+				class="size-4 shrink-0"
+				decoding="async"
+				loading="lazy"
+			/><span class="overflow-hidden text-nowrap text-ellipsis"
+				>{url.hostname}</span
 			></span
 		>
 	</div>
-	<div class:list={["aspect-square h-full w-auto shrink-0 border-l border-border-secondary bg-background-tertiary", image ? imageAspectRatio : "md:aspect-[40/21]"]}>
-		{image && (
-			<img
-				src={image}
-				alt=""
-				decoding="async"
-				loading="lazy"
-				class:list={["size-full object-cover", imageAspectRatio]}
-			/>
-		)}
+	<div
+		class:list={[
+			"aspect-square h-full w-auto shrink-0 border-l border-border-secondary bg-background-tertiary",
+			image ? imageAspectRatio : "md:aspect-[40/21]",
+		]}
+	>
+		{
+			image && (
+				<img
+					src={image}
+					alt=""
+					decoding="async"
+					loading="lazy"
+					class:list={["size-full object-cover", imageAspectRatio]}
+				/>
+			)
+		}
 	</div>
 </a>
