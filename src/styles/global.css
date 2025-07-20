@@ -76,7 +76,7 @@
 		@apply text-text-secondary border-l-4 border-border-secondary pl-4 my-4;
 	}
 	:where(.expressive-code):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
-		@apply my-4 border border-border-primary rounded-lg;
+		@apply my-4 border border-border-secondary rounded-lg;
 	}
 	:where(hr):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
 		@apply border-t border-border-secondary my-8;
