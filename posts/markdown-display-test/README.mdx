@@ -8,6 +8,8 @@ tags:
 publishedAt: "2024-12-12"
 ---
 
+import { Aside } from "@/components/posts";
+
 このページは、Markdown（GitHub Flavored Markdown）の各記法の表示テストを目的として作成されました。
 
 ## 見出し2（H2）
@@ -201,9 +203,9 @@ Markdownの特殊文字をエスケープ：
 インライン数式： $E = mc^2$
 
 ブロック数式：
-$$
+```math
 \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
-$$
+```
 
 ### 脚注（Footnotes）
 
@@ -253,6 +255,34 @@ $$
 >    const test = 'validation';
 >    ```
 > 3. エラーハンドリングも忘れずに
+
+## MDXコンポーネント
+
+### 補足情報
+
+<Aside>
+  これはインフォーメーションです。
+
+  もちろん複数行のテキストも表示できますし、*斜体*や**太字**や`コード`も使用できます。
+
+  あまり一般的ではないですが、コードブロックも使用できます。
+
+  ```javascript
+  const test = 'validation';
+  ```
+</Aside>
+
+<Aside type="warn">
+  これは注意です。
+</Aside>
+
+<Aside type="alert">
+  これは危険です。
+</Aside>
+
+<Aside type="info" title="title属性を使用することによって、上に表示されるタイトルも変更できます。">
+  これはインフォーメーションです。
+</Aside>
 
 ## まとめ
 

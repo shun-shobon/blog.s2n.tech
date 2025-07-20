@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"@astrojs/mdx": "4.3.0",
+		"@iconify-json/lucide": "1.2.57",
 		"@iconify-json/simple-icons": "1.2.43",
 		"@tailwindcss/typography": "0.5.16",
 		"@tailwindcss/vite": "4.1.11",

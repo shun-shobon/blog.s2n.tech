@@ -26,6 +26,7 @@ export default defineConfig({
 		icon({
 			include: {
 				"simple-icons": ["github", "x"],
+				"lucide": ["info", "triangle-alert", "octagon-x"],
 			},
 		}),
 	],

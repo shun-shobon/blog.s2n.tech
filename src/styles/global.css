@@ -12,6 +12,16 @@
 	--color-border-primary: var(--color-neutral-100);
 	--color-border-secondary: var(--color-neutral-200);
 
+	--color-info-text: var(--color-lime-900);
+	--color-info-background: var(--color-lime-100);
+	--color-info-border: var(--color-lime-200);
+	--color-warn-text: var(--color-amber-900);
+	--color-warn-background: var(--color-amber-100);
+	--color-warn-border: var(--color-amber-200);
+	--color-alert-text: var(--color-red-900);
+	--color-alert-background: var(--color-red-100);
+	--color-alert-border: var(--color-red-200);
+
 	--font-cursive: var(--font-family-caveat), cursive, sans-serif;
 
 	--leading-*: initial;
