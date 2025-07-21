@@ -68,6 +68,14 @@
 	font-feature-settings: "palt" 1;
 }
 
+@utility autospace-on {
+	text-autospace: normal;
+}
+
+@utility interpolate-keywords {
+	interpolate-size: allow-keywords;
+}
+
 @utility markdown {
 	@apply wrap-anywhere;
 	line-break: strict;
