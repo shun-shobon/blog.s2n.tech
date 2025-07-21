@@ -1,4 +1,5 @@
 import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
 import expressiveCode from "astro-expressive-code";
@@ -30,6 +31,7 @@ export default defineConfig({
 				"lucide": ["info", "triangle-alert", "octagon-x"],
 			},
 		}),
+		sitemap(),
 	],
 	markdown: {
 		shikiConfig: {
