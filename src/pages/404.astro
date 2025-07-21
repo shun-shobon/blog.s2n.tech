@@ -1,0 +1,33 @@
+---
+import PostItem from "@/components/PostItem.astro";
+import Title from "@/components/Title.astro";
+import BasicLayout from "@/layouts/BasicLayout.astro";
+import { getPosts } from "@/libs/posts";
+
+const { posts } = await getPosts({ draft: import.meta.env.DEV });
+const latestPosts = posts.slice(0, 5);
+---
+
+<BasicLayout title="404 Not Found">
+	<div class="px-4 pb-4 sm:px-8 sm:pb-8">
+		<div class="mx-auto grid w-full max-w-4xl gap-4 sm:gap-8">
+			<Title>404 Not Found</Title>
+			<div class="markdown">
+				<p class="text-center">
+					お探しのページは見つかりませんでした。
+					<a href="/">トップページ</a>
+					に戻ってください。
+				</p>
+			</div>
+
+			<div
+				class="grid gap-4 rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg sm:px-8 sm:py-6"
+			>
+				<div class="text-xl font-bold kerning-on">最新記事</div>
+				<div>
+					{latestPosts.map((post) => <PostItem post={post} />)}
+				</div>
+			</div>
+		</div>
+	</div>
+</BasicLayout>
