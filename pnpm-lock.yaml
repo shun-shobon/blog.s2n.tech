@@ -21,8 +21,8 @@ importers:
         specifier: 1.2.44
         version: 1.2.44
       '@resvg/resvg-wasm':
-        specifier: 2.4.1
-        version: 2.4.1
+        specifier: 2.6.2
+        version: 2.6.2
       '@tailwindcss/typography':
         specifier: 0.5.16
         version: 0.5.16(tailwindcss@4.1.11)
@@ -975,8 +975,8 @@ packages:
   '@poppinss/exception@1.2.2':
     resolution: {integrity: sha512-m7bpKCD4QMlFCjA/nKTs23fuvoVFoA83brRKmObCUNmi/9tVu8Ve3w4YQAnJu4q3Tjf5fr685HYIC/IA2zHRSg==}
 
-  '@resvg/resvg-wasm@2.4.1':
-    resolution: {integrity: sha512-yi6R0HyHtsoWTRA06Col4WoDs7SvlXU3DLMNP2bdAgs7HK18dTEVl1weXgxRzi8gwLteGUbIg29zulxIB3GSdg==}
+  '@resvg/resvg-wasm@2.6.2':
+    resolution: {integrity: sha512-FqALmHI8D4o6lk/LRWDnhw95z5eO+eAa6ORjVg09YRR7BkcM6oPHU9uyC0gtQG5vpFLvgpeU4+zEAz2H8APHNw==}
     engines: {node: '>= 10'}
 
   '@rollup/pluginutils@5.2.0':
@@ -5584,7 +5584,7 @@ snapshots:
 
   '@poppinss/exception@1.2.2': {}
 
-  '@resvg/resvg-wasm@2.4.1': {}
+  '@resvg/resvg-wasm@2.6.2': {}
 
   '@rollup/pluginutils@5.2.0(rollup@4.45.1)':
     dependencies:
