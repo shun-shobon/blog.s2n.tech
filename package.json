@@ -6,7 +6,7 @@
 	"author": "NISHIZAWA Shuntaro <me@s2n.tech>",
 	"license": "UNLICENSED",
 	"private": true,
-	"packageManager": "pnpm@10.12.1",
+	"packageManager": "pnpm@10.13.1",
 	"scripts": {
 		"build": "astro build",
 		"dev": "astro dev",
