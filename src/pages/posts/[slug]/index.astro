@@ -5,6 +5,7 @@ import { Icon } from "astro-icon/components";
 import { joinURL } from "ufo";
 
 import MyIcon from "@/assets/my-icon.png";
+import Img from "@/components/Img.astro";
 import PostItem from "@/components/PostItem.astro";
 import Tag from "@/components/Tag.astro";
 import Title from "@/components/Title.astro";
@@ -106,7 +107,7 @@ const yearsSinceUpdatedAt =
 							</aside>
 						)
 					}
-					<Content />
+					<Content components={{ img: Img }} />
 				</div>
 				<div
 					class="grid gap-4 rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg sm:px-8 sm:py-6"
