@@ -22,6 +22,9 @@ const COLOR_TEXT_HEADING = "#0a0a0a";
 const FONT_CAVEAT = "Caveat";
 const FONT_NOTO_SANS_JP = "Noto Sans JP";
 
+const fontNotoSansJP = await fs.readFile("./src/assets/NotoSansJP-Bold.ttf");
+const fontCaveat = await fs.readFile("./src/assets/Caveat-Bold.ttf");
+
 // ZWJ: Zero Width Joiner
 const ZWJ = String.fromCodePoint(0x20_0d);
 // EPVS: VARIATION SELECTOR-16
@@ -145,6 +148,7 @@ function OGImage({ title, tags }: Props): ReactNode {
 						}}
 					>
 						<img
+							alt=""
 							src={MyIcon}
 							style={{
 								width: "80px",
@@ -199,14 +203,7 @@ async function loadEmoji(segment: string): Promise<string> {
 	const res = await fetch(url);
 	const base64 = await res
 		.arrayBuffer()
-		.then((b) =>
-			btoa(
-				new Uint8Array(b).reduce(
-					(acc, byte) => acc + String.fromCodePoint(byte),
-					"",
-				),
-			),
-		);
+		.then((buf) => Buffer.from(buf).toString("base64"));
 
 	return `data:image/svg+xml;base64,${base64}`;
 }
@@ -215,11 +212,6 @@ export async function generateImage({
 	title,
 	tags,
 }: Props): Promise<Uint8Array> {
-	const [fontNotoSansJP, fontCaveat] = await Promise.all([
-		fs.readFile("./src/assets/NotoSansJP-Bold.ttf"),
-		fs.readFile("./src/assets/Caveat-Bold.ttf"),
-	]);
-
 	const svg = await satori(<OGImage title={title} tags={tags} />, {
 		width: WIDTH,
 		height: HEIGHT,
