@@ -35,15 +35,15 @@ pnpm dev
 
 ### よく使うスクリプト
 
-| コマンド | 説明 |
-| -------- | ---- |
-| `pnpm dev` | ローカル開発サーバーを起動 |
-| `pnpm build` | 本番用静的アセットを `dist/` に出力 |
-| `pnpm preview` | Wrangler を用いてローカルで Cloudflare Workers としてプレビュー |
-| `pnpm lint` | ESLint による静的解析 |
-| `pnpm lint:fix` | ESLint の自動修正 |
-| `pnpm format` | Prettier によるフォーマット |
-| `pnpm typecheck` | TypeScript 型チェック |
+| コマンド         | 説明                                                            |
+| ---------------- | --------------------------------------------------------------- |
+| `pnpm dev`       | ローカル開発サーバーを起動                                      |
+| `pnpm build`     | 本番用静的アセットを `dist/` に出力                             |
+| `pnpm preview`   | Wrangler を用いてローカルで Cloudflare Workers としてプレビュー |
+| `pnpm lint`      | ESLint による静的解析                                           |
+| `pnpm lint:fix`  | ESLint の自動修正                                               |
+| `pnpm format`    | Prettier によるフォーマット                                     |
+| `pnpm typecheck` | TypeScript 型チェック                                           |
 
 ## ビルド
 
