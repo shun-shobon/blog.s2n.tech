@@ -22,7 +22,7 @@
 		"@astrojs/mdx": "4.3.0",
 		"@astrojs/sitemap": "3.4.1",
 		"@iconify-json/lucide": "1.2.57",
-		"@iconify-json/simple-icons": "1.2.43",
+		"@iconify-json/simple-icons": "1.2.44",
 		"@resvg/resvg-wasm": "2.4.1",
 		"@tailwindcss/typography": "0.5.16",
 		"@tailwindcss/vite": "4.1.11",
