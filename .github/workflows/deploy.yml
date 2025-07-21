@@ -1,0 +1,109 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      success: ${{ steps.deploy-preview.outputs.command-stderr == '' }}
+      version_tag: ${{ steps.get-version.outputs.version }}
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup | Node.js
+        uses: ./.github/actions/setup-node
+
+      - name: Setup | Post comment
+        if: github.event_name == 'pull_request'
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --edit-last --create-if-none --body-file - <<EOF
+          ### <span aria-hidden="true">🚧</span> Deploy Preview building...
+
+          |  Name | Link |
+          |---------------------------------|------------------------|
+          |<span aria-hidden="true">🔨</span> Latest commit | ${{ github.sha }} |
+          |<span aria-hidden="true">🔍</span> Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
+          ---
+          EOF
+
+      - name: Setup | Get version
+        id: get-version
+        run: |
+          version="$(git rev-parse --short ${{ github.sha }})"
+          echo "version=${version}" >> $GITHUB_OUTPUT
+
+      - name: Setup | Generate types
+        run: pnpm run sync
+
+      - name: Run | Build
+        run: pnpm run build
+
+      - name: Run | Deploy
+        uses: cloudflare/wrangler-action@da0e0dfe58b7a431659754fdf3f186c529afbe65 # v3.14.1
+        id: deploy-preview
+        with:
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: >-
+            versions
+            upload
+            --tag '${{ steps.get-version.outputs.version }}'
+            --message '${{ github.event_name == 'pull_request' && format('Preview deployment for PR #{0}', github.event.pull_request.number) || 'Release deployment' }}'
+
+      - name: Finish | Post comment
+        if: github.event_name == 'pull_request'
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --edit-last --create-if-none --body-file - <<EOF
+          ### <span aria-hidden="true">✅</span> Deploy Preview ready!
+
+          |  Name | Link |
+          |---------------------------------|------------------------|
+          |<span aria-hidden="true">🔨</span> Latest commit | ${{ github.sha }} |
+          |<span aria-hidden="true">🔍</span> Latest deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
+          |<span aria-hidden="true">🌐</span> Preview link | [${{ steps.deploy-preview.outputs.deployment-url }}](${{ steps.deploy-preview.outputs.deployment-url }}) |
+          ---
+          EOF
+
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: deploy
+    if: needs.deploy.outputs.success == true && github.event_name == 'push'
+    environment:
+      name: Production
+      url: ${{ steps.publish.outputs.deployment-url }}
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup | Node.js
+        uses: ./.github/actions/setup-node
+
+      - name: Setup | Get version ID
+        id: get-version-id
+        run: |
+          version_id="$(pnpm wrangler versions list --json | jq -r '.[] | select(.annotations."workers/tag" == "${{ needs.deploy.outputs.version_tag }}") | .id')"
+          echo "version_id=${version_id}" >> $GITHUB_OUTPUT
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Run | Publish
+        uses: cloudflare/wrangler-action@da0e0dfe58b7a431659754fdf3f186c529afbe65 # v3.14.1
+        id: publish
+        with:
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: versions deploy ${{ steps.get-version-id.outputs.version_id }} -y
