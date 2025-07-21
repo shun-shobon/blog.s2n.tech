@@ -40,6 +40,28 @@
 	[role="button"]:not(:disabled) {
 		cursor: pointer;
 	}
+
+	.dark {
+		--color-text-primary: var(--color-neutral-100);
+		--color-text-secondary: var(--color-neutral-300);
+		--color-text-heading: var(--color-white);
+		--color-text-decoration: var(--color-neutral-200);
+		--color-background-primary: var(--color-neutral-900);
+		--color-background-secondary: var(--color-neutral-700);
+		--color-background-tertiary: var(--color-neutral-800);
+		--color-border-primary: var(--color-neutral-800);
+		--color-border-secondary: var(--color-neutral-700);
+
+		--color-info-text: var(--color-lime-50);
+		--color-info-background: var(--color-lime-800);
+		--color-info-border: var(--color-lime-700);
+		--color-warn-text: var(--color-amber-50);
+		--color-warn-background: var(--color-amber-800);
+		--color-warn-border: var(--color-amber-700);
+		--color-alert-text: var(--color-red-50);
+		--color-alert-background: var(--color-red-800);
+		--color-alert-border: var(--color-red-700);
+	}
 }
 
 @utility kerning-on {
