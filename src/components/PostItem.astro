@@ -1,0 +1,38 @@
+---
+import Tag from "@/components/Tag.astro";
+import type { Post } from "@/libs/posts";
+import { postToSlug } from "@/libs/posts";
+
+interface Props {
+	post: Post;
+}
+
+const { post } = Astro.props;
+
+const url = `/posts/${postToSlug(post)}`;
+
+const intl = new Intl.DateTimeFormat("ja-JP");
+---
+
+<article
+	class="grid gap-1 border-b border-border-primary py-4 first:pt-0 last:border-b-0 last:pb-0"
+>
+	<h2 class="text-lg leading-tight font-bold kerning-on">
+		<a href={url}>{post.data.title}</a>
+	</h2>
+	{
+		post.data.publishedAt ? (
+			<time
+				datetime={new Date(post.data.publishedAt).toISOString()}
+				class="text-xs text-text-secondary"
+			>
+				{intl.format(new Date(post.data.publishedAt))}
+			</time>
+		) : (
+			<span class="text-xs text-text-secondary">未公開</span>
+		)
+	}
+	<div class="flex flex-wrap items-center gap-2 pt-1">
+		{post.data.tags.map((tag) => <Tag tag={tag} />)}
+	</div>
+</article>

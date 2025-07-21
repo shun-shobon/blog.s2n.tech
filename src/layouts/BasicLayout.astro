@@ -1,0 +1,29 @@
+---
+import Footer from "@/components/Footer.astro";
+import Header from "@/components/Header.astro";
+
+import type { Props as GlobalLayoutProps } from "./GlobalLayout.astro";
+import GlobalLayout from "./GlobalLayout.astro";
+
+type Props = GlobalLayoutProps;
+
+const { class: className, ...props } = Astro.props;
+---
+
+<GlobalLayout
+	{...props}
+	class:list={[
+		"grid grid-rows-[auto_1fr_auto] bg-background-primary bg-(image:--bg-grid) bg-size-[48px_48px] bg-repeat",
+		className,
+	]}
+>
+	<div class="sticky top-0 isolate z-30 flex justify-center p-4 sm:p-8">
+		<Header />
+	</div>
+
+	<main class="isolate min-h-full">
+		<slot />
+	</main>
+
+	<Footer />
+</GlobalLayout>

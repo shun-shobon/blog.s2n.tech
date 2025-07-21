@@ -1,0 +1,21 @@
+---
+import { z } from "astro:schema";
+
+type Props = z.input<typeof props>;
+
+const props = z.object({
+	summary: z.string(),
+	open: z.boolean().default(false),
+});
+
+const { summary, open } = props.parse(Astro.props);
+---
+
+<details open={open}>
+	<summary class="not-markdown">{summary}</summary>
+	<div
+		class="overflow-hidden border-t border-border-secondary p-4 **:first:mt-0 **:last:mb-0"
+	>
+		<slot />
+	</div>
+</details>

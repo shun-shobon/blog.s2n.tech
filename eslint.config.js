@@ -1,25 +1,13 @@
-import base from "@shun-shobon/eslint-config-base/flat";
-import next from "@shun-shobon/eslint-config-next/flat";
-import react from "@shun-shobon/eslint-config-react/flat";
+import { shun_shobon } from "@shun-shobon/style-guide/eslint";
 
-/**
- * @type {import("@shun-shobon/eslint-config-utils").Config[]}
- */
-export default [
-  ...base,
-  ...react,
-  ...next,
-  {
-    languageOptions: {
-      parserOptions: {
-        project: "./tsconfig.eslint.json",
-      },
-    },
-    rules: {
-      "no-undef": "off",
-    },
-  },
-  {
-    ignores: [".next/"],
-  },
-];
+export default shun_shobon(
+	{},
+	{
+		rules: {
+			"typescript/explicit-module-boundary-types": [
+				"warn",
+				{ allowedNames: ["getStaticPaths"] },
+			],
+		},
+	},
+);

@@ -1,29 +1,12 @@
 {
-  "extends": "@tsconfig/strictest",
-  "compilerOptions": {
-    "verbatimModuleSyntax": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "noPropertyAccessFromIndexSignature": false,
-    "target": "esnext",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "jsx": "preserve",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "allowJs": true,
-    "noEmit": true,
-    "incremental": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "exactOptionalPropertyTypes": false
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+	"extends": "astro/tsconfigs/strictest",
+	"compilerOptions": {
+		"paths": {
+			"@/*": ["./src/*"],
+		},
+		"exactOptionalPropertyTypes": false,
+		"jsx": "react-jsx",
+	},
+	"include": [".astro/types.d.ts", "**/*"],
+	"exclude": ["**/node_modules", "**/dist"],
 }

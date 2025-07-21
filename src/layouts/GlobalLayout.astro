@@ -1,0 +1,80 @@
+---
+import "@/styles/global.css";
+
+import { Font } from "astro:assets";
+import { joinURL, normalizeURL } from "ufo";
+
+export interface Props {
+	title?: string;
+	description?: string | null;
+	ogImage?: string;
+	ogImageType?: "large" | "small";
+	class?: string;
+}
+
+const url = normalizeURL(Astro.site?.toString() ?? "");
+
+const {
+	title,
+	description,
+	ogImage,
+	ogImageType,
+	class: className,
+} = Astro.props;
+
+const titleText = title ? `${title} - blog.s2n.tech` : "blog.s2n.tech";
+const descriptionText =
+	description !== undefined
+		? description
+		: description !== null
+			? "@shun_shobonのブログです。フロントエンドを中心に、様々な話題について好き勝手に書いています。"
+			: null;
+const ogImageUrl = ogImage
+	? joinURL(url, ogImage)
+	: joinURL(url, "og-image.png");
+const twitterCard = ogImageType === "large" ? "summary_large_image" : "summary";
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>{titleText}</title>
+		{
+			descriptionText !== null && (
+				<meta name="description" content={descriptionText} />
+			)
+		}
+
+		<link rel="icon" href="/favicon.ico" sizes="32x32" />
+		<link rel="icon" href="/icon.svg" type="image/svg+xml" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/manifest.webmanifest" />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<meta property="og:title" content={titleText} />
+		{
+			descriptionText !== null && (
+				<meta property="og:description" content={descriptionText} />
+			)
+		}
+		<meta property="og:url" content={url} />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta property="twitter:card" content={twitterCard} />
+
+		<meta property="og:type" content="website" />
+
+		<Font cssVariable="--font-family-caveat" preload />
+
+		<slot name="head" />
+	</head>
+	<body
+		class:list={[
+			"min-h-dvh leading-normal text-text-primary antialiased [interpolate-size:allow-keywords]",
+			className,
+		]}
+	>
+		<slot />
+	</body>
+</html>

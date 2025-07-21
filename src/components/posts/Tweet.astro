@@ -1,0 +1,19 @@
+---
+import { z } from "astro:schema";
+
+type Props = z.input<typeof props>;
+
+const props = z.object({
+	href: z.string(),
+});
+
+const { href } = props.parse(Astro.props);
+---
+
+<div class="my-4 flex min-w-0 justify-center">
+	<blockquote class="twitter-tweet">
+		<a href={href}>ツイート</a>
+	</blockquote>
+	<script is:inline async src="https://platform.twitter.com/widgets.js"
+	></script>
+</div>

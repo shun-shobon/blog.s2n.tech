@@ -1,0 +1,11 @@
+onlyBuiltDependencies:
+  - "@tailwindcss/oxide"
+  - esbuild
+  - sharp
+  - unrs-resolver
+  - workerd
+
+publicHoistPattern:
+  - "*eslint*"
+
+savePrefix: ""

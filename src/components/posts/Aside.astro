@@ -1,0 +1,67 @@
+---
+import { z } from "astro:schema";
+import { Icon } from "astro-icon/components";
+
+type Props = z.input<typeof props>;
+
+const props = z.object({
+	type: z.enum(["info", "warn", "alert"]).default("info"),
+	title: z.string().optional(),
+});
+
+const { type, title } = props.parse(Astro.props);
+
+let titleText = title;
+if (!titleText) {
+	switch (type) {
+		case "info":
+			titleText = "インフォーメーション";
+			break;
+		case "warn":
+			titleText = "注意";
+			break;
+		case "alert":
+			titleText = "危険";
+			break;
+	}
+}
+
+let iconName;
+switch (type) {
+	case "info":
+		iconName = "lucide:info";
+		break;
+	case "warn":
+		iconName = "lucide:triangle-alert";
+		break;
+	case "alert":
+		iconName = "lucide:octagon-x";
+		break;
+}
+---
+
+<aside
+	aria-label={titleText}
+	class:list={[
+		"my-4 grid gap-2 rounded-lg px-4 py-4 sm:px-6",
+		type === "info" && "border border-info-border bg-info-background",
+		type === "warn" && "border border-warn-border bg-warn-background",
+		type === "alert" && "border border-alert-border bg-alert-background",
+	]}
+>
+	<p
+		aria-hidden="true"
+		class:list={[
+			"not-markdown flex min-w-0 items-center gap-2 text-lg font-bold",
+			type === "info" && "text-info-text",
+			type === "warn" && "text-warn-text",
+			type === "alert" && "text-alert-text",
+		]}
+	>
+		<Icon name={iconName} class="size-5 shrink-0" />
+		{titleText}
+	</p>
+	<div class="min-w-0 **:first:mt-0 **:last:mb-0">
+		<slot />
+	</div>
+</aside>

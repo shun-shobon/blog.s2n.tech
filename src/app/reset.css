@@ -1,9 +1,0 @@
-:where(a) {
-  color: unset;
-  text-decoration: none;
-}
-
-body {
-  scroll-behavior: smooth;
-  font-family: var(--sans-serif);
-}
