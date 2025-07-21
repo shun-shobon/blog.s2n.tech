@@ -15,7 +15,8 @@
 		"lint": "eslint .",
 		"lint:fix": "eslint --fix .",
 		"preview": "wrangler dev",
-		"type-check": "astro check"
+		"sync": "astro sync",
+		"typecheck": "astro check"
 	},
 	"dependencies": {
 		"@astrojs/mdx": "4.3.0",

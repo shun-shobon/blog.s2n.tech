@@ -14,5 +14,6 @@ const { href } = props.parse(Astro.props);
 	<blockquote class="twitter-tweet">
 		<a href={href}>ツイート</a>
 	</blockquote>
-	<script async src="https://platform.twitter.com/widgets.js"></script>
+	<script is:inline async src="https://platform.twitter.com/widgets.js"
+	></script>
 </div>
