@@ -5,7 +5,7 @@ import BasicLayout from "@/layouts/BasicLayout.astro";
 import { getPosts } from "@/libs/posts";
 
 const { posts } = await getPosts({
-	draft: true,
+	draft: import.meta.env.DEV,
 });
 ---
 

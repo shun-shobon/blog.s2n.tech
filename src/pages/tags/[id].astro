@@ -19,7 +19,7 @@ if (!id) {
 
 const { posts } = await getPosts({
 	tag: id,
-	draft: true,
+	draft: import.meta.env.DEV,
 });
 
 const title = `「${id}」の記事一覧`;

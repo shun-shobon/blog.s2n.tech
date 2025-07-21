@@ -13,7 +13,7 @@ import { getPost, getPosts, postToSlug } from "@/libs/posts";
 
 export async function getStaticPaths() {
 	const { posts } = await getPosts({
-		draft: true,
+		draft: import.meta.env.DEV,
 	});
 
 	return posts.map((post) => ({
@@ -34,7 +34,7 @@ if (!post) {
 const intl = new Intl.DateTimeFormat("ja-JP");
 const { Content, headings } = await render(post);
 
-const { posts } = await getPosts({ draft: true });
+const { posts } = await getPosts({ draft: import.meta.env.DEV });
 const latestPosts = posts
 	.filter((latestPost) => latestPost.id !== post.id)
 	.slice(0, 3);

@@ -26,7 +26,7 @@ export const GET: APIRoute = async ({ params }) => {
 
 export async function getStaticPaths() {
 	const { posts } = await getPosts({
-		draft: true,
+		draft: import.meta.env.DEV,
 	});
 
 	return posts.map((post) => ({
