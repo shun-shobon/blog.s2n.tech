@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import { render } from "astro:content";
 import { Icon } from "astro-icon/components";
+import { joinURL } from "ufo";
 
 import MyIcon from "@/assets/my-icon.png";
 import PostItem from "@/components/PostItem.astro";
@@ -49,7 +50,12 @@ const yearsSinceUpdatedAt =
 		: null;
 ---
 
-<BasicLayout title={post.data.title}>
+<BasicLayout
+	title={post.data.title}
+	description={null}
+	ogImage={joinURL("posts", slug, "og-image.png")}
+	ogImageType="large"
+>
 	<article class="px-4 pb-4 sm:px-8 sm:pb-8">
 		<div class="mx-auto grid w-full max-w-4xl justify-center gap-2 sm:gap-4">
 			<Title>{post.data.title}</Title>

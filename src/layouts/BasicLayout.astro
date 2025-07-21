@@ -2,19 +2,16 @@
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
 
+import type { Props as GlobalLayoutProps } from "./GlobalLayout.astro";
 import GlobalLayout from "./GlobalLayout.astro";
 
-interface Props {
-	title?: string;
-	description?: string;
-	class?: string;
-}
+type Props = GlobalLayoutProps;
 
-const { title, class: className } = Astro.props;
+const { class: className, ...props } = Astro.props;
 ---
 
 <GlobalLayout
-	title={title}
+	{...props}
 	class:list={[
 		"grid grid-rows-[auto_1fr_auto] bg-background-primary bg-(image:--bg-grid) bg-size-[48px_48px] bg-repeat",
 		className,

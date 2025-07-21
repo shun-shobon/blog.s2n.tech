@@ -10,6 +10,7 @@ import remarkJoinCjkLines from "remark-join-cjk-lines";
 import remarkMath from "remark-math";
 
 export default defineConfig({
+	site: "https://blog.s2n.tech",
 	vite: {
 		plugins: [tailwindcss()],
 	},

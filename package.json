@@ -36,6 +36,7 @@
 		"remark-math": "6.0.0",
 		"satori": "0.15.2",
 		"tailwindcss": "4.1.11",
+		"ufo": "1.6.1",
 		"yoga-wasm-web": "0.3.3"
 	},
 	"devDependencies": {
