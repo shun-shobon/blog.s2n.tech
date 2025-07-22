@@ -1,9 +1,8 @@
 import fs from "node:fs/promises";
 
-import { initWasm as initResvg, Resvg } from "@resvg/resvg-wasm";
+import { Resvg } from "@resvg/resvg-js";
 import type { ReactNode } from "react";
-import satori, { init as initSatori } from "satori";
-import initYoga from "yoga-wasm-web";
+import satori from "satori";
 
 import MyIcon from "@/assets/my-icon.png?inline";
 
@@ -29,14 +28,6 @@ const fontCaveat = await fs.readFile("./src/assets/Caveat-Bold.ttf");
 const ZWJ = String.fromCodePoint(0x20_0d);
 // EPVS: VARIATION SELECTOR-16
 const EPVS_REGEX = /\uFE0F/gu;
-
-const yoga = await initYoga(
-	await fs.readFile("./node_modules/yoga-wasm-web/dist/yoga.wasm"),
-);
-initSatori(yoga);
-await initResvg(
-	await fs.readFile("./node_modules/@resvg/resvg-wasm/index_bg.wasm"),
-);
 
 interface Props {
 	title: string;
@@ -208,10 +199,7 @@ async function loadEmoji(segment: string): Promise<string> {
 	return `data:image/svg+xml;base64,${base64}`;
 }
 
-export async function generateImage({
-	title,
-	tags,
-}: Props): Promise<Uint8Array> {
+export async function generateImage({ title, tags }: Props): Promise<Buffer> {
 	const svg = await satori(<OGImage title={title} tags={tags} />, {
 		width: WIDTH,
 		height: HEIGHT,
