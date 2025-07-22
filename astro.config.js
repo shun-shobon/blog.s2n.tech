@@ -1,7 +1,8 @@
 import mdx from "@astrojs/mdx";
+import partytown from "@astrojs/partytown";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, fontProviders } from "astro/config";
+import { defineConfig, envField, fontProviders } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import rehypeKatex from "rehype-katex";
@@ -32,6 +33,9 @@ export default defineConfig({
 			},
 		}),
 		sitemap(),
+		partytown({
+			forward: ["dataLayer.push"],
+		}),
 	],
 	markdown: {
 		shikiConfig: {
@@ -49,6 +53,15 @@ export default defineConfig({
 			remarkGfmStrikethroughCjkFriendly,
 		],
 		rehypePlugins: [[rehypeKatex, { strict: false, output: "mathml" }]],
+	},
+	env: {
+		schema: {
+			GOOGLE_ANALYTICS_ID: envField.string({
+				context: "client",
+				access: "public",
+				optional: true,
+			}),
+		},
 	},
 	experimental: {
 		fonts: [

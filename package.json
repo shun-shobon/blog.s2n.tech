@@ -20,6 +20,7 @@
 	},
 	"dependencies": {
 		"@astrojs/mdx": "4.3.1",
+		"@astrojs/partytown": "2.1.4",
 		"@astrojs/sitemap": "3.4.1",
 		"@iconify-json/lucide": "1.2.57",
 		"@iconify-json/simple-icons": "1.2.44",
