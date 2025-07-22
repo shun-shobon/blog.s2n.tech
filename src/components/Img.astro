@@ -12,21 +12,29 @@ import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
 
 interface Props {
+	src: ImageMetadata | string;
 	alt: string;
-	src: ImageMetadata;
+	title?: string;
 }
 
-const { alt, src } = Astro.props;
+const { src, alt, title } = Astro.props;
 ---
 
-<Image
-	alt={alt}
-	src={src}
-	widths={[
-		324, // モバイル幅
-		690, // タブレット幅
-		830, // デスクトップ幅
-		830 * 2, // デスクトップ幅(2倍)
-	]}
-	sizes="(max-width: 928px) 100vw, 830px"
-/>
+{
+	typeof src !== "string" ? (
+		<Image
+			src={src}
+			widths={[
+				324, // モバイル幅
+				690, // タブレット幅
+				830, // デスクトップ幅
+				830 * 2, // デスクトップ幅(2倍)
+			]}
+			sizes="(max-width: 928px) 100vw, 830px"
+			alt={alt}
+			title={title}
+		/>
+	) : (
+		<Image inferSize src={src} alt={alt} title={title} />
+	)
+}
