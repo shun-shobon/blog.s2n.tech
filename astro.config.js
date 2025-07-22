@@ -15,6 +15,9 @@ export default defineConfig({
 	site: "https://blog.s2n.tech",
 	vite: {
 		plugins: [tailwindcss()],
+		optimizeDeps: {
+			exclude: ["@resvg/resvg-js"],
+		},
 	},
 	integrations: [
 		expressiveCode({
