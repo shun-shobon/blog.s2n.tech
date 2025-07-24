@@ -2,17 +2,19 @@
 import PostItem from "@/components/PostItem.astro";
 import Title from "@/components/Title.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
-import { getPosts, getTags } from "@/libs/posts";
+import { getPosts, getTags, normalizeTag } from "@/libs/posts";
 
 export async function getStaticPaths() {
 	const tags = await getTags();
 
 	return tags.map((tag) => ({
-		params: { id: tag },
+		params: { id: normalizeTag(tag) },
+		props: { tag },
 	}));
 }
 
 const { id } = Astro.params;
+const { tag } = Astro.props;
 if (!id) {
 	return Astro.rewrite("/404");
 }
@@ -22,7 +24,7 @@ const { posts } = await getPosts({
 	draft: import.meta.env.DEV,
 });
 
-const title = `「${id}」の記事一覧`;
+const title = `「${tag}」の記事一覧`;
 ---
 
 <BasicLayout title={title}>

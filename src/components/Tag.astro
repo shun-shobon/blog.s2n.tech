@@ -1,4 +1,6 @@
 ---
+import { normalizeTag } from "@/libs/posts";
+
 interface Props {
 	tag: string;
 }
@@ -7,7 +9,7 @@ const { tag } = Astro.props;
 ---
 
 <a
-	href={`/tags/${tag}`}
+	href={`/tags/${normalizeTag(tag)}`}
 	class="rounded-full bg-background-secondary px-2 py-0.5 font-cursive leading-tight transition-colors before:content-['#'] hover:bg-background-tertiary"
 	>{tag}</a
 >

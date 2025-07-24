@@ -23,7 +23,7 @@ export async function getPosts({
 		}
 
 		if (tag) {
-			return post.data.tags.includes(tag);
+			return post.data.tags.some((t) => normalizeTag(t) === tag);
 		}
 
 		return true;
@@ -87,4 +87,8 @@ export function postToSlug(post: Post): string {
 
 export function slugToId(slug: string): string {
 	return `${slug}/readme`;
+}
+
+export function normalizeTag(tag: string): string {
+	return tag.toLowerCase().replaceAll(/[^a-z0-9]/gu, "-");
 }
