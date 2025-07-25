@@ -26,12 +26,6 @@ importers:
       '@resvg/resvg-js':
         specifier: 2.6.2
         version: 2.6.2
-      '@tailwindcss/typography':
-        specifier: 0.5.16
-        version: 0.5.16(tailwindcss@4.1.11)
-      '@tailwindcss/vite':
-        specifier: 4.1.11
-        version: 4.1.11(vite@6.3.5(@types/node@24.0.15)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))
       astro:
         specifier: 5.12.0
         version: 5.12.0(@types/node@24.0.15)(jiti@2.4.2)(lightningcss@1.30.1)(rollup@4.45.1)(typescript@5.8.3)(yaml@2.8.0)
@@ -78,6 +72,9 @@ importers:
       '@shun-shobon/style-guide':
         specifier: 1.0.1
         version: 1.0.1(@typescript-eslint/utils@8.38.0(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.31.0(jiti@2.4.2))(prettier@3.6.2)(storybook@9.0.17(@testing-library/dom@10.4.0)(prettier@3.6.2))(typescript@5.8.3)
+      '@tailwindcss/vite':
+        specifier: 4.1.11
+        version: 4.1.11(vite@6.3.5(@types/node@24.0.15)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))
       '@types/react':
         specifier: 19.1.8
         version: 19.1.8
@@ -1299,11 +1296,6 @@ packages:
   '@tailwindcss/oxide@4.1.11':
     resolution: {integrity: sha512-Q69XzrtAhuyfHo+5/HMgr1lAiPP/G40OMFAnws7xcFEYqcypZmdW8eGXaOUIeOl1dzPJBPENXgbjsOyhg2nkrg==}
     engines: {node: '>= 10'}
-
-  '@tailwindcss/typography@0.5.16':
-    resolution: {integrity: sha512-0wDLwCVF5V3x3b1SGXPCDcdsbDHMBe+lkFzBRaHeLvNi+nrrnZ1lA18u+OTWO8iSWU2GxUOCvlXtDuqftc1oiA==}
-    peerDependencies:
-      tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
 
   '@tailwindcss/vite@4.1.11':
     resolution: {integrity: sha512-RHYhrR3hku0MJFRV+fN2gNbDNEh3dwKvY8XJvTxCSXeMOsCRSr+uKvDWQcbizrHgjML6ZmTE5OwMrl5wKcujCw==}
@@ -3167,12 +3159,6 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
-  lodash.castarray@4.4.0:
-    resolution: {integrity: sha512-aVx8ztPv7/2ULbArGJ2Y42bG1mEQ5mGjpdvrbJcJFU3TbYybe+QlLS4pst9zV52ymy2in1KpFPiZnAOATxD4+Q==}
-
-  lodash.isplainobject@4.0.6:
-    resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
-
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
@@ -3714,10 +3700,6 @@ packages:
     engines: {node: '>=12.0'}
     peerDependencies:
       postcss: ^8.2.14
-
-  postcss-selector-parser@6.0.10:
-    resolution: {integrity: sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==}
-    engines: {node: '>=4'}
 
   postcss-selector-parser@6.1.2:
     resolution: {integrity: sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==}
@@ -5961,14 +5943,6 @@ snapshots:
       '@tailwindcss/oxide-wasm32-wasi': 4.1.11
       '@tailwindcss/oxide-win32-arm64-msvc': 4.1.11
       '@tailwindcss/oxide-win32-x64-msvc': 4.1.11
-
-  '@tailwindcss/typography@0.5.16(tailwindcss@4.1.11)':
-    dependencies:
-      lodash.castarray: 4.4.0
-      lodash.isplainobject: 4.0.6
-      lodash.merge: 4.6.2
-      postcss-selector-parser: 6.0.10
-      tailwindcss: 4.1.11
 
   '@tailwindcss/vite@4.1.11(vite@6.3.5(@types/node@24.0.15)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))':
     dependencies:
@@ -8311,10 +8285,6 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
-  lodash.castarray@4.4.0: {}
-
-  lodash.isplainobject@4.0.6: {}
-
   lodash.merge@4.6.2: {}
 
   lodash@4.17.21: {}
@@ -9143,11 +9113,6 @@ snapshots:
     dependencies:
       postcss: 8.5.6
       postcss-selector-parser: 6.1.2
-
-  postcss-selector-parser@6.0.10:
-    dependencies:
-      cssesc: 3.0.0
-      util-deprecate: 1.0.2
 
   postcss-selector-parser@6.1.2:
     dependencies:

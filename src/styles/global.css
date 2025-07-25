@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
 @theme {
 	--color-text-primary: var(--color-neutral-800);
