@@ -19,13 +19,13 @@
 		"typecheck": "astro check"
 	},
 	"dependencies": {
-		"@astrojs/mdx": "4.3.1",
+		"@astrojs/mdx": "4.3.3",
 		"@astrojs/partytown": "2.1.4",
-		"@astrojs/sitemap": "3.4.1",
+		"@astrojs/sitemap": "3.4.2",
 		"@iconify-json/lucide": "1.2.57",
 		"@iconify-json/simple-icons": "1.2.44",
 		"@resvg/resvg-js": "2.6.2",
-		"astro": "5.12.0",
+		"astro": "5.12.8",
 		"astro-expressive-code": "0.41.3",
 		"astro-icon": "1.1.5",
 		"open-graph-scraper": "6.10.0",
