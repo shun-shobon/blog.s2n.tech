@@ -1,3 +1,4 @@
+import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
 import partytown from "@astrojs/partytown";
 import sitemap from "@astrojs/sitemap";
@@ -13,12 +14,11 @@ import remarkMath from "remark-math";
 
 export default defineConfig({
 	site: "https://blog.s2n.tech",
-	vite: {
-		plugins: [tailwindcss()],
-		optimizeDeps: {
-			exclude: ["@resvg/resvg-js"],
+	adapter: cloudflare({
+		platformProxy: {
+			enabled: true,
 		},
-	},
+	}),
 	integrations: [
 		expressiveCode({
 			themes: "material-theme-lighter",
@@ -65,6 +65,9 @@ export default defineConfig({
 				optional: true,
 			}),
 		},
+	},
+	vite: {
+		plugins: [tailwindcss()],
 	},
 	experimental: {
 		fonts: [

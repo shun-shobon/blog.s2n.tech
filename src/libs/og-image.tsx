@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 
-import { Resvg } from "@resvg/resvg-js";
+import { initWasm, Resvg } from "@resvg/resvg-wasm";
+import RESVG_WASM from "@resvg/resvg-wasm/index_bg.wasm";
 import type { ReactNode } from "react";
 import satori from "satori";
 
@@ -20,6 +21,8 @@ const COLOR_TEXT_PRIMARY = "#262626";
 const COLOR_TEXT_HEADING = "#0a0a0a";
 const FONT_CAVEAT = "Caveat";
 const FONT_NOTO_SANS_JP = "Noto Sans JP";
+
+await initWasm(RESVG_WASM);
 
 const fontNotoSansJP = await fs.readFile("./src/assets/NotoSansJP-Bold.ttf");
 const fontCaveat = await fs.readFile("./src/assets/Caveat-Bold.ttf");
@@ -199,7 +202,10 @@ async function loadEmoji(segment: string): Promise<string> {
 	return `data:image/svg+xml;base64,${base64}`;
 }
 
-export async function generateImage({ title, tags }: Props): Promise<Buffer> {
+export async function generateImage({
+	title,
+	tags,
+}: Props): Promise<Uint8Array> {
 	const svg = await satori(<OGImage title={title} tags={tags} />, {
 		width: WIDTH,
 		height: HEIGHT,
