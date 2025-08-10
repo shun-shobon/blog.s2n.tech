@@ -1,6 +1,10 @@
 name = "blog-s2n-tech"
 compatibility_date = "2025-07-21"
+main = "./dist/_worker.js/index.js"
 
 [assets]
 directory = "./dist"
 not_found_handling = "404-page"
+
+[observability]
+enabled = true
