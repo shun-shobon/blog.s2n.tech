@@ -1,6 +1,6 @@
 name = "blog-s2n-tech"
 compatibility_date = "2025-07-21"
-main = "./dist/_worker.js/index.js"
+main = "./dist/_worker.js"
 
 [assets]
 directory = "./dist"
