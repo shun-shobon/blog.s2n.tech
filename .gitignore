@@ -3,3 +3,4 @@ dist/
 .astro/
 .wrangler/
 .env
+worker-configuration.d.ts

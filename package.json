@@ -15,7 +15,7 @@
 		"lint": "eslint .",
 		"lint:fix": "eslint --fix .",
 		"preview": "wrangler dev",
-		"sync": "astro sync",
+		"sync": "astro sync && wrangler types",
 		"typecheck": "astro check"
 	},
 	"dependencies": {
@@ -37,7 +37,8 @@
 		"remark-math": "6.0.0",
 		"satori": "0.16.2",
 		"tailwindcss": "4.1.11",
-		"ufo": "1.6.1"
+		"ufo": "1.6.1",
+		"zod": "4.0.17"
 	},
 	"devDependencies": {
 		"@astrojs/check": "0.9.4",
@@ -46,6 +47,7 @@
 		"@tailwindcss/vite": "4.1.11",
 		"@types/react": "19.1.9",
 		"eslint": "9.32.0",
+		"html-rewriter-wasm": "0.4.1",
 		"prettier": "3.6.2",
 		"sharp": "0.34.3",
 		"typescript": "5.8.3",
