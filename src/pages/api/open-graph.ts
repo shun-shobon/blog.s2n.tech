@@ -19,6 +19,7 @@ export interface OpenGraph {
 
 const searchParamsSchema = z.object({
 	url: z.url(),
+	image: z.coerce.boolean().default(false),
 });
 
 export const GET: APIRoute = async ({ request, locals }) => {
@@ -29,34 +30,57 @@ export const GET: APIRoute = async ({ request, locals }) => {
 	if (!parsed.success) {
 		return new Response("Bad Request", { status: 400 });
 	}
-	const { url } = parsed.data;
+	const { url, image: shouldImage } = parsed.data;
 	const normalizedURL = normalizeURL(url);
 
 	const cache = locals.runtime.env.CACHE;
 	const cacheKey = `${CACHE_KEY}:${await getURLHash(normalizedURL)}`;
 
-	const cached = await cache.get(cacheKey, { type: "json"});
-	if (cached) {
+	const cached = await cache.get(cacheKey, "json");
+	const cachedImage = await cache.getWithMetadata<{ contentType: string }>(
+		`${cacheKey}:image`,
+		"arrayBuffer",
+	);
+	if (!shouldImage && cached) {
 		return new Response(JSON.stringify(cached), {
 			headers: {
 				"Content-Type": "application/json",
 				"Cache-Control": "public, max-age=600, stale-while-revalidate=600",
 			},
 		});
+	} else if (shouldImage && cachedImage.value && cachedImage.metadata) {
+		return new Response(cachedImage.value, {
+			headers: {
+				"Content-Type": cachedImage.metadata.contentType,
+				"Cache-Control": "public, max-age=600, stale-while-revalidate=600",
+			},
+		});
 	}
 
-	const result = await extractOpenGraph(normalizedURL).catch((): OpenGraph => ({}));
+	const result = await extractOpenGraph(normalizedURL).catch(() => null);
+	if (result == null) {
+		return new Response("Not found", { status: 404 });
+	}
+	const ogImage = result.ogImage ? await getOGImage(result.ogImage) : null;
+
 	await cache.put(cacheKey, JSON.stringify(result), {
 		expirationTtl: EXPIRATION_TTL,
 	});
+	if (ogImage) {
+		await cache.put(`${cacheKey}:image`, ogImage.data, {
+			metadata: {
+				contentType: ogImage.contentType,
+			},
+			expirationTtl: EXPIRATION_TTL,
+		});
+	}
 
-	if (result.ogImage) {
-		const image = await getOGImage(result.ogImage);
-		if (image) {
-			await cache.put(`${cacheKey}:image`, image, {
-				expirationTtl: EXPIRATION_TTL,
-			});
-		}
+	if (shouldImage && ogImage) {
+		return new Response(ogImage.data, {
+			headers: {
+				"Content-Type": ogImage.contentType,
+			},
+		});
 	}
 
 	return new Response(JSON.stringify(result), {
@@ -109,19 +133,21 @@ async function extractOpenGraph(url: string): Promise<OpenGraph> {
 	const response = await fetch(url);
 	if (import.meta.env.DEV) {
 		const { HTMLRewriter } = await import("html-rewriter-wasm");
-		const rewriter = new HTMLRewriter(() => {/* noop */})
+		const rewriter = new HTMLRewriter(() => {
+			// noop
+		})
 			.on("title", handleTitle)
-			.on("meta", handleMeta)
-    try {
-      await rewriter.write(new Uint8Array(await response.arrayBuffer()));
-      await rewriter.end();
-    } finally {
-      rewriter.free();
-    }
+			.on("meta", handleMeta);
+		try {
+			await rewriter.write(new Uint8Array(await response.arrayBuffer()));
+			await rewriter.end();
+		} finally {
+			rewriter.free();
+		}
 	} else {
 		const rewriter = new HTMLRewriter()
 			.on("title", handleTitle)
-			.on("meta", handleMeta)
+			.on("meta", handleMeta);
 		const transformed = rewriter.transform(response);
 		await transformed.text();
 	}
@@ -130,20 +156,25 @@ async function extractOpenGraph(url: string): Promise<OpenGraph> {
 }
 
 interface ElementLike {
-  getAttribute(name: string): string | null;
+	getAttribute(name: string): string | null;
 }
 
 interface TextLike {
-  text: string | null;
+	text: string | null;
 }
 
-async function getOGImage(url: string): Promise<ArrayBuffer | null> {
+async function getOGImage(
+	url: string,
+): Promise<{ contentType: string; data: ArrayBuffer } | null> {
 	const response = await fetch(url);
 	if (!response.ok) {
 		return null;
 	}
 
-	return await response.arrayBuffer();
+	const contentType = response.headers.get("content-type") ?? "image/png";
+	const data = await response.arrayBuffer();
+
+	return { contentType, data };
 }
 
 async function getURLHash(url: string): Promise<string> {
@@ -151,6 +182,8 @@ async function getURLHash(url: string): Promise<string> {
 	const data = encoder.encode(url);
 	const hashBuffer = await crypto.subtle.digest("SHA-256", data);
 	const hashArray = Array.from(new Uint8Array(hashBuffer));
-	const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+	const hashHex = hashArray
+		.map((b) => b.toString(16).padStart(2, "0"))
+		.join("");
 	return hashHex;
 }
