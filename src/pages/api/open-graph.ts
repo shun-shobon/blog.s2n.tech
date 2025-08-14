@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import {normalizeURL, withQuery } from "ufo";
+import { normalizeURL, withQuery } from "ufo";
 import { z } from "zod";
 
 // Configuration
@@ -23,17 +23,29 @@ const RESPONSE_HEADERS = {
  * OpenGraph metadata extracted from a webpage
  */
 export interface OpenGraph {
-	/** Page title from <title> tag */
+	/**
+	 * Page title from <title> tag
+	 */
 	title?: string;
-	/** Page description from meta description */
+	/**
+	 * Page description from meta description
+	 */
 	description?: string;
-	/** OpenGraph title */
+	/**
+	 * OpenGraph title
+	 */
 	ogTitle?: string;
-	/** OpenGraph description */
+	/**
+	 * OpenGraph description
+	 */
 	ogDescription?: string;
-	/** OpenGraph image URL */
+	/**
+	 * OpenGraph image URL
+	 */
 	ogImage?: string;
-	/** Twitter card type */
+	/**
+	 * Twitter card type
+	 */
 	twitterCard?: string;
 }
 
@@ -53,7 +65,7 @@ const searchParamsSchema = z.object({
 	image: z.coerce.boolean().default(false),
 });
 
-export const GET: APIRoute = async ({ request, locals, site }) => {
+export const GET: APIRoute = async ({ request, locals }) => {
 	// Validate request parameters
 	const validation = validateRequestParams(request);
 	if (!validation.success) {
@@ -256,7 +268,7 @@ function createHTMLHandlers(result: OpenGraph) {
 
 			// Map metadata to OpenGraph properties
 			const metadataMap: Record<string, keyof OpenGraph> = {
-				description: "description",
+				"description": "description",
 				"og:title": "ogTitle",
 				"og:description": "ogDescription",
 				"og:image": "ogImage",
@@ -266,7 +278,13 @@ function createHTMLHandlers(result: OpenGraph) {
 
 			const targetProperty = metadataMap[propertyKey];
 			if (targetProperty) {
-				result[targetProperty] = content.trim();
+				result[targetProperty] = content
+					.trim()
+					.replaceAll("&amp;", "&")
+					.replaceAll("&quot;", '"')
+					.replaceAll("&apos;", "'")
+					.replaceAll("&lt;", "<")
+					.replaceAll("&gt;", ">");
 			}
 		},
 	};

@@ -40,7 +40,7 @@ const faviconURL = `https://www.google.com/s2/favicons?domain=${hostname}`;
 		>
 	</div>
 	<div
-		class="hidden h-full w-auto shrink-0 border-l border-border-secondary bg-background-tertiary"
+		class="hidden aspect-square h-full w-auto shrink-0 border-l border-border-secondary bg-background-tertiary"
 		data-link-card-image-container
 	>
 	</div>
@@ -112,7 +112,7 @@ const faviconURL = `https://www.google.com/s2/favicons?domain=${hostname}`;
 				descriptionElement.textContent = description;
 				descriptionElement.classList.remove("link-card-placeholder", "w-1/2");
 			} else {
-				descriptionElement.classList.add("hidden")
+				descriptionElement.classList.add("hidden");
 			}
 		}
 
@@ -127,14 +127,13 @@ const faviconURL = `https://www.google.com/s2/favicons?domain=${hostname}`;
 			img.loading = "lazy";
 
 			const isLargeImage = data.twitterCard === "summary_large_image";
-			const aspectRatioClass = isLargeImage ? "md:aspect-[40/21]" : "";
 
-			img.className = `size-full object-cover ${aspectRatioClass}`;
+			img.className = `size-full object-cover`;
 
 			imageContainer.classList.remove("hidden");
-			imageContainer.classList.add(
-				isLargeImage ? "md:aspect-[40/21]" : "aspect-square",
-			);
+			if (isLargeImage) {
+				imageContainer.classList.add("md:aspect-[40/21]");
+			}
 
 			imageContainer.appendChild(img);
 		}
@@ -154,7 +153,7 @@ const faviconURL = `https://www.google.com/s2/favicons?domain=${hostname}`;
 			"[data-link-card-description]",
 		);
 		if (descriptionElement) {
-			descriptionElement.classList.add("hidden")
+			descriptionElement.classList.add("hidden");
 		}
 	}
 </script>
