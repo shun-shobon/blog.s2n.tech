@@ -8,3 +8,7 @@ not_found_handling = "404-page"
 
 [observability]
 enabled = true
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "00000000000000000000000000000000"

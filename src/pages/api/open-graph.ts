@@ -1,5 +1,10 @@
 import type { APIRoute } from "astro";
+import { normalizeURL } from "ufo";
 import { z } from "zod";
+
+const CACHE_KEY = "open-graph";
+// 1 week
+const EXPIRATION_TTL = 60 * 60 * 24 * 7;
 
 export const prerender = false;
 
@@ -16,7 +21,7 @@ const searchParamsSchema = z.object({
 	url: z.url(),
 });
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ request, locals }) => {
 	const searchParams = new URL(request.url).searchParams;
 	const parsed = searchParamsSchema.safeParse(
 		Object.fromEntries(searchParams.entries()),
@@ -24,14 +29,40 @@ export const GET: APIRoute = async ({ request }) => {
 	if (!parsed.success) {
 		return new Response("Bad Request", { status: 400 });
 	}
-
 	const { url } = parsed.data;
+	const normalizedURL = normalizeURL(url);
 
-	const result = await extractOpenGraph(url).catch((): OpenGraph => ({}));
+	const cache = locals.runtime.env.CACHE;
+	const cacheKey = `${CACHE_KEY}:${await getURLHash(normalizedURL)}`;
+
+	const cached = await cache.get(cacheKey, { type: "json"});
+	if (cached) {
+		return new Response(JSON.stringify(cached), {
+			headers: {
+				"Content-Type": "application/json",
+				"Cache-Control": "public, max-age=600, stale-while-revalidate=600",
+			},
+		});
+	}
+
+	const result = await extractOpenGraph(normalizedURL).catch((): OpenGraph => ({}));
+	await cache.put(cacheKey, JSON.stringify(result), {
+		expirationTtl: EXPIRATION_TTL,
+	});
+
+	if (result.ogImage) {
+		const image = await getOGImage(result.ogImage);
+		if (image) {
+			await cache.put(`${cacheKey}:image`, image, {
+				expirationTtl: EXPIRATION_TTL,
+			});
+		}
+	}
 
 	return new Response(JSON.stringify(result), {
 		headers: {
 			"Content-Type": "application/json",
+			"Cache-Control": "public, max-age=600, stale-while-revalidate=600",
 		},
 	});
 };
@@ -65,7 +96,7 @@ async function extractOpenGraph(url: string): Promise<OpenGraph> {
 					result.ogDescription = content;
 					break;
 				case "og:image":
-				case "og:image:src":
+				case "og:image:url":
 					result.ogImage = content;
 					break;
 				case "twitter:card":
@@ -104,4 +135,22 @@ interface ElementLike {
 
 interface TextLike {
   text: string | null;
+}
+
+async function getOGImage(url: string): Promise<ArrayBuffer | null> {
+	const response = await fetch(url);
+	if (!response.ok) {
+		return null;
+	}
+
+	return await response.arrayBuffer();
+}
+
+async function getURLHash(url: string): Promise<string> {
+	const encoder = new TextEncoder();
+	const data = encoder.encode(url);
+	const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+	const hashArray = Array.from(new Uint8Array(hashBuffer));
+	const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+	return hashHex;
 }
