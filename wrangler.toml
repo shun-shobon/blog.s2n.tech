@@ -11,4 +11,4 @@ enabled = true
 
 [[kv_namespaces]]
 binding = "CACHE"
-id = "00000000000000000000000000000000"
+id = "ca520efaf4c54033baf6af0408597068"
