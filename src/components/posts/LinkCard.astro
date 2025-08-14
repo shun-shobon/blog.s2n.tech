@@ -1,6 +1,6 @@
 ---
+/* eslint-disable astro/jsx-a11y/control-has-associated-label */
 import { z } from "astro:schema";
-import ogs from "open-graph-scraper";
 
 type Props = z.input<typeof props>;
 
@@ -11,43 +11,25 @@ const props = z.object({
 const { href } = props.parse(Astro.props);
 const url = new URL(href);
 
-let ogResult;
-try {
-	const { result } = await ogs({ url: href });
-	ogResult = result;
-} catch {
-	// noop
-}
-
-const title = ogResult?.ogTitle ?? url.hostname;
-const description = ogResult?.ogDescription ?? ogResult?.dcDescription;
-const favicon = ogResult?.favicon
-	? ogResult.favicon.startsWith("http")
-		? ogResult.favicon
-		: new URL(ogResult.favicon, url.origin).href
-	: `https://www.google.com/s2/favicons?domain=${url.hostname}`;
-const image = ogResult?.ogImage?.[0]?.url;
-const imageAspectRatio =
-	ogResult?.twitterCard === "summary_large_image" ? "md:aspect-[40/21]" : "";
+const hostname = url.hostname;
+const faviconURL = `https://www.google.com/s2/favicons?domain=${hostname}`;
 ---
 
 <a
 	href={href}
 	class="not-markdown my-4 flex h-32 items-center overflow-hidden rounded-lg border border-border-secondary bg-background-primary transition-colors hover:bg-background-secondary"
-	aria-label={title}
+	data-link-card-url={href}
 >
 	<div class="grid grow gap-1 p-4">
-		<span class="line-clamp-2 font-bold">{title}</span>
-		{
-			description && (
-				<span class="line-clamp-2 text-sm text-text-secondary">
-					{description}
-				</span>
-			)
-		}
+		<span
+			class="line-clamp-2 link-card-placeholder w-full font-bold"
+			data-link-card-title></span>
+		<span
+			class="line-clamp-2 link-card-placeholder w-1/2 text-sm text-text-secondary"
+			data-link-card-description></span>
 		<span class="flex min-w-0 items-center gap-1 text-xs text-text-secondary"
 			><img
-				src={favicon}
+				src={faviconURL}
 				alt=""
 				class="size-4 shrink-0"
 				decoding="async"
@@ -58,21 +40,121 @@ const imageAspectRatio =
 		>
 	</div>
 	<div
-		class:list={[
-			"aspect-square h-full w-auto shrink-0 border-l border-border-secondary bg-background-tertiary",
-			image ? imageAspectRatio : "md:aspect-[40/21]",
-		]}
+		class="hidden h-full w-auto shrink-0 border-l border-border-secondary bg-background-tertiary"
+		data-link-card-image-container
 	>
-		{
-			image && (
-				<img
-					src={image}
-					alt=""
-					decoding="async"
-					loading="lazy"
-					class:list={["size-full object-cover", imageAspectRatio]}
-				/>
-			)
-		}
 	</div>
 </a>
+
+<script>
+	interface OpenGraphData {
+		title?: string;
+		description?: string;
+		ogTitle?: string;
+		ogDescription?: string;
+		ogImage?: string;
+		twitterCard?: string;
+	}
+
+	document.addEventListener("DOMContentLoaded", () => {
+		initializeLinkCards();
+	});
+
+	async function initializeLinkCards() {
+		const linkCards = document.querySelectorAll("[data-link-card-url]");
+
+		await Promise.allSettled(
+			Array.from(linkCards).map((card) =>
+				loadLinkCardData(card as HTMLElement),
+			),
+		);
+	}
+
+	async function loadLinkCardData(card: HTMLElement) {
+		const url = card.getAttribute("data-link-card-url");
+		if (!url) return;
+
+		try {
+			const response = await fetch(
+				`/api/open-graph?url=${encodeURIComponent(url)}`,
+			);
+			if (!response.ok) {
+				throw new Error(`API returned ${response.status}`);
+			}
+
+			const data: OpenGraphData = await response.json();
+
+			updateLinkCard(card, data, url);
+		} catch (error) {
+			console.error("Failed to load OpenGraph data for:", url, error);
+			updateLinkCardWithFallback(card, url);
+		}
+	}
+
+	function updateLinkCard(card: HTMLElement, data: OpenGraphData, url: string) {
+		const urlObj = new URL(url);
+
+		const titleElement = card.querySelector("[data-link-card-title]");
+		if (titleElement) {
+			const title = data.ogTitle || data.title || urlObj.hostname;
+			titleElement.textContent = title;
+			titleElement.classList.remove("link-card-placeholder");
+
+			card.setAttribute("aria-label", title);
+		}
+
+		const descriptionElement = card.querySelector(
+			"[data-link-card-description]",
+		);
+		if (descriptionElement) {
+			const description = data.ogDescription || data.description;
+			if (description) {
+				descriptionElement.textContent = description;
+				descriptionElement.classList.remove("link-card-placeholder", "w-1/2");
+			} else {
+				descriptionElement.classList.add("hidden")
+			}
+		}
+
+		const imageContainer = card.querySelector(
+			"[data-link-card-image-container]",
+		);
+		if (imageContainer && data.ogImage) {
+			const img = document.createElement("img");
+			img.src = data.ogImage;
+			img.alt = "";
+			img.decoding = "async";
+			img.loading = "lazy";
+
+			const isLargeImage = data.twitterCard === "summary_large_image";
+			const aspectRatioClass = isLargeImage ? "md:aspect-[40/21]" : "";
+
+			img.className = `size-full object-cover ${aspectRatioClass}`;
+
+			imageContainer.classList.remove("hidden");
+			imageContainer.classList.add(
+				isLargeImage ? "md:aspect-[40/21]" : "aspect-square",
+			);
+
+			imageContainer.appendChild(img);
+		}
+	}
+
+	function updateLinkCardWithFallback(card: HTMLElement, url: string) {
+		const urlObj = new URL(url);
+
+		const titleElement = card.querySelector("[data-link-card-title]");
+		if (titleElement) {
+			titleElement.textContent = urlObj.hostname;
+			titleElement.classList.remove("link-card-placeholder");
+			card.setAttribute("aria-label", urlObj.hostname);
+		}
+
+		const descriptionElement = card.querySelector(
+			"[data-link-card-description]",
+		);
+		if (descriptionElement) {
+			descriptionElement.classList.add("hidden")
+		}
+	}
+</script>

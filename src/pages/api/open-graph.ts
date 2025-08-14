@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { normalizeURL } from "ufo";
+import {normalizeURL, withQuery } from "ufo";
 import { z } from "zod";
 
 // Configuration
@@ -53,7 +53,7 @@ const searchParamsSchema = z.object({
 	image: z.coerce.boolean().default(false),
 });
 
-export const GET: APIRoute = async ({ request, locals }) => {
+export const GET: APIRoute = async ({ request, locals, site }) => {
 	// Validate request parameters
 	const validation = validateRequestParams(request);
 	if (!validation.success) {
@@ -87,6 +87,13 @@ export const GET: APIRoute = async ({ request, locals }) => {
 	const ogImage = openGraphData.ogImage
 		? await fetchOGImage(openGraphData.ogImage)
 		: null;
+
+	if (ogImage) {
+		openGraphData.ogImage = withQuery("/api/open-graph", {
+			url: normalizedURL,
+			image: "true",
+		});
+	}
 
 	// Store in cache
 	await storeCacheData(cache, cacheKeys, openGraphData, ogImage);
@@ -212,11 +219,7 @@ async function extractOpenGraph(url: string): Promise<OpenGraph> {
 	const handlers = createHTMLHandlers(result);
 
 	// Fetch the webpage
-	const response = await fetch(url, {
-		headers: {
-			"User-Agent": "Mozilla/5.0 (compatible; OpenGraphBot/1.0)",
-		},
-	});
+	const response = await fetch(url);
 
 	if (!response.ok) {
 		throw new Error(`Failed to fetch URL: ${response.status}`);
@@ -311,11 +314,7 @@ async function parseHTMLWithRewriter(
  */
 async function fetchOGImage(url: string): Promise<ImageData | null> {
 	try {
-		const response = await fetch(url, {
-			headers: {
-				"User-Agent": "Mozilla/5.0 (compatible; OpenGraphBot/1.0)",
-			},
-		});
+		const response = await fetch(url);
 
 		if (!response.ok) {
 			console.error(`Failed to fetch OG image: ${response.status}`);

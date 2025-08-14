@@ -75,6 +75,10 @@
 	interpolate-size: allow-keywords;
 }
 
+@utility link-card-placeholder {
+	@apply animate-pulse rounded-full bg-background-tertiary min-h-[1em];
+}
+
 @utility markdown {
 	@apply wrap-anywhere;
 	line-break: strict;
