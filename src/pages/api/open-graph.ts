@@ -2,159 +2,349 @@ import type { APIRoute } from "astro";
 import { normalizeURL } from "ufo";
 import { z } from "zod";
 
-const CACHE_KEY = "open-graph";
-// 1 week
-const EXPIRATION_TTL = 60 * 60 * 24 * 7;
-
+// Configuration
 export const prerender = false;
 
+// Cache Configuration
+const CACHE_CONFIG = {
+	KEY_PREFIX: "open-graph",
+	EXPIRATION_TTL: 60 * 60 * 24 * 7, // 1 week
+	BROWSER_MAX_AGE: 600, // 10 minutes
+	STALE_WHILE_REVALIDATE: 600, // 10 minutes
+} as const;
+
+// Response Headers
+const RESPONSE_HEADERS = {
+	CACHE_CONTROL: `public, max-age=${CACHE_CONFIG.BROWSER_MAX_AGE}, stale-while-revalidate=${CACHE_CONFIG.STALE_WHILE_REVALIDATE}`,
+	CONTENT_TYPE_JSON: "application/json",
+} as const;
+
+/**
+ * OpenGraph metadata extracted from a webpage
+ */
 export interface OpenGraph {
+	/** Page title from <title> tag */
 	title?: string;
+	/** Page description from meta description */
 	description?: string;
+	/** OpenGraph title */
 	ogTitle?: string;
+	/** OpenGraph description */
 	ogDescription?: string;
+	/** OpenGraph image URL */
 	ogImage?: string;
+	/** Twitter card type */
 	twitterCard?: string;
 }
 
+/**
+ * Image data with content type
+ */
+interface ImageData {
+	contentType: string;
+	data: ArrayBuffer;
+}
+
+/**
+ * Schema for validating query parameters
+ */
 const searchParamsSchema = z.object({
 	url: z.url(),
 	image: z.coerce.boolean().default(false),
 });
 
 export const GET: APIRoute = async ({ request, locals }) => {
-	const searchParams = new URL(request.url).searchParams;
-	const parsed = searchParamsSchema.safeParse(
-		Object.fromEntries(searchParams.entries()),
-	);
-	if (!parsed.success) {
-		return new Response("Bad Request", { status: 400 });
+	// Validate request parameters
+	const validation = validateRequestParams(request);
+	if (!validation.success) {
+		return createErrorResponse("Bad Request", 400);
 	}
-	const { url, image: shouldImage } = parsed.data;
+
+	const { url, image: shouldReturnImage } = validation.data;
 	const normalizedURL = normalizeURL(url);
-
 	const cache = locals.runtime.env.CACHE;
-	const cacheKey = `${CACHE_KEY}:${await getURLHash(normalizedURL)}`;
 
-	const cached = await cache.get(cacheKey, "json");
-	const cachedImage = await cache.getWithMetadata<{ contentType: string }>(
-		`${cacheKey}:image`,
-		"arrayBuffer",
+	// Generate cache keys
+	const cacheKeys = await generateCacheKeys(normalizedURL);
+
+	// Try to serve from cache
+	const cachedResponse = await serveCachedResponse(
+		cache,
+		cacheKeys,
+		shouldReturnImage,
 	);
-	if (!shouldImage && cached) {
-		return new Response(JSON.stringify(cached), {
-			headers: {
-				"Content-Type": "application/json",
-				"Cache-Control": "public, max-age=600, stale-while-revalidate=600",
-			},
-		});
-	} else if (shouldImage && cachedImage.value && cachedImage.metadata) {
-		return new Response(cachedImage.value, {
-			headers: {
-				"Content-Type": cachedImage.metadata.contentType,
-				"Cache-Control": "public, max-age=600, stale-while-revalidate=600",
-			},
-		});
+	if (cachedResponse) {
+		return cachedResponse;
 	}
 
-	const result = await extractOpenGraph(normalizedURL).catch(() => null);
-	if (result == null) {
-		return new Response("Not found", { status: 404 });
-	}
-	const ogImage = result.ogImage ? await getOGImage(result.ogImage) : null;
-
-	await cache.put(cacheKey, JSON.stringify(result), {
-		expirationTtl: EXPIRATION_TTL,
-	});
-	if (ogImage) {
-		await cache.put(`${cacheKey}:image`, ogImage.data, {
-			metadata: {
-				contentType: ogImage.contentType,
-			},
-			expirationTtl: EXPIRATION_TTL,
-		});
+	// Fetch and extract OpenGraph data
+	const openGraphData = await extractOpenGraph(normalizedURL).catch(() => null);
+	if (!openGraphData) {
+		return createErrorResponse("Not found", 404);
 	}
 
-	if (shouldImage && ogImage) {
-		return new Response(ogImage.data, {
-			headers: {
-				"Content-Type": ogImage.contentType,
-			},
-		});
+	// Fetch OG image if available
+	const ogImage = openGraphData.ogImage
+		? await fetchOGImage(openGraphData.ogImage)
+		: null;
+
+	// Store in cache
+	await storeCacheData(cache, cacheKeys, openGraphData, ogImage);
+
+	// Return appropriate response
+	if (shouldReturnImage && ogImage) {
+		return createImageResponse(ogImage);
 	}
 
-	return new Response(JSON.stringify(result), {
-		headers: {
-			"Content-Type": "application/json",
-			"Cache-Control": "public, max-age=600, stale-while-revalidate=600",
-		},
-	});
+	return createJSONResponse(openGraphData);
 };
 
+/**
+ * Validates request parameters
+ */
+function validateRequestParams(request: Request) {
+	const searchParams = new URL(request.url).searchParams;
+	return searchParamsSchema.safeParse(
+		Object.fromEntries(searchParams.entries()),
+	);
+}
+
+/**
+ * Generates cache keys for the given URL
+ */
+async function generateCacheKeys(url: string) {
+	const hash = await getURLHash(url);
+	return {
+		data: `${CACHE_CONFIG.KEY_PREFIX}:${hash}`,
+		image: `${CACHE_CONFIG.KEY_PREFIX}:${hash}:image`,
+	};
+}
+
+/**
+ * Attempts to serve cached response if available
+ */
+async function serveCachedResponse(
+	cache: KVNamespace,
+	cacheKeys: { data: string; image: string },
+	shouldReturnImage: boolean,
+): Promise<Response | null> {
+	if (shouldReturnImage) {
+		const cachedImage = await cache.getWithMetadata<{ contentType: string }>(
+			cacheKeys.image,
+			"arrayBuffer",
+		);
+		if (cachedImage.value && cachedImage.metadata) {
+			return createImageResponse({
+				contentType: cachedImage.metadata.contentType,
+				data: cachedImage.value,
+			});
+		}
+	} else {
+		const cachedData = await cache.get(cacheKeys.data, "json");
+		if (cachedData) {
+			return createJSONResponse(cachedData as OpenGraph);
+		}
+	}
+	return null;
+}
+
+/**
+ * Stores OpenGraph data and image in cache
+ */
+async function storeCacheData(
+	cache: KVNamespace,
+	cacheKeys: { data: string; image: string },
+	openGraphData: OpenGraph,
+	ogImage: ImageData | null,
+): Promise<void> {
+	// Store OpenGraph data
+	await cache.put(cacheKeys.data, JSON.stringify(openGraphData), {
+		expirationTtl: CACHE_CONFIG.EXPIRATION_TTL,
+	});
+
+	// Store image if available
+	if (ogImage) {
+		await cache.put(cacheKeys.image, ogImage.data, {
+			metadata: { contentType: ogImage.contentType },
+			expirationTtl: CACHE_CONFIG.EXPIRATION_TTL,
+		});
+	}
+}
+
+/**
+ * Creates a JSON response with appropriate headers
+ */
+function createJSONResponse(data: OpenGraph): Response {
+	return new Response(JSON.stringify(data), {
+		headers: {
+			"Content-Type": RESPONSE_HEADERS.CONTENT_TYPE_JSON,
+			"Cache-Control": RESPONSE_HEADERS.CACHE_CONTROL,
+		},
+	});
+}
+
+/**
+ * Creates an image response with appropriate headers
+ */
+function createImageResponse(image: ImageData): Response {
+	return new Response(image.data, {
+		headers: {
+			"Content-Type": image.contentType,
+			"Cache-Control": RESPONSE_HEADERS.CACHE_CONTROL,
+		},
+	});
+}
+
+/**
+ * Creates an error response
+ */
+function createErrorResponse(message: string, status: number): Response {
+	return new Response(message, { status });
+}
+
+/**
+ * Extracts OpenGraph metadata from a webpage
+ */
 async function extractOpenGraph(url: string): Promise<OpenGraph> {
 	const result: OpenGraph = {};
+
+	// Create handlers for HTML parsing
+	const handlers = createHTMLHandlers(result);
+
+	// Fetch the webpage
+	const response = await fetch(url, {
+		headers: {
+			"User-Agent": "Mozilla/5.0 (compatible; OpenGraphBot/1.0)",
+		},
+	});
+
+	if (!response.ok) {
+		throw new Error(`Failed to fetch URL: ${response.status}`);
+	}
+
+	// Parse HTML with appropriate rewriter
+	await parseHTMLWithRewriter(response, handlers);
+
+	return result;
+}
+
+/**
+ * Creates HTML handlers for extracting OpenGraph data
+ */
+function createHTMLHandlers(result: OpenGraph) {
 	const handleTitle = {
 		text(text: TextLike) {
-			if (text.text) {
-				result.title = text.text;
+			if (text.text?.trim()) {
+				result.title = text.text.trim();
 			}
 		},
 	};
+
 	const handleMeta = {
 		element(el: ElementLike) {
 			const name = el.getAttribute("name");
 			const property = el.getAttribute("property");
 			const content = el.getAttribute("content");
 
-			const propertyNormalized = name?.toLowerCase() ?? property?.toLowerCase();
+			if (!content) return;
 
-			if (!propertyNormalized || !content) return;
-			switch (propertyNormalized) {
-				case "description":
-					result.description = content;
-					break;
-				case "og:title":
-					result.ogTitle = content;
-					break;
-				case "og:description":
-					result.ogDescription = content;
-					break;
-				case "og:image":
-				case "og:image:url":
-					result.ogImage = content;
-					break;
-				case "twitter:card":
-					result.twitterCard = content;
-					break;
+			const propertyKey = (name ?? property)?.toLowerCase();
+			if (!propertyKey) return;
+
+			// Map metadata to OpenGraph properties
+			const metadataMap: Record<string, keyof OpenGraph> = {
+				description: "description",
+				"og:title": "ogTitle",
+				"og:description": "ogDescription",
+				"og:image": "ogImage",
+				"og:image:url": "ogImage",
+				"twitter:card": "twitterCard",
+			};
+
+			const targetProperty = metadataMap[propertyKey];
+			if (targetProperty) {
+				result[targetProperty] = content.trim();
 			}
 		},
 	};
 
-	const response = await fetch(url);
+	return { handleTitle, handleMeta };
+}
+
+/**
+ * Parses HTML with the appropriate rewriter based on environment
+ */
+async function parseHTMLWithRewriter(
+	response: Response,
+	handlers: {
+		handleTitle: { text: (text: TextLike) => void };
+		handleMeta: { element: (el: ElementLike) => void };
+	},
+): Promise<void> {
 	if (import.meta.env.DEV) {
+		// Use WASM HTMLRewriter in development
 		const { HTMLRewriter } = await import("html-rewriter-wasm");
-		const rewriter = new HTMLRewriter(() => {
-			// noop
-		})
-			.on("title", handleTitle)
-			.on("meta", handleMeta);
+		const rewriter = new HTMLRewriter(() => undefined)
+			.on("title", handlers.handleTitle)
+			.on("meta", handlers.handleMeta);
+
 		try {
-			await rewriter.write(new Uint8Array(await response.arrayBuffer()));
+			const buffer = new Uint8Array(await response.arrayBuffer());
+			await rewriter.write(buffer);
 			await rewriter.end();
 		} finally {
 			rewriter.free();
 		}
 	} else {
+		// Use Cloudflare HTMLRewriter in production
 		const rewriter = new HTMLRewriter()
-			.on("title", handleTitle)
-			.on("meta", handleMeta);
+			.on("title", handlers.handleTitle)
+			.on("meta", handlers.handleMeta);
+
 		const transformed = rewriter.transform(response);
 		await transformed.text();
 	}
-
-	return result;
 }
 
+/**
+ * Fetches an OpenGraph image from URL
+ */
+async function fetchOGImage(url: string): Promise<ImageData | null> {
+	try {
+		const response = await fetch(url, {
+			headers: {
+				"User-Agent": "Mozilla/5.0 (compatible; OpenGraphBot/1.0)",
+			},
+		});
+
+		if (!response.ok) {
+			console.error(`Failed to fetch OG image: ${response.status}`);
+			return null;
+		}
+
+		const contentType = response.headers.get("content-type");
+		if (!contentType?.startsWith("image/")) {
+			console.error("Invalid content type for OG image:", contentType);
+			return null;
+		}
+
+		const data = await response.arrayBuffer();
+
+		// Validate image size (optional, max 5MB)
+		const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+		if (data.byteLength > MAX_IMAGE_SIZE) {
+			console.error(`OG image too large: ${data.byteLength} bytes`);
+			return null;
+		}
+
+		return { contentType, data };
+	} catch (error) {
+		console.error("Error fetching OG image:", error);
+		return null;
+	}
+}
+
+// Type definitions for HTMLRewriter
 interface ElementLike {
 	getAttribute(name: string): string | null;
 }
@@ -163,27 +353,13 @@ interface TextLike {
 	text: string | null;
 }
 
-async function getOGImage(
-	url: string,
-): Promise<{ contentType: string; data: ArrayBuffer } | null> {
-	const response = await fetch(url);
-	if (!response.ok) {
-		return null;
-	}
-
-	const contentType = response.headers.get("content-type") ?? "image/png";
-	const data = await response.arrayBuffer();
-
-	return { contentType, data };
-}
-
+/**
+ * Generates a SHA-256 hash of the URL for cache key generation
+ */
 async function getURLHash(url: string): Promise<string> {
 	const encoder = new TextEncoder();
 	const data = encoder.encode(url);
 	const hashBuffer = await crypto.subtle.digest("SHA-256", data);
 	const hashArray = Array.from(new Uint8Array(hashBuffer));
-	const hashHex = hashArray
-		.map((b) => b.toString(16).padStart(2, "0"))
-		.join("");
-	return hashHex;
+	return hashArray.map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
