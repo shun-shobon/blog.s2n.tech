@@ -80,7 +80,7 @@
 }
 
 @utility markdown {
-	@apply wrap-anywhere;
+	@apply wrap-anywhere leading-relaxed;
 	line-break: strict;
 	hanging-punctuation: allow-end;
 
@@ -107,31 +107,31 @@
 
 	/* ブロック要素 */
 	:where(p):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
-		@apply my-4;
+		@apply my-6;
 	}
 	:where(blockquote):not(
 		:where([class~="not-markdown"], [class~="not-markdown"] *)
 	) {
-		@apply my-4 border-l-4 border-border-secondary pl-4 text-text-secondary;
+		@apply my-6 border-l-4 border-border-secondary pl-4 text-text-secondary;
 	}
 	:where(.expressive-code):not(
 		:where([class~="not-markdown"], [class~="not-markdown"] *)
 	) {
-		@apply my-4 rounded-lg border border-border-secondary;
+		@apply my-6 rounded-lg border border-border-secondary;
 	}
 	:where(hr):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
-		@apply my-8 border-t border-border-secondary;
+		@apply my-10 border-t border-border-secondary;
 	}
 
 	/* リスト */
 	:where(ol):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
-		@apply my-4 list-decimal pl-6;
+		@apply my-6 list-decimal pl-6;
 	}
 	:where(ul):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
-		@apply my-4 list-disc pl-6;
+		@apply my-6 list-disc pl-6;
 	}
 	:where(li):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
-		@apply my-2;
+		@apply my-4;
 	}
 	:where(ol > li, ul > li):not(
 			:where([class~="not-markdown"], [class~="not-markdown"] *)
@@ -141,14 +141,14 @@
 	:where(ol ol, ul ul, ol ul, ul ol):not(
 		:where([class~="not-markdown"], [class~="not-markdown"] *)
 	) {
-		@apply my-2;
+		@apply my-4;
 	}
 
 	/* テーブル */
 	:where(table):not(
 		:where([class~="not-markdown"], [class~="not-markdown"] *)
 	) {
-		@apply my-4 w-full table-auto text-sm;
+		@apply my-6 w-full table-auto text-sm;
 	}
 	:where(thead):not(
 		:where([class~="not-markdown"], [class~="not-markdown"] *)
@@ -205,7 +205,7 @@
 	:where(details):not(
 		:where([class~="not-markdown"], [class~="not-markdown"] *)
 	) {
-		@apply my-4 overflow-hidden rounded-lg border border-border-secondary bg-background-primary;
+		@apply my-6 overflow-hidden rounded-lg border border-border-secondary bg-background-primary;
 
 		summary {
 			@apply cursor-pointer px-4 py-2 transition-colors;

@@ -14,7 +14,7 @@ const { summary, open } = props.parse(Astro.props);
 <details open={open}>
 	<summary class="not-markdown">{summary}</summary>
 	<div
-		class="overflow-hidden border-t border-border-secondary p-4 **:first:mt-0 **:last:mb-0"
+		class="overflow-hidden border-t border-border-secondary px-4 py-6 **:first:mt-0 **:last:mb-0"
 	>
 		<slot />
 	</div>
