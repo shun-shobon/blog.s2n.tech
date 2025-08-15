@@ -80,7 +80,7 @@
 }
 
 @utility markdown {
-	@apply wrap-anywhere leading-relaxed;
+	@apply leading-relaxed wrap-anywhere;
 	line-break: strict;
 	hanging-punctuation: allow-end;
 

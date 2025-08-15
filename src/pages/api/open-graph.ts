@@ -300,7 +300,9 @@ async function parseHTMLWithRewriter(
 	if (import.meta.env.DEV) {
 		// Use WASM HTMLRewriter in development
 		const { HTMLRewriter } = await import("html-rewriter-wasm");
-		const rewriter = new HTMLRewriter(() => {/* noop */})
+		const rewriter = new HTMLRewriter(() => {
+			/* noop */
+		})
 			.on("title", handlers.handleTitle)
 			.on("meta", handlers.handleMeta);
 
@@ -371,9 +373,9 @@ async function getURLHash(url: string): Promise<string> {
  * Consumes a stream
  */
 async function consume(stream: ReadableStream) {
-  const reader = stream.getReader();
-  let result = await reader.read();
-  while (!result.done) {
-    result = await reader.read();
-  }
+	const reader = stream.getReader();
+	let result = await reader.read();
+	while (!result.done) {
+		result = await reader.read();
+	}
 }
