@@ -54,7 +54,7 @@ export interface OpenGraph {
  */
 interface ImageData {
 	contentType: string;
-	data: ArrayBuffer;
+	data: ReadableStream;
 }
 
 /**
@@ -150,7 +150,7 @@ async function serveCachedResponse(
 	if (shouldReturnImage) {
 		const cachedImage = await cache.getWithMetadata<{ contentType: string }>(
 			cacheKeys.image,
-			"arrayBuffer",
+			"stream",
 		);
 		if (cachedImage.value && cachedImage.metadata) {
 			return createImageResponse({
@@ -305,7 +305,7 @@ async function parseHTMLWithRewriter(
 	if (import.meta.env.DEV) {
 		// Use WASM HTMLRewriter in development
 		const { HTMLRewriter } = await import("html-rewriter-wasm");
-		const rewriter = new HTMLRewriter(() => undefined)
+		const rewriter = new HTMLRewriter(() => {/* noop */})
 			.on("title", handlers.handleTitle)
 			.on("meta", handlers.handleMeta);
 
@@ -323,7 +323,7 @@ async function parseHTMLWithRewriter(
 			.on("meta", handlers.handleMeta);
 
 		const transformed = rewriter.transform(response);
-		await transformed.text();
+		await consume(transformed.body!);
 	}
 }
 
@@ -345,16 +345,7 @@ async function fetchOGImage(url: string): Promise<ImageData | null> {
 			return null;
 		}
 
-		const data = await response.arrayBuffer();
-
-		// Validate image size (optional, max 5MB)
-		const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
-		if (data.byteLength > MAX_IMAGE_SIZE) {
-			console.error(`OG image too large: ${data.byteLength} bytes`);
-			return null;
-		}
-
-		return { contentType, data };
+		return { contentType, data: response.body! };
 	} catch (error) {
 		console.error("Error fetching OG image:", error);
 		return null;
@@ -379,4 +370,15 @@ async function getURLHash(url: string): Promise<string> {
 	const hashBuffer = await crypto.subtle.digest("SHA-256", data);
 	const hashArray = Array.from(new Uint8Array(hashBuffer));
 	return hashArray.map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+/**
+ * Consumes a stream
+ */
+async function consume(stream: ReadableStream) {
+  const reader = stream.getReader();
+  let result = await reader.read();
+  while (!result.done) {
+    result = await reader.read();
+  }
 }
