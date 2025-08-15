@@ -338,7 +338,7 @@ async function fetchOGImage(url: string): Promise<ImageData | null> {
 		}
 
 		const contentType = response.headers.get("content-type");
-		if (!contentType?.startsWith("image/")) {
+		if (!contentType || !["image/png", "image/jpeg", "image/gif", "image/webp", "image/avif"].includes(contentType)) {
 			console.error("Invalid content type for OG image:", contentType);
 			return null;
 		}
