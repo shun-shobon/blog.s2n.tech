@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { decodeHTMLStrict } from "entities/decode";
 import { normalizeURL, withQuery } from "ufo";
 import { z } from "zod";
 
@@ -278,13 +279,7 @@ function createHTMLHandlers(result: OpenGraph) {
 
 			const targetProperty = metadataMap[propertyKey];
 			if (targetProperty) {
-				result[targetProperty] = content
-					.trim()
-					.replaceAll("&amp;", "&")
-					.replaceAll("&quot;", '"')
-					.replaceAll("&apos;", "'")
-					.replaceAll("&lt;", "<")
-					.replaceAll("&gt;", ">");
+				result[targetProperty] = decodeHTMLStrict(content.trim());
 			}
 		},
 	};
