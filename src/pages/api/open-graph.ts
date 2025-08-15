@@ -235,6 +235,7 @@ async function extractOpenGraph(url: string): Promise<OpenGraph> {
 	const response = await fetch(url);
 
 	if (!response.ok) {
+		console.error(`Failed to fetch URL: ${response.status} ${await response.text()}`);
 		throw new Error(`Failed to fetch URL: ${response.status}`);
 	}
 
@@ -332,7 +333,7 @@ async function fetchOGImage(url: string): Promise<ImageData | null> {
 		const response = await fetch(url);
 
 		if (!response.ok) {
-			console.error(`Failed to fetch OG image: ${response.status}`);
+			console.error(`Failed to fetch OG image: ${response.status} ${await response.text()}`);
 			return null;
 		}
 
