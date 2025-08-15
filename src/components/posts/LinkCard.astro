@@ -11,8 +11,13 @@ const props = z.object({
 const { href } = props.parse(Astro.props);
 const url = new URL(href);
 
-const hostname = url.hostname;
-const faviconURL = `https://www.google.com/s2/favicons?domain=${hostname}`;
+const faviconURL = new URL("https://t3.gstatic.com/faviconV2");
+faviconURL.searchParams.set("client", "SOCIAL");
+faviconURL.searchParams.set("type", "FAVICON");
+faviconURL.searchParams.set("fallback_opts", "TYPE,SIZE,URL");
+faviconURL.searchParams.set("url", url.origin);
+faviconURL.searchParams.set("size", "32");
+
 ---
 
 <a
@@ -24,14 +29,14 @@ const faviconURL = `https://www.google.com/s2/favicons?domain=${hostname}`;
 >
 	<div class="grid grow gap-1 p-4">
 		<span
-			class="line-clamp-2 link-card-placeholder w-full font-bold"
+			class="line-clamp-2 link-card-placeholder w-full font-bold leading-tight"
 			data-link-card-title></span>
 		<span
-			class="line-clamp-2 link-card-placeholder w-1/2 text-sm text-text-secondary"
+			class="line-clamp-2 link-card-placeholder w-1/2 text-sm text-text-secondary leading-tight"
 			data-link-card-description></span>
 		<span class="flex min-w-0 items-center gap-1 text-xs text-text-secondary"
 			><img
-				src={faviconURL}
+				src={faviconURL.toString()}
 				alt=""
 				class="size-4 shrink-0"
 				decoding="async"
