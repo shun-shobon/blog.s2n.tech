@@ -21,11 +21,11 @@
 	"dependencies": {
 		"@astrojs/mdx": "4.3.3",
 		"@astrojs/partytown": "2.1.4",
-		"@astrojs/sitemap": "3.4.2",
+		"@astrojs/sitemap": "3.5.0",
 		"@iconify-json/lucide": "1.2.62",
 		"@iconify-json/simple-icons": "1.2.47",
 		"@resvg/resvg-wasm": "2.6.2",
-		"astro": "5.12.8",
+		"astro": "5.13.0",
 		"astro-expressive-code": "0.41.3",
 		"astro-icon": "1.1.5",
 		"entities": "6.0.1",
