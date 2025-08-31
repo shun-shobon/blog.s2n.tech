@@ -21,8 +21,8 @@ importers:
         specifier: 1.2.65
         version: 1.2.65
       '@iconify-json/simple-icons':
-        specifier: 1.2.48
-        version: 1.2.48
+        specifier: 1.2.49
+        version: 1.2.49
       '@resvg/resvg-wasm':
         specifier: 2.6.2
         version: 2.6.2
@@ -679,8 +679,8 @@ packages:
   '@iconify-json/lucide@1.2.65':
     resolution: {integrity: sha512-Ur5I3dZyLW8bZLTEtsMKQ9lkl8u5HIiwO79pYxlvAzKQ0Mc4milB+G04CxnFqlB15x/lRq2rTPSi7ep1utDXrg==}
 
-  '@iconify-json/simple-icons@1.2.48':
-    resolution: {integrity: sha512-EACOtZMoPJtERiAbX1De0asrrCtlwI27+03c9OJlYWsly9w1O5vcD8rTzh+kDPjo+K8FOVnq2Qy+h/CzljSKDA==}
+  '@iconify-json/simple-icons@1.2.49':
+    resolution: {integrity: sha512-nRLwrHzz+cTAQYBNQrcr4eWOmQIcHObTj/QSi7nj0SFwVh5MvBsgx8OhoDC/R8iGklNmMpmoE/NKU0cPXMlOZw==}
 
   '@iconify/tools@4.1.2':
     resolution: {integrity: sha512-q6NzLQYEN9zkDfcyBqD3vItHcZw97w/s++3H3TBxUORr57EfHxj6tOW6fyufDjMq+Vl56WXWaPx1csBPYlI5CA==}
@@ -5349,7 +5349,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.48':
+  '@iconify-json/simple-icons@1.2.49':
     dependencies:
       '@iconify/types': 2.0.0
 
