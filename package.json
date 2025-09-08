@@ -21,11 +21,11 @@
 	"dependencies": {
 		"@astrojs/mdx": "4.3.4",
 		"@astrojs/partytown": "2.1.4",
-		"@astrojs/sitemap": "3.5.0",
+		"@astrojs/sitemap": "3.5.1",
 		"@iconify-json/lucide": "1.2.66",
 		"@iconify-json/simple-icons": "1.2.50",
 		"@resvg/resvg-wasm": "2.6.2",
-		"astro": "5.13.2",
+		"astro": "5.13.5",
 		"astro-expressive-code": "0.41.3",
 		"astro-icon": "1.1.5",
 		"entities": "6.0.1",
@@ -43,7 +43,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/check": "0.9.4",
-		"@astrojs/cloudflare": "12.6.4",
+		"@astrojs/cloudflare": "12.6.7",
 		"@shun-shobon/style-guide": "1.1.0",
 		"@tailwindcss/vite": "4.1.12",
 		"@types/react": "19.1.12",
