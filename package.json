@@ -32,7 +32,7 @@
 		"open-graph-scraper": "6.10.0",
 		"react": "19.1.1",
 		"rehype-katex": "7.0.1",
-		"remark-cjk-friendly": "1.2.0",
+		"remark-cjk-friendly": "1.2.1",
 		"remark-cjk-friendly-gfm-strikethrough": "1.2.0",
 		"remark-join-cjk-lines": "1.0.13",
 		"remark-math": "6.0.0",
