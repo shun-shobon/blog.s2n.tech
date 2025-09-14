@@ -48,8 +48,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       remark-cjk-friendly:
-        specifier: 1.2.0
-        version: 1.2.0(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5)
+        specifier: 1.2.1
+        version: 1.2.1(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5)
       remark-cjk-friendly-gfm-strikethrough:
         specifier: 1.2.0
         version: 1.2.0(@types/mdast@4.0.4)(micromark-extension-cjk-friendly-util@2.1.0(micromark-util-types@2.0.2))(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5)
@@ -3911,8 +3911,8 @@ packages:
       '@types/mdast':
         optional: true
 
-  remark-cjk-friendly@1.2.0:
-    resolution: {integrity: sha512-ZLAjlNPJyM3EVIJUNvtQ3ncETucevMfQtdHrdfoYkcbj41rwDuC9GM13gaCHU6eeFQrL2zNL6zKSmH2vJa8cXg==}
+  remark-cjk-friendly@1.2.1:
+    resolution: {integrity: sha512-Y3B2DD3L5ND9/iWGoRoiAYKxmWqGo3sJJs1h9vMzeZkTGwPtCuMdNwWH/6CDPq3tkAMYSwUczp0pTqotVS5Gmg==}
     engines: {node: '>=16'}
     peerDependencies:
       '@types/mdast': ^4.0.0
@@ -9318,7 +9318,7 @@ snapshots:
       - micromark-extension-cjk-friendly-util
       - micromark-util-types
 
-  remark-cjk-friendly@1.2.0(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5):
+  remark-cjk-friendly@1.2.1(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5):
     dependencies:
       micromark-extension-cjk-friendly: 1.2.1(micromark-util-types@2.0.2)(micromark@4.0.2)
       unified: 11.0.5
