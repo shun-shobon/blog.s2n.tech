@@ -50,7 +50,7 @@
 		"eslint": "9.35.0",
 		"html-rewriter-wasm": "0.4.1",
 		"prettier": "3.6.2",
-		"sharp": "0.34.3",
+		"sharp": "0.34.4",
 		"typescript": "5.8.3",
 		"wrangler": "4.34.0"
 	}
