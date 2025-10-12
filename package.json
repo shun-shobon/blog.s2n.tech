@@ -23,7 +23,7 @@
 		"@astrojs/partytown": "2.1.4",
 		"@astrojs/sitemap": "3.5.0",
 		"@iconify-json/lucide": "1.2.69",
-		"@iconify-json/simple-icons": "1.2.53",
+		"@iconify-json/simple-icons": "1.2.54",
 		"@resvg/resvg-wasm": "2.6.2",
 		"astro": "5.13.2",
 		"astro-expressive-code": "0.41.3",
