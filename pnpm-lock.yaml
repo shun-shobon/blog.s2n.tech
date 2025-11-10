@@ -36,8 +36,8 @@ importers:
         specifier: 1.1.5
         version: 1.1.5
       entities:
-        specifier: 6.0.1
-        version: 6.0.1
+        specifier: 7.0.0
+        version: 7.0.0
       open-graph-scraper:
         specifier: 6.10.0
         version: 6.10.0
@@ -2217,6 +2217,10 @@ packages:
 
   entities@6.0.1:
     resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
+    engines: {node: '>=0.12'}
+
+  entities@7.0.0:
+    resolution: {integrity: sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ==}
     engines: {node: '>=0.12'}
 
   error-stack-parser-es@1.0.5:
@@ -7051,6 +7055,8 @@ snapshots:
   entities@4.5.0: {}
 
   entities@6.0.1: {}
+
+  entities@7.0.0: {}
 
   error-stack-parser-es@1.0.5: {}
 
