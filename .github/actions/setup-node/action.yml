@@ -5,7 +5,7 @@ runs:
   using: composite
   steps:
     - name: Setup | Mise
-      uses: jdx/mise-action@be3be2260bc02bc3fbf94c5e2fed8b7964baf074 # v3.4.0
+      uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3.5.1
 
     - name: Setup | Get pnpm cache directory
       id: pnpm-cache-dir
