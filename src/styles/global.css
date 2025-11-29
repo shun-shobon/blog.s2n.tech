@@ -131,7 +131,7 @@
 		@apply my-6 list-disc pl-6;
 	}
 	:where(li):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
-		@apply my-4;
+		@apply my-2;
 	}
 	:where(ol > li, ul > li):not(
 			:where([class~="not-markdown"], [class~="not-markdown"] *)
@@ -141,7 +141,7 @@
 	:where(ol ol, ul ul, ol ul, ul ol):not(
 		:where([class~="not-markdown"], [class~="not-markdown"] *)
 	) {
-		@apply my-4;
+		@apply my-2;
 	}
 
 	/* テーブル */
