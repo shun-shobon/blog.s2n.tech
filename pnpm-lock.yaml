@@ -54,8 +54,8 @@ importers:
         specifier: 1.2.3
         version: 1.2.3(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5)
       remark-join-cjk-lines:
-        specifier: 1.0.13
-        version: 1.0.13
+        specifier: 1.0.14
+        version: 1.0.14
       remark-math:
         specifier: 6.0.0
         version: 6.0.0
@@ -3946,8 +3946,8 @@ packages:
   remark-gfm@4.0.1:
     resolution: {integrity: sha512-1quofZ2RQ9EWdeN34S79+KExV1764+wCUGop5CPL1WGdD0ocPpu91lzPGbwWMECpEpd42kJGQwzRfyov9j4yNg==}
 
-  remark-join-cjk-lines@1.0.13:
-    resolution: {integrity: sha512-+5h7ukxCtsEO6rCWRDOkd3NDovN8evsjpNVQAgxAkguNIqgm5KITv2M6rna++Zofze03OFgsemLnjqGXuBdhFw==}
+  remark-join-cjk-lines@1.0.14:
+    resolution: {integrity: sha512-qyqgYsiND9hQTMp6bfoCv+gNYJYQ/S4e8MqSkxKBU6/jEf28vmu+BOjT+B0wCXswMN5pT5ugyoh9DYfE2Mijnw==}
     engines: {node: '>=16.0.0'}
 
   remark-math@6.0.0:
@@ -9379,7 +9379,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remark-join-cjk-lines@1.0.13:
+  remark-join-cjk-lines@1.0.14:
     dependencies:
       unist-util-visit: 2.0.3
 
