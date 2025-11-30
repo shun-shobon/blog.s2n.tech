@@ -34,7 +34,7 @@
 		"rehype-katex": "7.0.1",
 		"remark-cjk-friendly": "1.2.3",
 		"remark-cjk-friendly-gfm-strikethrough": "1.2.3",
-		"remark-join-cjk-lines": "1.0.13",
+		"remark-join-cjk-lines": "1.0.14",
 		"remark-math": "6.0.0",
 		"satori": "0.18.3",
 		"tailwindcss": "4.1.17",
