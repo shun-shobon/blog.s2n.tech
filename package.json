@@ -19,13 +19,13 @@
 		"typecheck": "astro check"
 	},
 	"dependencies": {
-		"@astrojs/mdx": "4.3.4",
+		"@astrojs/mdx": "4.3.12",
 		"@astrojs/partytown": "2.1.4",
-		"@astrojs/sitemap": "3.5.0",
+		"@astrojs/sitemap": "3.6.0",
 		"@iconify-json/lucide": "1.2.76",
 		"@iconify-json/simple-icons": "1.2.60",
 		"@resvg/resvg-wasm": "2.6.2",
-		"astro": "5.13.2",
+		"astro": "5.16.2",
 		"astro-expressive-code": "0.41.3",
 		"astro-icon": "1.1.5",
 		"entities": "7.0.0",
@@ -42,8 +42,8 @@
 		"zod": "4.1.12"
 	},
 	"devDependencies": {
-		"@astrojs/check": "0.9.5",
-		"@astrojs/cloudflare": "12.6.4",
+		"@astrojs/check": "0.9.6",
+		"@astrojs/cloudflare": "12.6.12",
 		"@shun-shobon/style-guide": "1.1.1",
 		"@tailwindcss/vite": "4.1.17",
 		"@types/react": "19.2.7",
