@@ -205,7 +205,7 @@ async function loadEmoji(segment: string): Promise<string> {
 export async function generateImage({
 	title,
 	tags,
-}: Props): Promise<Uint8Array> {
+}: Props): Promise<Uint8Array<ArrayBuffer>> {
 	const svg = await satori(<OGImage title={title} tags={tags} />, {
 		width: WIDTH,
 		height: HEIGHT,
@@ -235,5 +235,5 @@ export async function generateImage({
 	});
 	const img = resvg.render().asPng();
 
-	return img;
+	return img as Uint8Array<ArrayBuffer>;
 }
