@@ -29,7 +29,7 @@
 		"astro-expressive-code": "0.41.3",
 		"astro-icon": "1.1.5",
 		"entities": "7.0.0",
-		"open-graph-scraper": "6.10.0",
+		"open-graph-scraper": "6.11.0",
 		"react": "19.2.0",
 		"rehype-katex": "7.0.1",
 		"remark-cjk-friendly": "1.2.3",
