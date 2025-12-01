@@ -43,7 +43,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/check": "0.9.6",
-		"@astrojs/cloudflare": "12.6.6",
+		"@astrojs/cloudflare": "12.6.12",
 		"@shun-shobon/style-guide": "1.1.1",
 		"@tailwindcss/vite": "4.1.17",
 		"@types/react": "19.2.7",

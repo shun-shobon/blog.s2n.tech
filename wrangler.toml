@@ -1,6 +1,6 @@
 name = "blog-s2n-tech"
 compatibility_date = "2025-07-21"
-compatibility_flags = ["global_fetch_strictly_public"]
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 main = "./dist/_worker.js"
 
 [assets]
