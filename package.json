@@ -51,7 +51,7 @@
 		"html-rewriter-wasm": "0.4.1",
 		"prettier": "3.6.2",
 		"sharp": "0.34.5",
-		"typescript": "5.8.3",
+		"typescript": "5.9.3",
 		"wrangler": "4.51.0"
 	}
 }
