@@ -18,6 +18,7 @@ export default defineConfig({
 		platformProxy: {
 			enabled: true,
 		},
+		imageService: "compile",
 	}),
 	integrations: [
 		expressiveCode({
