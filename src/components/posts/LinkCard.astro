@@ -1,5 +1,4 @@
 ---
-/* eslint-disable astro/jsx-a11y/control-has-associated-label */
 import { z } from "astro:schema";
 
 type Props = z.input<typeof props>;
@@ -50,116 +49,120 @@ faviconURL.searchParams.set("size", "32");
 		data-link-card-image-container
 	>
 	</div>
-</a>
 
-<script>
-	interface OpenGraphData {
-		title?: string;
-		description?: string;
-		ogTitle?: string;
-		ogDescription?: string;
-		ogImage?: string;
-		twitterCard?: string;
-	}
+	<script>
+		interface OpenGraphData {
+			title?: string;
+			description?: string;
+			ogTitle?: string;
+			ogDescription?: string;
+			ogImage?: string;
+			twitterCard?: string;
+		}
 
-	document.addEventListener("DOMContentLoaded", () => {
-		initializeLinkCards();
-	});
+		document.addEventListener("DOMContentLoaded", () => {
+			initializeLinkCards();
+		});
 
-	async function initializeLinkCards() {
-		const linkCards = document.querySelectorAll("[data-link-card-url]");
+		async function initializeLinkCards() {
+			const linkCards = document.querySelectorAll("[data-link-card-url]");
 
-		await Promise.allSettled(
-			Array.from(linkCards).map((card) =>
-				loadLinkCardData(card as HTMLElement),
-			),
-		);
-	}
-
-	async function loadLinkCardData(card: HTMLElement) {
-		const url = card.getAttribute("data-link-card-url");
-		if (!url) return;
-
-		try {
-			const response = await fetch(
-				`/api/open-graph?url=${encodeURIComponent(url)}`,
+			await Promise.allSettled(
+				Array.from(linkCards).map((card) =>
+					loadLinkCardData(card as HTMLElement),
+				),
 			);
-			if (!response.ok) {
-				throw new Error(`API returned ${response.status}`);
+		}
+
+		async function loadLinkCardData(card: HTMLElement) {
+			const url = card.getAttribute("data-link-card-url");
+			if (!url) return;
+
+			try {
+				const response = await fetch(
+					`/api/open-graph?url=${encodeURIComponent(url)}`,
+				);
+				if (!response.ok) {
+					throw new Error(`API returned ${response.status}`);
+				}
+
+				const data: OpenGraphData = await response.json();
+
+				updateLinkCard(card, data, url);
+			} catch (error) {
+				console.error("Failed to load OpenGraph data for:", url, error);
+				updateLinkCardWithFallback(card, url);
+			}
+		}
+
+		function updateLinkCard(
+			card: HTMLElement,
+			data: OpenGraphData,
+			url: string,
+		) {
+			const urlObj = new URL(url);
+
+			const titleElement = card.querySelector("[data-link-card-title]");
+			if (titleElement) {
+				const title = data.ogTitle || data.title || urlObj.hostname;
+				titleElement.textContent = title;
+				titleElement.classList.remove("link-card-placeholder");
+
+				card.setAttribute("aria-label", title);
 			}
 
-			const data: OpenGraphData = await response.json();
+			const descriptionElement = card.querySelector(
+				"[data-link-card-description]",
+			);
+			if (descriptionElement) {
+				const description = data.ogDescription || data.description;
+				if (description) {
+					descriptionElement.textContent = description;
+					descriptionElement.classList.remove("link-card-placeholder", "w-1/2");
+				} else {
+					descriptionElement.classList.add("hidden");
+				}
+			}
 
-			updateLinkCard(card, data, url);
-		} catch (error) {
-			console.error("Failed to load OpenGraph data for:", url, error);
-			updateLinkCardWithFallback(card, url);
+			const imageContainer = card.querySelector(
+				"[data-link-card-image-container]",
+			);
+			if (imageContainer && data.ogImage) {
+				const img = document.createElement("img");
+				img.src = data.ogImage;
+				img.alt = "";
+				img.decoding = "async";
+				img.loading = "lazy";
+
+				const isLargeImage = data.twitterCard === "summary_large_image";
+
+				img.className = `size-full object-cover`;
+
+				imageContainer.classList.remove("hidden");
+				if (isLargeImage) {
+					imageContainer.classList.add("md:aspect-[40/21]");
+				}
+
+				imageContainer.appendChild(img);
+			}
 		}
-	}
 
-	function updateLinkCard(card: HTMLElement, data: OpenGraphData, url: string) {
-		const urlObj = new URL(url);
+		function updateLinkCardWithFallback(card: HTMLElement, url: string) {
+			const urlObj = new URL(url);
 
-		const titleElement = card.querySelector("[data-link-card-title]");
-		if (titleElement) {
-			const title = data.ogTitle || data.title || urlObj.hostname;
-			titleElement.textContent = title;
-			titleElement.classList.remove("link-card-placeholder");
+			const titleElement = card.querySelector("[data-link-card-title]");
+			if (titleElement) {
+				titleElement.textContent = urlObj.hostname;
+				titleElement.classList.remove("link-card-placeholder");
+				card.setAttribute("aria-label", urlObj.hostname);
+			}
 
-			card.setAttribute("aria-label", title);
-		}
-
-		const descriptionElement = card.querySelector(
-			"[data-link-card-description]",
-		);
-		if (descriptionElement) {
-			const description = data.ogDescription || data.description;
-			if (description) {
-				descriptionElement.textContent = description;
-				descriptionElement.classList.remove("link-card-placeholder", "w-1/2");
-			} else {
+			const descriptionElement = card.querySelector(
+				"[data-link-card-description]",
+			);
+			if (descriptionElement) {
 				descriptionElement.classList.add("hidden");
 			}
 		}
-
-		const imageContainer = card.querySelector(
-			"[data-link-card-image-container]",
-		);
-		if (imageContainer && data.ogImage) {
-			const img = document.createElement("img");
-			img.src = data.ogImage;
-			img.alt = "";
-			img.decoding = "async";
-			img.loading = "lazy";
-
-			const isLargeImage = data.twitterCard === "summary_large_image";
-
-			img.className = `size-full object-cover`;
-
-			imageContainer.classList.remove("hidden");
-			if (isLargeImage) {
-				imageContainer.classList.add("md:aspect-[40/21]");
-			}
-
-			imageContainer.appendChild(img);
-		}
-	}
-
-	function updateLinkCardWithFallback(card: HTMLElement, url: string) {
-		const urlObj = new URL(url);
-
-		const titleElement = card.querySelector("[data-link-card-title]");
-		if (titleElement) {
-			titleElement.textContent = urlObj.hostname;
-			titleElement.classList.remove("link-card-placeholder");
-			card.setAttribute("aria-label", urlObj.hostname);
-		}
-
-		const descriptionElement = card.querySelector(
-			"[data-link-card-description]",
-		);
-		if (descriptionElement) {
-			descriptionElement.classList.add("hidden");
-		}
-	}
-</script>
+	</script>
+</a>
