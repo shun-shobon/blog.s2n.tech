@@ -2,10 +2,19 @@
 import { Image } from "astro:assets";
 
 import MyIcon from "@/assets/my-icon.png";
+
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
 ---
 
 <header
-	class="flex w-full max-w-sm items-center justify-between rounded-full border border-border-primary bg-background-primary p-2 pr-6 font-cursive shadow-lg"
+	class:list={[
+		"flex w-full max-w-sm items-center justify-between rounded-full border border-border-primary bg-background-primary p-2 pr-6 font-cursive shadow-lg",
+		className,
+	]}
 >
 	<a href="/" class="flex items-center gap-1">
 		<Image
