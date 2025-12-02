@@ -164,27 +164,47 @@ const yearsSinceUpdatedAt =
 					</div>
 				</div>
 			</div>
-			<div
-				class="sticky top-8 hidden max-h-[calc(100dvh-var(--spacing)*16)] w-full max-w-xs gap-2 overflow-y-auto rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg xl:grid"
-			>
-				<div class="text-lg font-bold kerning-on">目次</div>
-				<ul class="list-disc pl-4">
-					{
-						headings
-							.filter((heading) => heading.depth < 3)
-							.map((heading) => (
-								<li>
-									<a
-										href={`#${heading.slug}`}
-										class="block py-0.5 text-text-secondary transition-colors hover:text-text-primary"
+			{
+				headings.length > 0 && (
+					<div class="sticky top-8 hidden max-h-[calc(100dvh-var(--spacing)*16)] w-full max-w-xs gap-2 overflow-y-auto rounded-2xl border border-border-primary bg-background-primary p-4 shadow-lg xl:grid">
+						<div class="text-lg font-bold kerning-on">目次</div>
+						<ul
+							class:list={[
+								"relative pl-2 text-sm leading-normal text-text-secondary",
+								"before:absolute before:top-[0.5lh] before:h-[calc(100%-1lh)] before:w-px before:-translate-x-1/2",
+								"before:bg-border-tertiary",
+							]}
+						>
+							{headings
+								.filter((heading) => heading.depth < 5)
+								.map((heading) => (
+									<li
+										class:list={[
+											"group relative",
+											"before:absolute before:top-[0.5lh] before:left-0 before:mr-1 before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:border-[3px]",
+											"before:border-background-primary before:bg-border-tertiary before:transition-colors hover:before:bg-text-secondary",
+											heading.depth === 2 && "font-bold before:size-[12px]",
+											heading.depth === 3 && "before:size-[10px]",
+											heading.depth === 4 && "before:size-[8px]",
+										]}
 									>
-										{heading.text}
-									</a>
-								</li>
-							))
-					}
-				</ul>
-			</div>
+										<a
+											href={`#${heading.slug}`}
+											class:list={[
+												"block transition-colors group-hover:text-text-primary",
+												heading.depth === 2 && "pl-3",
+												heading.depth === 3 && "pl-5",
+												heading.depth === 4 && "pl-7",
+											]}
+										>
+											{heading.text}
+										</a>
+									</li>
+								))}
+						</ul>
+					</div>
+				)
+			}
 		</div>
 	</article>
 </BasicLayout>

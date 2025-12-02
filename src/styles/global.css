@@ -10,6 +10,7 @@
 	--color-background-tertiary: var(--color-neutral-200);
 	--color-border-primary: var(--color-neutral-100);
 	--color-border-secondary: var(--color-neutral-200);
+	--color-border-tertiary: var(--color-neutral-300);
 
 	--color-info-text: var(--color-lime-900);
 	--color-info-background: var(--color-lime-100);
@@ -50,6 +51,7 @@
 		--color-background-tertiary: var(--color-neutral-800);
 		--color-border-primary: var(--color-neutral-800);
 		--color-border-secondary: var(--color-neutral-700);
+		--color-border-tertiary: var(--color-neutral-600);
 
 		--color-info-text: var(--color-lime-50);
 		--color-info-background: var(--color-lime-800);
