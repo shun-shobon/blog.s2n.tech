@@ -195,7 +195,7 @@ async function storeCacheData(
  * Creates a JSON response with appropriate headers
  */
 function createJSONResponse(data: OpenGraph): Response {
-	return new Response(JSON.stringify(data), {
+	return Response.json(data, {
 		headers: {
 			"Content-Type": RESPONSE_HEADERS.CONTENT_TYPE_JSON,
 			"Cache-Control": RESPONSE_HEADERS.CACHE_CONTROL,
