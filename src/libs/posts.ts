@@ -70,7 +70,8 @@ export async function getTags(): Promise<string[]> {
 		}
 	}
 
-	const tags = Array.from(tagMap.entries()).sort((a, b) => b[1] - a[1]);
+	const tags = Array.from(tagMap.entries());
+	tags.sort(([_aTag, aCount], [_bTag, bCount]) => bCount - aCount);
 
 	return tags.map(([tag]) => tag);
 }
