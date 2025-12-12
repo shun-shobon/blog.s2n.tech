@@ -45,7 +45,7 @@
 		"@astrojs/cloudflare": "12.6.12",
 		"@shun-shobon/style-guide": "1.2.0",
 		"@tailwindcss/vite": "4.1.17",
-		"@types/node": "24.10.1",
+		"@types/node": "24.10.2",
 		"@types/react": "19.2.7",
 		"eslint": "9.39.1",
 		"html-rewriter-wasm": "0.4.1",
