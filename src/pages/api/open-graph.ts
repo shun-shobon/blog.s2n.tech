@@ -9,7 +9,7 @@ export const prerender = false;
 // Cache Configuration
 const CACHE_CONFIG = {
 	KEY_PREFIX: "open-graph",
-	EXPIRATION_TTL: 60 * 60 * 24 * 7, // 1 week
+	EXPIRATION_TTL: 60,
 	BROWSER_MAX_AGE: 600, // 10 minutes
 	STALE_WHILE_REVALIDATE: 600, // 10 minutes
 } as const;
@@ -253,7 +253,7 @@ async function extractOpenGraph(url: string): Promise<OpenGraph> {
 function createHTMLHandlers(result: OpenGraph) {
 	const handleTitle = {
 		text(text: TextLike) {
-			if (text.text?.trim()) {
+			if (text.text?.trim() && result.title == null) {
 				result.title = text.text.trim();
 			}
 		},
@@ -306,8 +306,8 @@ async function parseHTMLWithRewriter(
 		const rewriter = new HTMLRewriter(() => {
 			/* noop */
 		})
-			.on("title", handlers.handleTitle)
-			.on("meta", handlers.handleMeta);
+			.on("head title", handlers.handleTitle)
+			.on("head meta", handlers.handleMeta);
 
 		try {
 			const buffer = new Uint8Array(await response.arrayBuffer());
@@ -319,8 +319,8 @@ async function parseHTMLWithRewriter(
 	} else {
 		// Use Cloudflare HTMLRewriter in production
 		const rewriter = new HTMLRewriter()
-			.on("title", handlers.handleTitle)
-			.on("meta", handlers.handleMeta);
+			.on("head title", handlers.handleTitle)
+			.on("head meta", handlers.handleMeta);
 
 		const transformed = rewriter.transform(response);
 		await consume(transformed.body!);
