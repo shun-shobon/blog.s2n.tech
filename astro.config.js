@@ -14,6 +14,7 @@ import remarkMath from "remark-math";
 
 export default defineConfig({
 	site: "https://blog.s2n.tech",
+	trailingSlash: "never",
 	adapter: cloudflare({
 		platformProxy: {
 			enabled: true,
