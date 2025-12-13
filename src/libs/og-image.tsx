@@ -21,6 +21,7 @@ const COLOR_TEXT_PRIMARY = "#262626";
 const COLOR_TEXT_HEADING = "#0a0a0a";
 const FONT_CAVEAT = "Caveat";
 const FONT_NOTO_SANS_JP = "Noto Sans JP";
+const BACKGROUND_GRID_SIZE = "16px";
 
 try {
 	await initWasm(RESVG_WASM);
@@ -62,7 +63,7 @@ function OGImage({ title, tags }: Props): ReactNode {
 					position: "absolute",
 					inset: 0,
 					backgroundImage: `linear-gradient(0deg, ${COLOR_BORDER_PRIMARY} 1px, transparent 1px)`,
-					backgroundSize: "48px 48px",
+					backgroundSize: `${BACKGROUND_GRID_SIZE} ${BACKGROUND_GRID_SIZE}`,
 					backgroundPosition: "50% 50%",
 				}}
 			/>
@@ -73,7 +74,7 @@ function OGImage({ title, tags }: Props): ReactNode {
 					position: "absolute",
 					inset: 0,
 					backgroundImage: `linear-gradient(90deg, ${COLOR_BORDER_PRIMARY} 1px, transparent 1px)`,
-					backgroundSize: "48px 48px",
+					backgroundSize: `${BACKGROUND_GRID_SIZE} ${BACKGROUND_GRID_SIZE}`,
 					backgroundPosition: "50% 50%",
 				}}
 			/>
