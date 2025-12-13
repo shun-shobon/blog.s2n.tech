@@ -13,8 +13,8 @@ const AUTHOR_NAME = "しゅん🌙";
 const WIDTH = 1200;
 const HEIGHT = 630;
 
-// const COLOR_BORDER_PRIMARY = "#f5f5f5";
-const COLOR_BORDER_PRIMARY = "#e5e5e5";
+const COLOR_BORDER_PRIMARY = "#f5f5f5";
+// const COLOR_BORDER_PRIMARY = "#e5e5e5";
 const COLOR_BACKGROUND_PRIMARY = "#ffffff";
 const COLOR_BACKGROUND_SECONDARY = "#f5f5f5";
 const COLOR_TEXT_PRIMARY = "#262626";
@@ -22,7 +22,11 @@ const COLOR_TEXT_HEADING = "#0a0a0a";
 const FONT_CAVEAT = "Caveat";
 const FONT_NOTO_SANS_JP = "Noto Sans JP";
 
-await initWasm(RESVG_WASM);
+try {
+	await initWasm(RESVG_WASM);
+} catch {
+	// noop
+}
 
 const fontNotoSansJP = await fs.readFile("./src/assets/NotoSansJP-Bold.ttf");
 const fontCaveat = await fs.readFile("./src/assets/Caveat-Bold.ttf");
@@ -78,98 +82,113 @@ function OGImage({ title, tags }: Props): ReactNode {
 				style={{
 					width: "100%",
 					height: "100%",
-					padding: "48px",
+					padding: "32px",
 					display: "flex",
-					flexDirection: "column",
-					justifyContent: "space-between",
 				}}
 			>
 				<div
 					style={{
 						width: "100%",
+						height: "100%",
+						padding: "48px",
 						display: "flex",
 						flexDirection: "column",
-						gap: "32px",
-					}}
-				>
-					<span
-						style={{
-							color: COLOR_TEXT_HEADING,
-							fontSize: "48px",
-							fontWeight: "bold",
-						}}
-					>
-						{title}
-					</span>
-					<div
-						style={{
-							display: "flex",
-							flexWrap: "wrap",
-							gap: "24px",
-						}}
-					>
-						{tags.map((tag) => (
-							<span
-								key={tag}
-								style={{
-									backgroundColor: COLOR_BACKGROUND_SECONDARY,
-									padding: "2px 20px 2px 16px",
-									borderRadius: "9999px",
-									fontFamily: FONT_CAVEAT,
-									fontSize: "28px",
-									fontWeight: "bold",
-								}}
-							>
-								#{tag}
-							</span>
-						))}
-					</div>
-				</div>
-
-				<div
-					style={{
-						width: "100%",
-						display: "flex",
 						justifyContent: "space-between",
-						alignItems: "flex-end",
+						backgroundColor: COLOR_BACKGROUND_PRIMARY,
+						borderRadius: "16px",
+						border: `1px solid ${COLOR_BORDER_PRIMARY}`,
+						boxShadow:
+							"0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
 					}}
 				>
 					<div
 						style={{
+							width: "100%",
 							display: "flex",
-							alignItems: "center",
-							gap: "16px",
+							flexDirection: "column",
+							gap: "32px",
 						}}
 					>
-						<img
-							alt=""
-							src={MyIcon}
-							style={{
-								width: "80px",
-								height: "80px",
-								borderRadius: "9999px",
-								border: `1px solid ${COLOR_BORDER_PRIMARY}`,
-							}}
-						/>
 						<span
 							style={{
-								fontSize: "36px",
+								color: COLOR_TEXT_HEADING,
+								fontSize: "48px",
 								fontWeight: "bold",
 							}}
 						>
-							{AUTHOR_NAME}
+							{title}
 						</span>
+						<div
+							style={{
+								display: "flex",
+								flexWrap: "wrap",
+								gap: "24px",
+							}}
+						>
+							{tags.map((tag) => (
+								<span
+									key={tag}
+									style={{
+										backgroundColor: COLOR_BACKGROUND_SECONDARY,
+										padding: "2px 20px 2px 16px",
+										borderRadius: "9999px",
+										fontFamily: FONT_CAVEAT,
+										fontSize: "28px",
+										fontWeight: "bold",
+									}}
+								>
+									#{tag}
+								</span>
+							))}
+						</div>
 					</div>
-					<span
+
+					<div
 						style={{
-							lineHeight: "1",
-							fontFamily: FONT_CAVEAT,
-							fontSize: "48px",
-							fontWeight: "bold",
+							width: "100%",
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "flex-end",
 						}}
 					>
-						{SITE_NAME}
-					</span>
+						<div
+							style={{
+								display: "flex",
+								alignItems: "center",
+								gap: "16px",
+							}}
+						>
+							<img
+								alt=""
+								src={MyIcon}
+								style={{
+									width: "80px",
+									height: "80px",
+									borderRadius: "9999px",
+									border: `1px solid ${COLOR_BORDER_PRIMARY}`,
+								}}
+							/>
+							<span
+								style={{
+									fontSize: "36px",
+									fontWeight: "bold",
+								}}
+							>
+								{AUTHOR_NAME}
+							</span>
+						</div>
+						<span
+							style={{
+								lineHeight: "1",
+								fontFamily: FONT_CAVEAT,
+								fontSize: "56px",
+								fontWeight: "bold",
+								transform: "rotate(-5deg) translate(-12px, -4px)",
+							}}
+						>
+							{SITE_NAME}
+						</span>
+					</div>
 				</div>
 			</div>
 		</div>
