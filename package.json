@@ -26,7 +26,7 @@
 		"@iconify-json/simple-icons": "1.2.62",
 		"@resvg/resvg-wasm": "2.6.2",
 		"astro": "5.16.5",
-		"astro-expressive-code": "0.41.3",
+		"astro-expressive-code": "0.41.4",
 		"astro-icon": "1.1.5",
 		"entities": "7.0.0",
 		"react": "19.2.1",
