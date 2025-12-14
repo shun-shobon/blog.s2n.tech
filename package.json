@@ -22,7 +22,7 @@
 		"@astrojs/mdx": "4.3.13",
 		"@astrojs/partytown": "2.1.4",
 		"@astrojs/sitemap": "3.6.0",
-		"@iconify-json/lucide": "1.2.79",
+		"@iconify-json/lucide": "1.2.80",
 		"@iconify-json/simple-icons": "1.2.62",
 		"@resvg/resvg-wasm": "2.6.2",
 		"astro": "5.16.5",
