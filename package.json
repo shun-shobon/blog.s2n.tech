@@ -47,7 +47,7 @@
 		"@tailwindcss/vite": "4.1.18",
 		"@types/node": "24.10.3",
 		"@types/react": "19.2.7",
-		"eslint": "9.39.1",
+		"eslint": "9.39.2",
 		"html-rewriter-wasm": "0.4.1",
 		"prettier": "3.7.4",
 		"sharp": "0.34.5",
