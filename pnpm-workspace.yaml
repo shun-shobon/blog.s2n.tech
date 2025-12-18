@@ -1,3 +1,8 @@
+minimumReleaseAge: 1440
+
+minimumReleaseAgeExclude:
+  - "@shun-shobon/style-guide"
+
 onlyBuiltDependencies:
   - "@tailwindcss/oxide"
   - esbuild
@@ -8,4 +13,13 @@ onlyBuiltDependencies:
 publicHoistPattern:
   - "*eslint*"
 
-savePrefix: ""
+saveExact: true
+
+strictDepBuilds: true
+
+trustPolicy: no-downgrade
+
+trustPolicyExclude:
+  - "chokidar@4.0.3"
+  - "vite@6.4.1"
+  - "semver@6.3.1"
