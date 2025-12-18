@@ -16,7 +16,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 20
     outputs:
       success: ${{ steps.deploy-preview.outputs.command-stderr == '' }}
       version_tag: ${{ steps.get-version.outputs.version }}
@@ -87,7 +87,7 @@ jobs:
           EOF
 
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 5
     needs: deploy
     if: needs.deploy.outputs.success == 'true' && github.event_name == 'push'
