@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 import { decodeHTMLStrict } from "entities/decode";
 
+import { logger } from "@/libs/logger";
+
 import { CACHE_BROWSER_TTL, CACHE_CDN_TTL } from "./_internal/constants";
 
 export const prerender = false;
@@ -18,13 +20,17 @@ export const GET: APIRoute = async ({ request }) => {
 		return new Response("Not Found", { status: 404 });
 	}
 
-	const openGraphData = await extractOpenGraph(targetResponse);
-
-	return Response.json(openGraphData, {
-		headers: {
-			"Cache-Control": `public, s-maxage=${CACHE_CDN_TTL}, max-age=${CACHE_BROWSER_TTL}`,
-		},
-	});
+	try {
+		const openGraphData = await extractOpenGraph(targetResponse);
+		return Response.json(openGraphData, {
+			headers: {
+				"Cache-Control": `public, s-maxage=${CACHE_CDN_TTL}, max-age=${CACHE_BROWSER_TTL}`,
+			},
+		});
+	} catch (error) {
+		logger.error("Failed to extract OpenGraph data", { url: targetURL, error });
+		return new Response("Internal Server Error", { status: 500 });
+	}
 };
 
 export interface OpenGraphData {

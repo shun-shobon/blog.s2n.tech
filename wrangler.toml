@@ -10,6 +10,5 @@ not_found_handling = "404-page"
 [observability]
 enabled = true
 
-[[kv_namespaces]]
-binding = "CACHE"
-id = "ca520efaf4c54033baf6af0408597068"
+[images]
+binding = "IMAGE"
