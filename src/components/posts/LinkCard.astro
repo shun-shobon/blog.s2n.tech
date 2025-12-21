@@ -129,7 +129,7 @@ faviconURL.searchParams.set("size", "32");
 			);
 			if (imageContainer && data.ogImage) {
 				const img = document.createElement("img");
-				img.src = data.ogImage;
+				img.src = `/api/open-graph/image?url=${encodeURIComponent(data.ogImage)}`;
 				img.alt = "";
 				img.decoding = "async";
 				img.loading = "lazy";
