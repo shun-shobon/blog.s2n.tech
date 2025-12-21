@@ -3,7 +3,6 @@ import type { APIRoute } from "astro";
 import { cachedFetch } from "@/libs/cached-fetch";
 
 import { CACHE_BROWSER_TTL, CACHE_CDN_TTL } from "./_internal/constants";
-import { extractOpenGraph } from "./_internal/extract";
 
 export const prerender = false;
 
@@ -21,14 +20,15 @@ export const GET: APIRoute = async ({ request, locals }) => {
 		locals.runtime.ctx,
 	);
 	if (!targetResponse.ok) {
-		return new Response("Not Found", { status: 404 });
+		return targetResponse;
 	}
 
-	const openGraphData = await extractOpenGraph(targetResponse);
-
-	return Response.json(openGraphData, {
-		headers: {
-			"Cache-Control": `public, s-maxage=${CACHE_CDN_TTL}, max-age=${CACHE_BROWSER_TTL}`,
-		},
-	});
+	// レスポンスヘッダーを書き換えて、強制的にキャッシュを行う
+	const clonedResponse = targetResponse.clone();
+	const newResponse = new Response(clonedResponse.body, clonedResponse);
+	newResponse.headers.set(
+		"Cache-Control",
+		`public, s-maxage=${CACHE_CDN_TTL}, max-age=${CACHE_BROWSER_TTL}`,
+	);
+	return newResponse;
 };
