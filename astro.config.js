@@ -1,7 +1,9 @@
 import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
 import partytown from "@astrojs/partytown";
+import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
+import solidJs from "@astrojs/solid-js";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, envField, fontProviders } from "astro/config";
 import expressiveCode from "astro-expressive-code";
@@ -22,6 +24,8 @@ export default defineConfig({
 		imageService: "compile",
 	}),
 	integrations: [
+		react({ include: "**/og-image.*" }),
+		solidJs({ exclude: "**/og-image.*" }),
 		expressiveCode({
 			themes: "material-theme-lighter",
 			styleOverrides: {
