@@ -1,3 +1,7 @@
+/**
+ * @jsxImportSource react
+ */
+
 import fs from "node:fs/promises";
 
 import { initWasm, Resvg } from "@resvg/resvg-wasm";
