@@ -1,6 +1,4 @@
-/**
- * @jsxImportSource react
- */
+/* @jsxImportSource react */
 
 import fs from "node:fs/promises";
 
