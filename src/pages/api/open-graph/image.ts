@@ -13,7 +13,14 @@ export const GET: APIRoute = async ({ request, locals }) => {
 		return new Response("Bad Request", { status: 400 });
 	}
 
-	const targetRequest = new Request(targetURL);
+	const targetRequest = new Request(targetURL, {
+		cf: {
+			image: {
+				height: 128,
+				format: "webp",
+			},
+		},
+	});
 	const targetResponse = await cachedFetch(
 		targetRequest,
 		CACHE_CDN_TTL,
