@@ -56,6 +56,6 @@
 		"prettier": "3.7.4",
 		"sharp": "0.34.5",
 		"typescript": "5.9.3",
-		"wrangler": "4.55.0"
+		"wrangler": "4.56.0"
 	}
 }
