@@ -14,12 +14,13 @@ export const GET: APIRoute = async ({ request, locals }) => {
 	}
 
 	const targetRequest = new Request(targetURL);
-	const targetResponse = await fetch(targetRequest);
-	if (!targetResponse.ok) {
-		return new Response("Not Found", { status: 404 });
-	}
 
 	try {
+		const targetResponse = await fetch(targetRequest);
+		if (!targetResponse.ok) {
+			return new Response("Not Found", { status: 404 });
+		}
+
 		const optimizedResponse = await optimizeImage(
 			targetResponse,
 			locals.runtime.env,

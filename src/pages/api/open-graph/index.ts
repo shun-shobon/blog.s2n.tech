@@ -15,12 +15,13 @@ export const GET: APIRoute = async ({ request }) => {
 	}
 
 	const targetRequest = new Request(targetURL);
-	const targetResponse = await fetch(targetRequest);
-	if (!targetResponse.ok) {
-		return new Response("Not Found", { status: 404 });
-	}
 
 	try {
+		const targetResponse = await fetch(targetRequest);
+		if (!targetResponse.ok) {
+			return new Response("Not Found", { status: 404 });
+		}
+
 		const openGraphData = await extractOpenGraph(targetResponse);
 		return Response.json(openGraphData, {
 			headers: {
