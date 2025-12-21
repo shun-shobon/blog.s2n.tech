@@ -1,13 +1,11 @@
 import type { APIRoute } from "astro";
 
-import { cachedFetch } from "@/libs/cached-fetch";
-
 import { CACHE_BROWSER_TTL, CACHE_CDN_TTL } from "./_internal/constants";
 import { extractOpenGraph } from "./_internal/extract";
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ request, locals }) => {
+export const GET: APIRoute = async ({ request }) => {
 	const searchParams = new URL(request.url).searchParams;
 	const targetURL = searchParams.get("url");
 	if (!targetURL) {
@@ -15,11 +13,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 	}
 
 	const targetRequest = new Request(targetURL);
-	const targetResponse = await cachedFetch(
-		targetRequest,
-		CACHE_CDN_TTL,
-		locals.runtime.ctx,
-	);
+	const targetResponse = await fetch(targetRequest);
 	if (!targetResponse.ok) {
 		return new Response("Not Found", { status: 404 });
 	}
