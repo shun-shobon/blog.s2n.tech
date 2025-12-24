@@ -4,8 +4,8 @@ compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 main = "./dist/_worker.js"
 
 [assets]
+binding = "ASSETS"
 directory = "./dist"
-not_found_handling = "404-page"
 
 [observability]
 enabled = true
