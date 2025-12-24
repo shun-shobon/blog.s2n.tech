@@ -13,6 +13,7 @@ import remarkCjkFriendly from "remark-cjk-friendly";
 import remarkGfmStrikethroughCjkFriendly from "remark-cjk-friendly-gfm-strikethrough";
 import remarkJoinCjkLines from "remark-join-cjk-lines";
 import remarkMath from "remark-math";
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
 	site: "https://blog.s2n.tech",
@@ -73,7 +74,13 @@ export default defineConfig({
 		},
 	},
 	vite: {
-		plugins: [tailwindcss()],
+		plugins: [
+			tailwindcss(),
+			visualizer({
+				emitFile: true,
+				filename: "stats.html",
+			}),
+		],
 	},
 	experimental: {
 		fonts: [

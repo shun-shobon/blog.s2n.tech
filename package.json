@@ -55,6 +55,7 @@
 		"eslint": "9.39.2",
 		"html-rewriter-wasm": "0.4.1",
 		"prettier": "3.7.4",
+		"rollup-plugin-visualizer": "6.0.5",
 		"sharp": "0.34.5",
 		"typescript": "5.9.3",
 		"wrangler": "4.56.0"
