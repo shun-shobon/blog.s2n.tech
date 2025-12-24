@@ -3,7 +3,7 @@ import "@/styles/global.css";
 
 import { Font } from "astro:assets";
 import { GOOGLE_ANALYTICS_ID } from "astro:env/client";
-import { joinURL, normalizeURL, withoutTrailingSlash } from "ufo";
+import { joinURL, normalizeURL } from "ufo";
 
 import GoogleAnalytics from "@/components/GoogleAnalytics.astro";
 
@@ -54,7 +54,12 @@ const twitterCard = ogImageType === "large" ? "summary_large_image" : "summary";
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<link rel="manifest" href="/manifest.webmanifest" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
-		<link rel="canonical" href={withoutTrailingSlash(Astro.url.toString())} />
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			href={new URL("/rss.xml", Astro.site)}
+		/>
+		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).href} />
 
 		<meta property="og:title" content={titleText} />
 		{
