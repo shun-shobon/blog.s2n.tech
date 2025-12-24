@@ -1,12 +1,12 @@
 ---
 // 記事中の画像を適切なサイズで表示します。
 //
-// 用意する画像サイズはモバイル幅〜デスクトップ幅とデスクトップ幅の2倍幅です。
-// 2倍幅は高dpiデバイスでの表示用です。
+// 用意する画像サイズは https://docs.astro.build/en/reference/configuration-reference/#imagebreakpoints を参照しています。
 //
-// sizesの928pxは記事表示領域がギリギリ縮まないときの画面幅です。
+// sizesの960pxは記事表示領域がギリギリ縮まないときの画面幅です。
 // これより大きい画面では記事表示領域が830pxになるため、830pxを最大幅としています。
 // これより小さい画面では記事表示領域も縮まるため、100vwとしています。(ビューポート幅とpxしか指定できないため)
+// autoは自動的に適切なサイズを選択してくれる便利な値ですが、対応ブラウザが少ないため上記の値をフォールバックとして使用しています。
 
 import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
@@ -25,12 +25,10 @@ const { src, alt, title } = Astro.props;
 		<Image
 			src={src}
 			widths={[
-				324, // モバイル幅
-				690, // タブレット幅
-				830, // デスクトップ幅
-				830 * 2, // デスクトップ幅(2倍)
+				640, 750, 828, 960, 1080, 1280, 1668, 1920, 2048, 2560, 3200, 3840,
+				4480, 5120, 6016,
 			]}
-			sizes="(max-width: 928px) 100vw, 830px"
+			sizes="auto, (min-width: 960px) 830px, 100vw"
 			alt={alt}
 			title={title}
 		/>
