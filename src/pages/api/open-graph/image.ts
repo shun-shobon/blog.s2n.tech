@@ -11,12 +11,16 @@ export const GET: APIRoute = async ({ request, locals }) => {
 	const searchParams = new URL(request.url).searchParams;
 	const targetURL = searchParams.get("url");
 	if (!targetURL) {
+		logger.warn("url is not provided");
 		return new Response("Bad Request", { status: 400 });
 	}
+
+	logger.info("getting open graph image", { url: targetURL });
 
 	const cacheKey = await getCacheKey(targetURL);
 	const cached = await locals.runtime.env.CACHE.get(cacheKey, "stream");
 	if (cached) {
+		logger.info("cache hit", { url: targetURL });
 		return new Response(cached, {
 			headers: {
 				"Content-Type": "image/webp",
@@ -25,10 +29,15 @@ export const GET: APIRoute = async ({ request, locals }) => {
 		});
 	}
 
+	logger.info("cache miss", { url: targetURL });
 	try {
 		const targetRequest = new Request(targetURL);
 		const targetResponse = await fetch(targetRequest);
 		if (!targetResponse.ok) {
+			logger.warn("request failed", {
+				url: targetURL,
+				status: targetResponse.status,
+			});
 			return new Response("Not Found", { status: 404 });
 		}
 
@@ -36,6 +45,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 			targetResponse,
 			locals.runtime.env,
 		);
+		logger.info("optimized image", { url: targetURL });
 		locals.runtime.ctx.waitUntil(
 			locals.runtime.env.CACHE.put(cacheKey, optimizedResponse.clone().body!, {
 				expirationTtl: CACHE_CDN_TTL,

@@ -12,12 +12,16 @@ export const GET: APIRoute = async ({ request, locals }) => {
 	const searchParams = new URL(request.url).searchParams;
 	const targetURL = searchParams.get("url");
 	if (!targetURL) {
+		logger.warn("url is not provided");
 		return new Response("Bad Request", { status: 400 });
 	}
+
+	logger.info("getting open graph data", { url: targetURL });
 
 	const cacheKey = await getCacheKey(targetURL);
 	const cached = await locals.runtime.env.CACHE.get(cacheKey, "json");
 	if (cached) {
+		logger.info("cache hit", { url: targetURL });
 		return Response.json(cached, {
 			headers: {
 				"Cache-Control": `public, max-age=${CACHE_BROWSER_TTL}`,
@@ -25,14 +29,23 @@ export const GET: APIRoute = async ({ request, locals }) => {
 		});
 	}
 
+	logger.info("cache miss", { url: targetURL });
 	try {
 		const targetRequest = new Request(targetURL);
 		const targetResponse = await fetch(targetRequest);
 		if (!targetResponse.ok) {
+			logger.warn("request failed", {
+				url: targetURL,
+				status: targetResponse.status,
+			});
 			return new Response("Not Found", { status: 404 });
 		}
 
 		const openGraphData = await extractOpenGraph(targetResponse);
+		logger.info("extracted open graph data", {
+			url: targetURL,
+			data: openGraphData,
+		});
 		locals.runtime.ctx.waitUntil(
 			locals.runtime.env.CACHE.put(cacheKey, JSON.stringify(openGraphData), {
 				expirationTtl: CACHE_CDN_TTL,
@@ -67,10 +80,14 @@ export async function extractOpenGraph(
 ): Promise<OpenGraphData> {
 	const result: OpenGraphData = {};
 
+	logger.info("extracting open graph data", { url: response.url });
+
 	const handleTitle = {
 		text(text: TextLike) {
 			if (text.text?.trim() && result.title == null) {
-				result.title = text.text.trim();
+				const trimmedText = text.text.trim();
+				logger.info("extracted title", { title: trimmedText });
+				result.title = trimmedText;
 			}
 		},
 	};
@@ -98,7 +115,12 @@ export async function extractOpenGraph(
 
 			const targetProperty = metadataMap[propertyKey];
 			if (targetProperty) {
-				result[targetProperty] = decodeHTMLStrict(content.trim());
+				const trimmedContent = content.trim();
+				logger.info("found metadata", {
+					property: targetProperty,
+					content: trimmedContent,
+				});
+				result[targetProperty] = decodeHTMLStrict(trimmedContent);
 			}
 		},
 	};
