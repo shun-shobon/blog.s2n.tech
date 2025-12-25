@@ -85,11 +85,18 @@ export default defineConfig({
 	experimental: {
 		fonts: [
 			{
-				provider: fontProviders.google(),
+				provider: fontProviders.google({
+					experimental: {
+						glyphs: {
+							Caveat: [
+								"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890#./",
+							],
+						},
+					},
+				}),
 				name: "Caveat",
 				cssVariable: "--font-family-caveat",
-				weights: [400, 700],
-				subsets: ["latin"],
+				weights: [400],
 				styles: ["normal"],
 				fallbacks: [],
 			},
