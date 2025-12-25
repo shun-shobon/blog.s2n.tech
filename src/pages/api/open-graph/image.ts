@@ -47,7 +47,8 @@ export const GET: APIRoute = async ({ request, locals }) => {
 				"Cache-Control": `public, s-maxage=${CACHE_CDN_TTL}, max-age=${CACHE_BROWSER_TTL}`,
 			},
 		});
-		locals.runtime.ctx.waitUntil(caches.default.put(request, response));
+		const cacheResponse = new Response(response.body, response);
+		locals.runtime.ctx.waitUntil(caches.default.put(request, cacheResponse));
 		return response;
 	} catch (error) {
 		logger.error("Failed to optimize image", { url: targetURL, error });
