@@ -48,7 +48,11 @@ export const GET: APIRoute = async ({ request, locals }) => {
 				"Cache-Control": `public, s-maxage=${CACHE_CDN_TTL}, max-age=${CACHE_BROWSER_TTL}`,
 			},
 		});
-		locals.runtime.ctx.waitUntil(caches.default.put(request, response.clone()));
+		if (!import.meta.env.DEV) {
+			locals.runtime.ctx.waitUntil(
+				caches.default.put(request, response.clone()),
+			);
+		}
 		return response;
 	} catch (error) {
 		logger.error("Failed to extract OpenGraph data", { url: targetURL, error });
