@@ -12,3 +12,7 @@ enabled = true
 
 [images]
 binding = "IMAGE"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "ca520efaf4c54033baf6af0408597068"

@@ -4,28 +4,43 @@ import { decodeHTMLStrict } from "entities/decode";
 import { logger } from "@/libs/logger";
 
 import { CACHE_BROWSER_TTL, CACHE_CDN_TTL } from "./_internal/constants";
+import { getURLHash } from "./_internal/utils";
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ request, locals }) => {
 	const searchParams = new URL(request.url).searchParams;
 	const targetURL = searchParams.get("url");
 	if (!targetURL) {
 		return new Response("Bad Request", { status: 400 });
 	}
 
-	const targetRequest = new Request(targetURL);
+	const cacheKey = await getCacheKey(targetURL);
+	const cached = await locals.runtime.env.CACHE.get(cacheKey, "json");
+	if (cached) {
+		return Response.json(cached, {
+			headers: {
+				"Cache-Control": `public, max-age=${CACHE_BROWSER_TTL}`,
+			},
+		});
+	}
 
 	try {
+		const targetRequest = new Request(targetURL);
 		const targetResponse = await fetch(targetRequest);
 		if (!targetResponse.ok) {
 			return new Response("Not Found", { status: 404 });
 		}
 
 		const openGraphData = await extractOpenGraph(targetResponse);
+		locals.runtime.ctx.waitUntil(
+			locals.runtime.env.CACHE.put(cacheKey, JSON.stringify(openGraphData), {
+				expirationTtl: CACHE_CDN_TTL,
+			}),
+		);
 		return Response.json(openGraphData, {
 			headers: {
-				"Cache-Control": `public, s-maxage=${CACHE_CDN_TTL}, max-age=${CACHE_BROWSER_TTL}`,
+				"Cache-Control": `public, max-age=${CACHE_BROWSER_TTL}`,
 			},
 		});
 	} catch (error) {
@@ -33,6 +48,10 @@ export const GET: APIRoute = async ({ request }) => {
 		return new Response("Internal Server Error", { status: 500 });
 	}
 };
+
+export async function getCacheKey(url: string): Promise<string> {
+	return `open-graph:${await getURLHash(url)}`;
+}
 
 export interface OpenGraphData {
 	title?: string;

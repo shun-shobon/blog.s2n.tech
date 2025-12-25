@@ -3,6 +3,7 @@ import type { APIRoute } from "astro";
 import { logger } from "@/libs/logger";
 
 import { CACHE_BROWSER_TTL, CACHE_CDN_TTL } from "./_internal/constants";
+import { getURLHash } from "./_internal/utils";
 
 export const prerender = false;
 
@@ -13,9 +14,19 @@ export const GET: APIRoute = async ({ request, locals }) => {
 		return new Response("Bad Request", { status: 400 });
 	}
 
-	const targetRequest = new Request(targetURL);
+	const cacheKey = await getCacheKey(targetURL);
+	const cached = await locals.runtime.env.CACHE.get(cacheKey, "stream");
+	if (cached) {
+		return new Response(cached, {
+			headers: {
+				"Content-Type": "image/webp",
+				"Cache-Control": `public, max-age=${CACHE_BROWSER_TTL}`,
+			},
+		});
+	}
 
 	try {
+		const targetRequest = new Request(targetURL);
 		const targetResponse = await fetch(targetRequest);
 		if (!targetResponse.ok) {
 			return new Response("Not Found", { status: 404 });
@@ -25,9 +36,14 @@ export const GET: APIRoute = async ({ request, locals }) => {
 			targetResponse,
 			locals.runtime.env,
 		);
+		locals.runtime.ctx.waitUntil(
+			locals.runtime.env.CACHE.put(cacheKey, optimizedResponse.clone().body!, {
+				expirationTtl: CACHE_CDN_TTL,
+			}),
+		);
 		return new Response(optimizedResponse.body, {
 			headers: {
-				"Cache-Control": `public, s-maxage=${CACHE_CDN_TTL}, max-age=${CACHE_BROWSER_TTL}`,
+				"Cache-Control": `public, max-age=${CACHE_BROWSER_TTL}`,
 			},
 		});
 	} catch (error) {
@@ -35,6 +51,10 @@ export const GET: APIRoute = async ({ request, locals }) => {
 		return new Response("Internal Server Error", { status: 500 });
 	}
 };
+
+export async function getCacheKey(url: string): Promise<string> {
+	return `open-graph-image:${await getURLHash(url)}`;
+}
 
 export async function optimizeImage(
 	response: Response,
