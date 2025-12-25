@@ -1,7 +1,6 @@
 ---
 import Tag from "@/components/Tag.astro";
 import type { Post } from "@/libs/posts";
-import { postToSlug } from "@/libs/posts";
 
 interface Props {
 	post: Post;
@@ -9,7 +8,7 @@ interface Props {
 
 const { post } = Astro.props;
 
-const url = `/posts/${postToSlug(post)}`;
+const url = `/posts/${post.id}`;
 
 const intl = new Intl.DateTimeFormat("ja-JP");
 ---

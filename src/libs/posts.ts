@@ -49,7 +49,7 @@ export async function getPosts({
 }
 
 export async function getPost(slug: string): Promise<Post | null> {
-	const post = await getEntry("posts", slugToId(slug));
+	const post = await getEntry("posts", slug);
 
 	if (!post) {
 		return null;
@@ -74,20 +74,6 @@ export async function getTags(): Promise<string[]> {
 	tags.sort(([_aTag, aCount], [_bTag, bCount]) => bCount - aCount);
 
 	return tags.map(([tag]) => tag);
-}
-
-export function postToSlug(post: Post): string {
-	const slug = post.id.split("/")[0];
-
-	if (!slug) {
-		throw new Error("slug is not found");
-	}
-
-	return slug;
-}
-
-export function slugToId(slug: string): string {
-	return `${slug}/readme`;
 }
 
 export function normalizeTag(tag: string): string {

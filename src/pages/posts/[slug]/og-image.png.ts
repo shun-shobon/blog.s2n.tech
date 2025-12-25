@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 
 import { generateImage } from "@/libs/og-image";
-import { getPost, getPosts, postToSlug } from "@/libs/posts";
+import { getPost, getPosts } from "@/libs/posts";
 
 export const GET: APIRoute = async ({ params }) => {
 	const { slug } = params;
@@ -30,6 +30,6 @@ export async function getStaticPaths() {
 	});
 
 	return posts.map((post) => ({
-		params: { slug: postToSlug(post) },
+		params: { slug: post.id },
 	}));
 }
