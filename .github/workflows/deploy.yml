@@ -53,6 +53,12 @@ jobs:
       - name: Setup | Generate types
         run: pnpm run sync
 
+      - name: Setup | Cache astro assets
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          path: node_modules/.astro
+          key: astro-assets
+
       - name: Run | Build
         run: pnpm run build
         env:
