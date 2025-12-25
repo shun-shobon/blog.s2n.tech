@@ -3,7 +3,6 @@ import type { APIRoute } from "astro";
 import { logger } from "@/libs/logger";
 
 import { CACHE_BROWSER_TTL, CACHE_CDN_TTL } from "./_internal/constants";
-import { getURLHash } from "./_internal/utils";
 
 export const prerender = false;
 
@@ -17,16 +16,13 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
 	logger.info("getting open graph image", { url: targetURL });
 
-	const cacheKey = await getCacheKey(targetURL);
-	const cached = await locals.runtime.env.CACHE.get(cacheKey, "stream");
-	if (cached) {
-		logger.info("cache hit", { url: targetURL });
-		return new Response(cached, {
-			headers: {
-				"Content-Type": "image/webp",
-				"Cache-Control": `public, max-age=${CACHE_BROWSER_TTL}`,
-			},
-		});
+	// 開発環境ではキャッシュを使わない
+	if (!import.meta.env.DEV) {
+		const cachedResponse = await caches.default.match(request);
+		if (cachedResponse) {
+			logger.info("cache hit", { url: targetURL });
+			return cachedResponse;
+		}
 	}
 
 	logger.info("cache miss", { url: targetURL });
@@ -46,25 +42,18 @@ export const GET: APIRoute = async ({ request, locals }) => {
 			locals.runtime.env,
 		);
 		logger.info("optimized image", { url: targetURL });
-		locals.runtime.ctx.waitUntil(
-			locals.runtime.env.CACHE.put(cacheKey, optimizedResponse.clone().body!, {
-				expirationTtl: CACHE_CDN_TTL,
-			}),
-		);
-		return new Response(optimizedResponse.body, {
+		const response = new Response(optimizedResponse.body, {
 			headers: {
-				"Cache-Control": `public, max-age=${CACHE_BROWSER_TTL}`,
+				"Cache-Control": `public, s-maxage=${CACHE_CDN_TTL}, max-age=${CACHE_BROWSER_TTL}`,
 			},
 		});
+		locals.runtime.ctx.waitUntil(caches.default.put(request, response));
+		return response;
 	} catch (error) {
 		logger.error("Failed to optimize image", { url: targetURL, error });
 		return new Response("Internal Server Error", { status: 500 });
 	}
 };
-
-export async function getCacheKey(url: string): Promise<string> {
-	return `open-graph-image:${await getURLHash(url)}`;
-}
 
 export async function optimizeImage(
 	response: Response,
