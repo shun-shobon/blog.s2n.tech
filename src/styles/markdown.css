@@ -1,0 +1,212 @@
+@reference "./global.css";
+
+.markdown {
+	@apply leading-relaxed wrap-anywhere;
+	line-break: strict;
+	hanging-punctuation: allow-end;
+
+	/* インライン要素 */
+	:where(a):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply underline decoration-text-decoration underline-offset-2;
+	}
+	:where(strong):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply font-bold;
+	}
+	:where(em):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply italic;
+	}
+	:where(code):not(:where(pre > code)):not(
+			:where([class~="not-markdown"], [class~="not-markdown"] *)
+		) {
+		@apply rounded bg-background-secondary px-1 py-0.5 font-mono;
+	}
+	:where(del):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply line-through decoration-text-decoration;
+	}
+
+	/* ブロック要素 */
+	:where(p):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply my-6;
+	}
+	:where(blockquote):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply my-6 border-l-4 border-border-secondary pl-4 text-text-secondary;
+	}
+	:where(.expressive-code):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply my-6 rounded-lg border border-border-secondary;
+	}
+	:where(hr):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply my-10 border-t border-border-secondary;
+	}
+
+	/* リスト */
+	:where(ol):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply my-6 list-decimal pl-6;
+	}
+	:where(ul):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply my-6 list-disc pl-6;
+	}
+	:where(li):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply my-2;
+	}
+	:where(ol > li, ul > li):not(
+			:where([class~="not-markdown"], [class~="not-markdown"] *)
+		)::marker {
+		@apply text-text-secondary;
+	}
+	:where(ol ol, ul ul, ol ul, ul ol):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply my-2;
+	}
+
+	/* テーブル */
+	:where(table):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply my-6 w-full table-auto text-sm;
+	}
+	:where(thead):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply border-b border-border-secondary;
+	}
+	:where(thead th):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply px-2 pb-1.5 font-bold;
+	}
+	:where(tbody tr):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply border-b border-border-secondary;
+	}
+	:where(tbody tr:last-child):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply border-b-0;
+	}
+	:where(tbody td):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply align-baseline;
+	}
+	:where(tfoot):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply border-t border-border-secondary;
+	}
+	:where(tfoot td):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply align-top;
+	}
+	:where(th, td):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply text-left;
+	}
+	:where(tbody td, tfoot td):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply px-2 py-1.5;
+	}
+	:where(tbody tr:last-child td, tfoot tr:last-child td):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply pb-0;
+	}
+
+	/* details */
+	:where(details):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply my-6 overflow-hidden rounded-lg border border-border-secondary bg-background-primary;
+
+		summary {
+			@apply cursor-pointer px-4 py-2 transition-colors;
+		}
+		&[open] summary {
+			@apply bg-background-secondary;
+		}
+
+		&::details-content {
+			@apply overflow-clip transition-discrete duration-300;
+			transition-property: content-visibility, block-size;
+		}
+		&:not([open])::details-content {
+			block-size: 0;
+		}
+	}
+
+	/* 見出し */
+	:where(h1, h2, h3, h4, h5, h6):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply text-pretty text-text-heading kerning-on;
+	}
+	:where(h1, h2, h3, h4):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply border-b border-l-8 border-border-secondary py-0.5 pl-2 font-bold;
+	}
+	:where(h1, h2):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply mt-10 mb-8 text-2xl;
+	}
+	:where(h3):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply mt-8 mb-6 text-xl;
+	}
+	:where(h4):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply mt-6 mb-4 text-lg;
+	}
+	:where(h5):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply mt-6 mb-4 border-b border-border-secondary py-0.5 pl-2 font-bold;
+	}
+	:where(h6):not(:where([class~="not-markdown"], [class~="not-markdown"] *)) {
+		@apply mt-6 mb-4 border-b border-border-secondary py-0.5 pl-2;
+	}
+	:where(h1 + *, h2 + *, h3 + *, h4 + *, h5 + *, h6 + *):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply mt-0;
+	}
+
+	/* 注釈 */
+	:where(.footnotes):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply mt-8 border-t border-border-secondary;
+	}
+	:where(.footnotes h2):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply sr-only;
+	}
+	:where(.footnotes ol):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply mt-8 mb-0 text-sm;
+	}
+	:where(.footnotes ol li p):not(
+		:where([class~="not-markdown"], [class~="not-markdown"] *)
+	) {
+		@apply my-0;
+	}
+
+	/* 最初の要素はマージンを0にする */
+	& > *:first-child {
+		@apply mt-0;
+	}
+
+	/* 最後の要素はマージンを0にする */
+	& > *:last-child {
+		@apply mb-0;
+	}
+}
