@@ -10,7 +10,7 @@ import PostItem from "@/components/PostItem.astro";
 import Tag from "@/components/Tag.astro";
 import Title from "@/components/Title.astro";
 import BasicLayout from "@/layouts/BasicLayout.astro";
-import { getPost, getPosts, postToSlug } from "@/libs/posts";
+import { getPost, getPosts } from "@/libs/posts";
 
 export async function getStaticPaths() {
 	const { posts } = await getPosts({
@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 	});
 
 	return posts.map((post) => ({
-		params: { slug: postToSlug(post) },
+		params: { slug: post.id },
 	}));
 }
 

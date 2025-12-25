@@ -1,7 +1,7 @@
 import rss from "@astrojs/rss";
 import type { APIRoute } from "astro";
 
-import { getPosts, postToSlug } from "@/libs/posts";
+import { getPosts } from "@/libs/posts";
 
 export const GET: APIRoute = async ({ site }) => {
 	const { posts } = await getPosts({ draft: import.meta.env.DEV });
@@ -13,7 +13,7 @@ export const GET: APIRoute = async ({ site }) => {
 		site: site!,
 		items: posts.map((post) => ({
 			title: post.data.title,
-			link: new URL(`/posts/${postToSlug(post)}`, site!.origin).href,
+			link: new URL(`/posts/${post.id}`, site!.origin).href,
 			pubDate: post.data.publishedAt
 				? new Date(post.data.publishedAt)
 				: undefined,
