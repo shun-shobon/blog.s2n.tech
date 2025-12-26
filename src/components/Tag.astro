@@ -1,4 +1,6 @@
 ---
+import { Icon } from "astro-icon/components";
+
 import { normalizeTag } from "@/libs/posts";
 
 interface Props {
@@ -10,6 +12,7 @@ const { tag } = Astro.props;
 
 <a
 	href={`/tags/${normalizeTag(tag)}`}
-	class="rounded-full bg-background-secondary px-2 py-0.5 font-cursive leading-tight transition-colors before:content-['#'] hover:bg-background-tertiary"
-	>{tag}</a
+	class="flex items-center gap-1 rounded-full border border-text-secondary bg-background-primary px-2.5 py-0.5 font-mono text-sm leading-tight text-text-secondary transition-colors hover:bg-background-tertiary"
 >
+	<Icon name="lucide:tag" class="size-3.5" />{tag}
+</a>

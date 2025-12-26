@@ -22,8 +22,6 @@
 	--color-alert-background: var(--color-red-100);
 	--color-alert-border: var(--color-red-200);
 
-	--font-cursive: var(--font-family-caveat), cursive, sans-serif;
-
 	--leading-*: initial;
 	--leading-tight: 1.25;
 	--leading-normal: 1.5;

@@ -1,7 +1,6 @@
 ---
 import "@/styles/global.css";
 
-import { Font } from "astro:assets";
 import { GOOGLE_ANALYTICS_ID } from "astro:env/client";
 import { joinURL, normalizeURL } from "ufo";
 
@@ -74,8 +73,6 @@ const twitterCard = ogImageType === "large" ? "summary_large_image" : "summary";
 		<meta property="og:type" content="website" />
 
 		{GOOGLE_ANALYTICS_ID && <GoogleAnalytics id={GOOGLE_ANALYTICS_ID} />}
-
-		<Font cssVariable="--font-family-caveat" preload />
 
 		<slot name="head" />
 	</head>

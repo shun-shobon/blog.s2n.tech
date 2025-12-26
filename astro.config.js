@@ -5,7 +5,7 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import solidJs from "@astrojs/solid-js";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, envField, fontProviders } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import rehypeKatex from "rehype-katex";
@@ -39,7 +39,7 @@ export default defineConfig({
 		icon({
 			include: {
 				"simple-icons": ["github", "x"],
-				"lucide": ["info", "triangle-alert", "octagon-x"],
+				"lucide": ["tag", "info", "triangle-alert", "octagon-x"],
 			},
 		}),
 		sitemap(),
@@ -80,26 +80,6 @@ export default defineConfig({
 				emitFile: true,
 				filename: "stats.html",
 			}),
-		],
-	},
-	experimental: {
-		fonts: [
-			{
-				provider: fontProviders.google({
-					experimental: {
-						glyphs: {
-							Caveat: [
-								"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890#./",
-							],
-						},
-					},
-				}),
-				name: "Caveat",
-				cssVariable: "--font-family-caveat",
-				weights: [400],
-				styles: ["normal"],
-				fallbacks: [],
-			},
 		],
 	},
 });

@@ -1,7 +1,11 @@
 ---
 import { Image } from "astro:assets";
 
+import About from "@/assets/about.svg";
+import Logo from "@/assets/logo.svg";
 import MyIcon from "@/assets/my-icon.png";
+import Posts from "@/assets/posts.svg";
+import Tags from "@/assets/tags.svg";
 
 interface Props {
 	class?: string;
@@ -12,7 +16,7 @@ const { class: className } = Astro.props;
 
 <header
 	class:list={[
-		"flex w-full max-w-sm items-center justify-between rounded-full border border-border-primary bg-background-primary p-2 pr-6 font-cursive shadow-lg",
+		"flex w-full max-w-sm items-center justify-between rounded-full border border-border-primary bg-background-primary p-1.5 pr-3 shadow-lg",
 		className,
 	]}
 >
@@ -24,18 +28,20 @@ const { class: className } = Astro.props;
 			widths={[32, 64]}
 			sizes="32px"
 		/>
-		<span class="text-2xl font-bold">blog.s2n.tech</span>
+		<Logo class="mt-1" />
 	</a>
 	<nav>
-		<ul class="flex items-center gap-4 text-lg font-bold">
+		<ul class="flex items-center gap-3 text-lg font-bold">
 			<li>
-				<a href="https://s2n.tech/" target="_blank">About</a>
+				<a href="https://s2n.tech/" target="_blank" aria-label="About">
+					<About />
+				</a>
 			</li>
 			<li>
-				<a href="/">Posts</a>
+				<a href="/" aria-label="Posts"><Posts /></a>
 			</li>
 			<li>
-				<a href="/tags">Tags</a>
+				<a href="/tags" aria-label="Tags"><Tags class="mt-1" /></a>
 			</li>
 		</ul>
 	</nav>
