@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+  schedule:
+    # 毎日JST7時に実行
+    - cron: "0 22 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
