@@ -73,6 +73,7 @@ jobs:
           command: >-
             versions
             upload
+            --minify
             --tag "${{ steps.get-version.outputs.version }}"
             --message "${{ github.event_name == 'pull_request' && format('Preview deployment for PR #{0}', github.event.pull_request.number) || 'Release deployment' }}"
 
