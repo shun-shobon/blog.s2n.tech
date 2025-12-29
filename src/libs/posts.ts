@@ -17,8 +17,14 @@ export async function getPosts({
 	tag,
 	draft = false,
 }: GetPostsOptions): Promise<GetPostsResult> {
+	const now = new Date();
+
 	const posts = await getCollection("posts", (post) => {
-		if (!draft && !post.data.publishedAt) {
+		if (
+			!draft &&
+			(!post.data.publishedAt ||
+				now.getTime() < new Date(post.data.publishedAt).getTime())
+		) {
 			return false;
 		}
 
