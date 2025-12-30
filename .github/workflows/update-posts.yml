@@ -1,0 +1,129 @@
+name: update-posts
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update-posts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          submodules: true
+
+      - name: Setup | GitHub App
+        id: app-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Run | Update posts submodule (GitHub API)
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const ref = context.ref; // e.g. refs/heads/main
+            if (!ref.startsWith('refs/heads/')) {
+              core.setFailed(`Unsupported ref: ${ref}. This workflow only supports refs/heads/*`);
+              return;
+            }
+            const shortRef = ref.replace(/^refs\//, ''); // heads/main
+
+            const submodulePath = 'posts';
+            const submoduleRepo = { owner: 'shun-shobon', repo: 'posts' };
+
+            const headRef = await github.rest.git.getRef({ owner, repo, ref: shortRef });
+            const baseCommitSha = headRef.data.object.sha;
+
+            const postsContent = await github.rest.repos.getContent({
+              owner,
+              repo,
+              path: submodulePath,
+              ref,
+            });
+
+            if (Array.isArray(postsContent.data) || postsContent.data.type !== 'submodule') {
+              core.setFailed(
+                `Expected ${submodulePath} to be a submodule, but got type=${postsContent.data.type}`,
+              );
+              return;
+            }
+
+            const currentSubmoduleSha = postsContent.data.sha;
+
+            const subRepoInfo = await github.rest.repos.get(submoduleRepo);
+            const defaultBranch = subRepoInfo.data.default_branch;
+            const subBranch = await github.rest.repos.getBranch({
+              ...submoduleRepo,
+              branch: defaultBranch,
+            });
+            const latestSubmoduleSha = subBranch.data.commit.sha;
+
+            core.info(`Current ${submodulePath} sha: ${currentSubmoduleSha}`);
+            core.info(`Latest  ${submodulePath} sha: ${latestSubmoduleSha} (${submoduleRepo.owner}/${submoduleRepo.repo}@${defaultBranch})`);
+
+            if (currentSubmoduleSha === latestSubmoduleSha) {
+              core.notice(`${submodulePath} is already up-to-date.`);
+              return;
+            }
+
+            const baseCommit = await github.rest.git.getCommit({
+              owner,
+              repo,
+              commit_sha: baseCommitSha,
+            });
+            const baseTreeSha = baseCommit.data.tree.sha;
+
+            const newTree = await github.rest.git.createTree({
+              owner,
+              repo,
+              base_tree: baseTreeSha,
+              tree: [
+                {
+                  path: submodulePath,
+                  mode: '160000',
+                  type: 'commit',
+                  sha: latestSubmoduleSha,
+                },
+              ],
+            });
+
+            const newCommit = await github.rest.git.createCommit({
+              owner,
+              repo,
+              message: 'chore: update posts',
+              tree: newTree.data.sha,
+              parents: [baseCommitSha],
+            });
+
+            // Re-check the ref before updating to avoid clobbering if it moved.
+            const headRef2 = await github.rest.git.getRef({ owner, repo, ref: shortRef });
+            const latestBaseCommitSha = headRef2.data.object.sha;
+            if (latestBaseCommitSha !== baseCommitSha) {
+              core.setFailed(
+                `Ref ${ref} moved from ${baseCommitSha} to ${latestBaseCommitSha}. Please re-run the workflow.`,
+              );
+              return;
+            }
+
+            await github.rest.git.updateRef({
+              owner,
+              repo,
+              ref: shortRef,
+              sha: newCommit.data.sha,
+              force: false,
+            });
+
+            core.notice(`Updated ${submodulePath} to ${latestSubmoduleSha} and pushed commit ${newCommit.data.sha}.`);
