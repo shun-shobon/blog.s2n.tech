@@ -108,16 +108,6 @@ jobs:
               parents: [baseCommitSha],
             });
 
-            // Re-check the ref before updating to avoid clobbering if it moved.
-            const headRef2 = await github.rest.git.getRef({ owner, repo, ref: shortRef });
-            const latestBaseCommitSha = headRef2.data.object.sha;
-            if (latestBaseCommitSha !== baseCommitSha) {
-              core.setFailed(
-                `Ref ${ref} moved from ${baseCommitSha} to ${latestBaseCommitSha}. Please re-run the workflow.`,
-              );
-              return;
-            }
-
             await github.rest.git.updateRef({
               owner,
               repo,
