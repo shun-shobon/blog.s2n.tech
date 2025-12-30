@@ -26,17 +26,24 @@ const FONT_COURIER_PRIME = "Courier Prime";
 const FONT_NOTO_SANS_JP = "Noto Sans JP";
 const BACKGROUND_GRID_SIZE = "16px";
 
-try {
-	await initWasm(RESVG_WASM);
-} catch {
-	// noop
-}
+let initialized = false;
 
-const fontNotoSansJP = await fs.readFile("./src/assets/NotoSansJP-Bold.ttf");
-const fontCaveat = await fs.readFile("./src/assets/Caveat-Bold.ttf");
-const fontCourierPrime = await fs.readFile(
-	"./src/assets/CourierPrime-Regular.ttf",
-);
+let fontNotoSansJP: Buffer<ArrayBuffer>;
+let fontCaveat: Buffer<ArrayBuffer>;
+let fontCourierPrime: Buffer<ArrayBuffer>;
+
+async function initialize() {
+	if (initialized) {
+		return;
+	}
+
+	initialized = true;
+
+	await initWasm(RESVG_WASM);
+	fontNotoSansJP = await fs.readFile("./src/assets/NotoSansJP-Bold.ttf");
+	fontCaveat = await fs.readFile("./src/assets/Caveat-Bold.ttf");
+	fontCourierPrime = await fs.readFile("./src/assets/CourierPrime-Regular.ttf");
+}
 
 // ZWJ: Zero Width Joiner
 const ZWJ = String.fromCodePoint(0x20_0d);
@@ -261,6 +268,8 @@ export async function generateImage({
 	title,
 	tags,
 }: Props): Promise<Uint8Array<ArrayBuffer>> {
+	await initialize();
+
 	const svg = await satori(<OGImage title={title} tags={tags} />, {
 		width: WIDTH,
 		height: HEIGHT,
