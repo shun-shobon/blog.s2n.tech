@@ -117,7 +117,7 @@ jobs:
       - name: Setup | Get version ID
         id: get-version-id
         run: |
-          version_id="$(pnpm wrangler versions list --json | jq -r '.[] | select(.annotations."workers/tag" == "${{ needs.deploy.outputs.version_tag }}") | .id')"
+          version_id="$(pnpm wrangler versions list --json | jq -r '.[] | select(.annotations."workers/tag" == "${{ needs.deploy.outputs.version_tag }}")' | jq -rs 'sort_by(.metadata.created_on) | last | .id')"
           echo "version_id=${version_id}" >> $GITHUB_OUTPUT
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
