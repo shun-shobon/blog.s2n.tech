@@ -48,7 +48,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/check": "0.9.6",
-		"@shun-shobon/style-guide": "2.2.2",
+		"@shun-shobon/style-guide": "2.2.3",
 		"@tailwindcss/vite": "4.1.18",
 		"@types/node": "24.10.9",
 		"@types/react": "19.2.8",
