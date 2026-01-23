@@ -63,8 +63,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5)
       remark-cjk-friendly-gfm-strikethrough:
-        specifier: 1.2.3
-        version: 1.2.3(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5)
+        specifier: 2.0.0
+        version: 2.0.0(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5)
       remark-join-cjk-lines:
         specifier: 1.0.14
         version: 1.0.14
@@ -3789,21 +3789,12 @@ packages:
   micromark-core-commonmark@2.0.3:
     resolution: {integrity: sha512-RDBrHEMSxVFLg6xvnXmb1Ayr2WzLAWjeSATAoxwKYJV94TeNavgoIdA0a9ytzDSVzBy2YKFK+emCPOEibLeCrg==}
 
-  micromark-extension-cjk-friendly-gfm-strikethrough@1.2.3:
-    resolution: {integrity: sha512-gSPnxgHDDqXYOBvQRq6lerrq9mjDhdtKn+7XETuXjxWcL62yZEfUdA28Ml1I2vDIPfAOIKLa0h2XDSGkInGHFQ==}
-    engines: {node: '>=16'}
+  micromark-extension-cjk-friendly-gfm-strikethrough@2.0.0:
+    resolution: {integrity: sha512-bQ6k70Gelb6jpBLLDSVwcjGwGGStL6Cx0ijkdLrc9EGpW6OFtdjB26Jl/caE+uWkWjJrylFjikr9Iw/jioM+Rw==}
+    engines: {node: '>=18'}
     peerDependencies:
       micromark: ^4.0.0
       micromark-util-types: ^2.0.0
-    peerDependenciesMeta:
-      micromark-util-types:
-        optional: true
-
-  micromark-extension-cjk-friendly-util@2.1.1:
-    resolution: {integrity: sha512-egs6+12JU2yutskHY55FyR48ZiEcFOJFyk9rsiyIhcJ6IvWB6ABBqVrBw8IobqJTDZ/wdSr9eoXDPb5S2nW1bg==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      micromark-util-types: '*'
     peerDependenciesMeta:
       micromark-util-types:
         optional: true
@@ -4423,9 +4414,9 @@ packages:
   rehype@13.0.2:
     resolution: {integrity: sha512-j31mdaRFrwFRUIlxGeuPXXKWQxet52RBQRvCmzl5eCefn/KGbomK5GMHNMsOJf55fgo3qw5tST5neDuarDYR2A==}
 
-  remark-cjk-friendly-gfm-strikethrough@1.2.3:
-    resolution: {integrity: sha512-bXfMZtsaomK6ysNN/UGRIcasQAYkC10NtPmP0oOHOV8YOhA2TXmwRXCku4qOzjIFxAPfish5+XS0eIug2PzNZA==}
-    engines: {node: '>=16'}
+  remark-cjk-friendly-gfm-strikethrough@2.0.0:
+    resolution: {integrity: sha512-TJQtYa6eNlINvzL7ewt9/i2D7rayxDlINaTxYrQmHT6Gj/2SalfBOVTvWedc8BqSDAxMN+A6sCPQpGOJPErBPg==}
+    engines: {node: '>=18'}
     peerDependencies:
       '@types/mdast': ^4.0.0
       unified: ^11.0.0
@@ -9413,23 +9404,15 @@ snapshots:
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
 
-  micromark-extension-cjk-friendly-gfm-strikethrough@1.2.3(micromark-util-types@2.0.2)(micromark@4.0.2):
+  micromark-extension-cjk-friendly-gfm-strikethrough@2.0.0(micromark-util-types@2.0.2)(micromark@4.0.2):
     dependencies:
       devlop: 1.1.0
       get-east-asian-width: 1.4.0
       micromark: 4.0.2
-      micromark-extension-cjk-friendly-util: 2.1.1(micromark-util-types@2.0.2)
+      micromark-extension-cjk-friendly-util: 3.0.0(micromark-util-types@2.0.2)
       micromark-util-character: 2.1.1
       micromark-util-chunked: 2.0.1
       micromark-util-resolve-all: 2.0.1
-      micromark-util-symbol: 2.0.1
-    optionalDependencies:
-      micromark-util-types: 2.0.2
-
-  micromark-extension-cjk-friendly-util@2.1.1(micromark-util-types@2.0.2):
-    dependencies:
-      get-east-asian-width: 1.4.0
-      micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
     optionalDependencies:
       micromark-util-types: 2.0.2
@@ -10229,9 +10212,9 @@ snapshots:
       rehype-stringify: 10.0.1
       unified: 11.0.5
 
-  remark-cjk-friendly-gfm-strikethrough@1.2.3(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5):
+  remark-cjk-friendly-gfm-strikethrough@2.0.0(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5):
     dependencies:
-      micromark-extension-cjk-friendly-gfm-strikethrough: 1.2.3(micromark-util-types@2.0.2)(micromark@4.0.2)
+      micromark-extension-cjk-friendly-gfm-strikethrough: 2.0.0(micromark-util-types@2.0.2)(micromark@4.0.2)
       unified: 11.0.5
     optionalDependencies:
       '@types/mdast': 4.0.4
