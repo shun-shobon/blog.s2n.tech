@@ -41,7 +41,7 @@
 		"remark-join-cjk-lines": "1.0.14",
 		"remark-math": "6.0.0",
 		"satori": "0.19.1",
-		"solid-js": "1.9.10",
+		"solid-js": "1.9.11",
 		"tailwindcss": "4.1.18",
 		"ufo": "1.6.3",
 		"zod": "4.3.5"
