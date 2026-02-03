@@ -91,8 +91,8 @@ importers:
         specifier: 0.9.6
         version: 0.9.6(prettier-plugin-astro@0.14.1)(prettier@3.8.1)(typescript@5.9.3)
       '@shun-shobon/style-guide':
-        specifier: 3.3.0
-        version: 3.3.0(@typescript-eslint/utils@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(prettier@3.8.1)(storybook@10.2.3(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
+        specifier: 3.4.0
+        version: 3.4.0(@typescript-eslint/utils@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(prettier@3.8.1)(storybook@10.2.3(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
       '@tailwindcss/vite':
         specifier: 4.1.18
         version: 4.1.18(vite@6.4.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
@@ -1678,8 +1678,8 @@ packages:
     engines: {node: '>= 8.0.0'}
     hasBin: true
 
-  '@shun-shobon/style-guide@3.3.0':
-    resolution: {integrity: sha512-YHSDq/Um7itYjJCiGyzUTfgSeJ7XWQ68rZRQGsb9QTOBgj3ujqf08kNaJBHVbua/nxrhiq1F51lnOwq9zODnGw==}
+  '@shun-shobon/style-guide@3.4.0':
+    resolution: {integrity: sha512-PUSIuDFdlJ8kuBwk8vuK1rri3R/6aCXI1QX/bS8nVq9YaLL+i6+n9exb3DY8M5LQ6WGTPp8bp4ZfTubzYT/OGg==}
     peerDependencies:
       eslint: ^9.0.0
       prettier: ^3.0.0
@@ -2886,8 +2886,8 @@ packages:
     peerDependencies:
       eslint: '>=8.23.0'
 
-  eslint-plugin-qwik@1.18.0:
-    resolution: {integrity: sha512-9xlr8qROSep4GIgkCMfy/6Z3xY/DflKE9gdSiQv/nQkraCEwH3kQbjY4MgKvOOEPsYk18cHlwOxpTFRtbjfmww==}
+  eslint-plugin-qwik@1.19.0:
+    resolution: {integrity: sha512-xZQxlUsDgX1V+z+DVqD0YicN83k3SpJul4ArCSjuz7uJ6P2IXno7iSKSupuFzQuqRMwDtkSB4uR9mY+3sd0E3w==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
@@ -2915,11 +2915,11 @@ packages:
     peerDependencies:
       eslint: '>=5.0.0'
 
-  eslint-plugin-storybook@10.2.1:
-    resolution: {integrity: sha512-5+V+dlzTuZfNKUD8hPbLvCVtggcWfI2lDGTpiq0AENrHeAgcztj17wwDva96lbg/sAG20uX71l8HQo3s/GmpHw==}
+  eslint-plugin-storybook@10.2.3:
+    resolution: {integrity: sha512-5wy+OKe6VexZecAedroKv+GR+agciZqK/Su7cdo6b1mICWaWwejU/XjjTLL9zr6wiEjCN/0mhYg7yz70DoaMQQ==}
     peerDependencies:
       eslint: '>=8'
-      storybook: ^10.2.1
+      storybook: ^10.2.3
 
   eslint-plugin-unicorn@62.0.0:
     resolution: {integrity: sha512-HIlIkGLkvf29YEiS/ImuDZQbP12gWyx5i3C6XrRxMvVdqMroCI9qoVYCoIl17ChN+U89pn9sVwLxhIWj5nEc7g==}
@@ -6686,7 +6686,7 @@ snapshots:
       fflate: 0.7.4
       string.prototype.codepointat: 0.2.1
 
-  '@shun-shobon/style-guide@3.3.0(@typescript-eslint/utils@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(prettier@3.8.1)(storybook@10.2.3(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)':
+  '@shun-shobon/style-guide@3.4.0(@typescript-eslint/utils@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(prettier@3.8.1)(storybook@10.2.3(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)':
     dependencies:
       '@eslint/core': 1.0.1
       '@eslint/js': 9.39.2
@@ -6699,12 +6699,12 @@ snapshots:
       eslint-plugin-import-x: 4.16.1(@typescript-eslint/utils@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-n: 17.23.2(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
-      eslint-plugin-qwik: 1.18.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+      eslint-plugin-qwik: 1.19.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       eslint-plugin-react: 7.37.5(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-react-hooks: 7.0.1(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-regexp: 3.0.0(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-simple-import-sort: 12.1.1(eslint@9.39.2(jiti@2.6.1))
-      eslint-plugin-storybook: 10.2.1(eslint@9.39.2(jiti@2.6.1))(storybook@10.2.3(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
+      eslint-plugin-storybook: 10.2.3(eslint@9.39.2(jiti@2.6.1))(storybook@10.2.3(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
       eslint-plugin-unicorn: 62.0.0(eslint@9.39.2(jiti@2.6.1))
       globals: 17.2.0
       local-pkg: 1.1.2
@@ -8233,7 +8233,7 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  eslint-plugin-qwik@1.18.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3):
+  eslint-plugin-qwik@1.19.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3):
     dependencies:
       '@typescript-eslint/utils': 8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.2(jiti@2.6.1)
@@ -8290,7 +8290,7 @@ snapshots:
     dependencies:
       eslint: 9.39.2(jiti@2.6.1)
 
-  eslint-plugin-storybook@10.2.1(eslint@9.39.2(jiti@2.6.1))(storybook@10.2.3(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3):
+  eslint-plugin-storybook@10.2.3(eslint@9.39.2(jiti@2.6.1))(storybook@10.2.3(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3):
     dependencies:
       '@typescript-eslint/utils': 8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.2(jiti@2.6.1)
