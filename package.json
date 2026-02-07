@@ -51,7 +51,7 @@
 		"@shun-shobon/style-guide": "3.6.0",
 		"@tailwindcss/vite": "4.1.18",
 		"@types/node": "24.10.10",
-		"@types/react": "19.2.10",
+		"@types/react": "19.2.11",
 		"eslint": "9.39.2",
 		"html-rewriter-wasm": "0.4.1",
 		"prettier": "3.8.1",
