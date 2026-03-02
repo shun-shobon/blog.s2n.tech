@@ -29,7 +29,7 @@
 		"@iconify-json/lucide": "1.2.94",
 		"@iconify-json/simple-icons": "1.2.71",
 		"@resvg/resvg-wasm": "2.6.2",
-		"astro": "5.17.3",
+		"astro": "5.18.0",
 		"astro-expressive-code": "0.41.7",
 		"astro-icon": "1.1.5",
 		"entities": "7.0.1",
