@@ -30,8 +30,8 @@ importers:
         specifier: 5.1.3
         version: 5.1.3(@testing-library/jest-dom@6.9.1)(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.30.2)(solid-js@1.9.11)(yaml@2.8.2)
       '@iconify-json/lucide':
-        specifier: 1.2.97
-        version: 1.2.97
+        specifier: 1.2.98
+        version: 1.2.98
       '@iconify-json/simple-icons':
         specifier: 1.2.73
         version: 1.2.73
@@ -1155,8 +1155,8 @@ packages:
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
 
-  '@iconify-json/lucide@1.2.97':
-    resolution: {integrity: sha512-Za6N/B2Nz1Lbr43f7+FOy6ZbxWACJanqZcrA3Gk1QE7ubQ/YCT1iKPLe5iJQImd60BBPPUvIwD5LmJkVeGHAxg==}
+  '@iconify-json/lucide@1.2.98':
+    resolution: {integrity: sha512-Lx2464W8Tty/QEnZ2UPb73nPdML/HpGCj0J0w37jP3/jx3l4fniZBjDxe1TgHiIL5XW9QO3vlx53ZQZ5JsNpzQ==}
 
   '@iconify-json/simple-icons@1.2.73':
     resolution: {integrity: sha512-nQZTwul4c2zBqH/aLP4zMOiElj93T6HawbrP+sFQKpxmBdS5x1duCK3cAnkj6dntHz84EYkzaQRM83V2pj4qxA==}
@@ -6158,7 +6158,7 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@iconify-json/lucide@1.2.97':
+  '@iconify-json/lucide@1.2.98':
     dependencies:
       '@iconify/types': 2.0.0
 
