@@ -58,6 +58,6 @@
 		"rollup-plugin-visualizer": "7.0.1",
 		"sharp": "0.34.5",
 		"typescript": "5.9.3",
-		"wrangler": "4.75.0"
+		"wrangler": "4.76.0"
 	}
 }
