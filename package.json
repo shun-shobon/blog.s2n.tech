@@ -38,7 +38,7 @@
 		"rehype-katex": "7.0.1",
 		"remark-cjk-friendly": "2.0.1",
 		"remark-cjk-friendly-gfm-strikethrough": "2.0.1",
-		"remark-join-cjk-lines": "1.0.14",
+		"remark-join-cjk-lines": "1.0.15",
 		"remark-math": "6.0.0",
 		"satori": "0.26.0",
 		"solid-js": "1.9.12",
