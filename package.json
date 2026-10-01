@@ -56,7 +56,7 @@
 		"html-rewriter-wasm": "0.4.1",
 		"prettier": "3.9.9",
 		"rollup-plugin-visualizer": "7.1.1",
-		"sharp": "0.35.4",
+		"sharp": "0.35.5",
 		"typescript": "5.9.3",
 		"wrangler": "4.138.0"
 	}
