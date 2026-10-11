@@ -231,7 +231,7 @@
 	:where(h1, h2, h3, h4, h5, h6):not(
 		:where([class~="not-markdown"], [class~="not-markdown"] *)
 	) {
-		@apply text-pretty text-text-heading kerning-on;
+		@apply kerning-on text-pretty text-text-heading;
 	}
 	:where(h1, h2, h3, h4):not(
 		:where([class~="not-markdown"], [class~="not-markdown"] *)
