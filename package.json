@@ -32,7 +32,7 @@
 		"astro": "5.18.2",
 		"astro-expressive-code": "0.44.2",
 		"astro-icon": "1.2.0",
-		"entities": "7.0.1",
+		"entities": "8.1.0",
 		"react": "19.3.0",
 		"react-dom": "19.3.0",
 		"rehype-katex": "7.0.1",
