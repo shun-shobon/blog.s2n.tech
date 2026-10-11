@@ -2,6 +2,8 @@ minimumReleaseAge: 1440
 
 minimumReleaseAgeExclude:
   - "@shun-shobon/style-guide"
+  # Renovate security update: @astrojs/cloudflare@13.1.10
+  - "@astrojs/cloudflare@13.1.10"
 
 allowBuilds:
   "@tailwindcss/oxide": true
