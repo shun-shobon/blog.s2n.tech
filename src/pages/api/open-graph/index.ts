@@ -49,9 +49,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 			},
 		});
 		if (!import.meta.env.DEV) {
-			locals.runtime.ctx.waitUntil(
-				caches.default.put(request, response.clone()),
-			);
+			locals.cfContext.waitUntil(caches.default.put(request, response.clone()));
 		}
 		return response;
 	} catch (error) {

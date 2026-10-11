@@ -3,7 +3,6 @@
 import fs from "node:fs/promises";
 
 import { initWasm, Resvg } from "@resvg/resvg-wasm";
-import RESVG_WASM from "@resvg/resvg-wasm/index_bg.wasm";
 import type { ReactNode } from "react";
 import satori from "satori";
 
@@ -39,7 +38,7 @@ async function initialize() {
 
 	initialized = true;
 
-	await initWasm(RESVG_WASM);
+	await initWasm(fs.readFile("./node_modules/@resvg/resvg-wasm/index_bg.wasm"));
 	fontNotoSansJP = await fs.readFile("./src/assets/NotoSansJP-Bold.ttf");
 	fontCaveat = await fs.readFile("./src/assets/Caveat-Bold.ttf");
 	fontCourierPrime = await fs.readFile("./src/assets/CourierPrime-Regular.ttf");

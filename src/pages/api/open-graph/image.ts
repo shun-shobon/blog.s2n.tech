@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
 import { logger } from "@/libs/logger";
 
@@ -37,10 +38,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 			return new Response("Not Found", { status: 404 });
 		}
 
-		const optimizedResponse = await optimizeImage(
-			targetResponse,
-			locals.runtime.env,
-		);
+		const optimizedResponse = await optimizeImage(targetResponse, env);
 		logger.info("optimized image", { url: targetURL });
 		const response = new Response(optimizedResponse.body, {
 			headers: {
@@ -48,9 +46,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 			},
 		});
 		if (!import.meta.env.DEV) {
-			locals.runtime.ctx.waitUntil(
-				caches.default.put(request, response.clone()),
-			);
+			locals.cfContext.waitUntil(caches.default.put(request, response.clone()));
 		}
 		return response;
 	} catch (error) {
