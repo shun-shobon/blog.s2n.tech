@@ -2,6 +2,8 @@ minimumReleaseAge: 1440
 
 minimumReleaseAgeExclude:
   - "@shun-shobon/style-guide"
+  # Renovate security update: astro@7.2.8
+  - astro@7.2.8
 
 allowBuilds:
   "@tailwindcss/oxide": true
