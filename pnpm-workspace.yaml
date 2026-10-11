@@ -20,3 +20,6 @@ strictDepBuilds: true
 trustPolicy: no-downgrade
 
 trustPolicyIgnoreAfter: 10080
+
+overrides:
+  "@cloudflare/vite-plugin": 1.63.0

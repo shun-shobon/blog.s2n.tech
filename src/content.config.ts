@@ -1,5 +1,6 @@
 import { glob } from "astro/loaders";
-import { defineCollection, z } from "astro:content";
+import { z } from "astro/zod";
+import { defineCollection } from "astro:content";
 
 const posts = defineCollection({
 	loader: glob({
@@ -25,8 +26,8 @@ const posts = defineCollection({
 	schema: z.object({
 		title: z.string(),
 		tags: z.string().array(),
-		publishedAt: z.string().date().optional(),
-		updatedAt: z.string().date().optional(),
+		publishedAt: z.iso.date().optional(),
+		updatedAt: z.iso.date().optional(),
 	}),
 });
 

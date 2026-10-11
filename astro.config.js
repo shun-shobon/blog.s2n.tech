@@ -1,4 +1,5 @@
 import cloudflare from "@astrojs/cloudflare";
+import { unified } from "@astrojs/markdown-remark";
 import mdx from "@astrojs/mdx";
 import partytown from "@astrojs/partytown";
 import react from "@astrojs/react";
@@ -18,11 +19,11 @@ import { visualizer } from "rollup-plugin-visualizer";
 export default defineConfig({
 	site: "https://blog.s2n.tech",
 	trailingSlash: "never",
+	compressHTML: true,
+	session: false,
 	adapter: cloudflare({
-		platformProxy: {
-			enabled: true,
-		},
 		imageService: "compile",
+		prerenderEnvironment: "node",
 	}),
 	integrations: [
 		react({ include: "**/og-image.*" }),
@@ -51,18 +52,20 @@ export default defineConfig({
 		shikiConfig: {
 			theme: "material-theme-lighter",
 		},
-		remarkRehype: {
-			footnoteLabel: "注釈",
-			footnoteBackLabel: "戻る",
-			footnoteBackContent: "↩\u{FE0E}",
-		},
-		remarkPlugins: [
-			remarkMath,
-			remarkJoinCjkLines,
-			remarkCjkFriendly,
-			remarkGfmStrikethroughCjkFriendly,
-		],
-		rehypePlugins: [[rehypeKatex, { strict: false, output: "mathml" }]],
+		processor: unified({
+			remarkRehype: {
+				footnoteLabel: "注釈",
+				footnoteBackLabel: "戻る",
+				footnoteBackContent: "↩\u{FE0E}",
+			},
+			remarkPlugins: [
+				remarkMath,
+				remarkJoinCjkLines,
+				remarkCjkFriendly,
+				remarkGfmStrikethroughCjkFriendly,
+			],
+			rehypePlugins: [[rehypeKatex, { strict: false, output: "mathml" }]],
+		}),
 	},
 	env: {
 		schema: {
