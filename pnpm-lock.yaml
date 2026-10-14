@@ -236,8 +236,8 @@ importers:
         specifier: 6.0.0
         version: 6.0.0(supports-color@10.2.2)
       satori:
-        specifier: 0.37.1
-        version: 0.37.1
+        specifier: 0.47.1
+        version: 0.47.1
       solid-js:
         specifier: 1.9.17
         version: 1.9.17
@@ -4522,8 +4522,8 @@ packages:
   sass-formatter@0.7.9:
     resolution: {integrity: sha512-CWZ8XiSim+fJVG0cFLStwDvft1VI7uvXdCNJYXhDvowiv+DsbD1nXLiQ4zrE5UBvj5DWZJ93cwN0NX5PMsr1Pw==}
 
-  satori@0.37.1:
-    resolution: {integrity: sha512-WkVOLBoDjAedz4w/Ioda/Na0eClSQSpougBQb2oUfJksdm8kXPJd2aWoy/B81qfwXuvMF+FyEHO/5g7OweLVxg==}
+  satori@0.47.1:
+    resolution: {integrity: sha512-hoRMFMXQ9o4VvcOZ+5pXKRAuWJkjvUzRz3fZJoFrAT3MVfuUvMWROe50lB7AREI1m9a0FAlEMDdQ3WPvHLm7FA==}
     engines: {node: '>=16'}
 
   satteri@0.10.5:
@@ -10131,7 +10131,7 @@ snapshots:
     dependencies:
       suf-log: 2.5.3
 
-  satori@0.37.1:
+  satori@0.47.1:
     dependencies:
       '@shuding/opentype.js': 1.4.0-beta.0
       css-background-parser: 0.1.0
