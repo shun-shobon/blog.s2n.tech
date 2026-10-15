@@ -45,7 +45,7 @@
 		"solid-js": "1.9.17",
 		"tailwindcss": "4.3.3",
 		"ufo": "1.6.4",
-		"zod": "4.6.5"
+		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@astrojs/check": "0.9.10",
