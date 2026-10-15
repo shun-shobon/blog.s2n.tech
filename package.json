@@ -41,7 +41,7 @@
 		"remark-cjk-friendly-gfm-strikethrough": "2.3.1",
 		"remark-join-cjk-lines": "1.0.15",
 		"remark-math": "6.0.0",
-		"satori": "0.47.1",
+		"satori": "0.51.0",
 		"solid-js": "1.9.17",
 		"tailwindcss": "4.3.3",
 		"ufo": "1.6.4",
