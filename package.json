@@ -28,7 +28,7 @@
 		"@astrojs/sitemap": "3.7.4",
 		"@astrojs/solid-js": "7.1.1",
 		"@iconify-json/lucide": "1.2.147",
-		"@iconify-json/simple-icons": "1.2.100",
+		"@iconify-json/simple-icons": "1.2.101",
 		"@resvg/resvg-wasm": "2.6.2",
 		"astro": "7.4.2",
 		"astro-expressive-code": "0.44.3",
