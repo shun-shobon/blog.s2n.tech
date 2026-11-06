@@ -43,14 +43,14 @@
 		"remark-math": "6.0.0",
 		"satori": "0.63.2",
 		"solid-js": "1.9.18",
-		"tailwindcss": "4.3.3",
+		"tailwindcss": "4.3.4",
 		"ufo": "1.6.4",
 		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@astrojs/check": "0.9.12",
 		"@shun-shobon/style-guide": "5.1.1",
-		"@tailwindcss/vite": "4.3.3",
+		"@tailwindcss/vite": "4.3.4",
 		"@types/node": "24.19.2",
 		"@types/react": "19.3.0",
 		"eslint": "10.14.0",
