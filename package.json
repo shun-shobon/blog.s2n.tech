@@ -51,7 +51,7 @@
 		"@astrojs/check": "0.9.12",
 		"@shun-shobon/style-guide": "5.1.1",
 		"@tailwindcss/vite": "4.3.4",
-		"@types/node": "24.19.2",
+		"@types/node": "26.6.6",
 		"@types/react": "19.3.0",
 		"eslint": "10.14.0",
 		"html-rewriter-wasm": "0.4.1",
