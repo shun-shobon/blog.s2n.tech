@@ -24,4 +24,4 @@ trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 10080
 
 overrides:
-  "@cloudflare/vite-plugin": 1.68.0
+  "@cloudflare/vite-plugin": 1.69.0
